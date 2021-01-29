@@ -1,0 +1,6 @@
+framework module BitlySDK {
+  umbrella header "BitlySDK.h"
+
+  export *
+  module * { export * }
+}

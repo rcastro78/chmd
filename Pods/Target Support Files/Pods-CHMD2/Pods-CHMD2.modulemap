@@ -1,0 +1,6 @@
+framework module Pods_CHMD2 {
+  umbrella header "Pods-CHMD2-umbrella.h"
+
+  export *
+  module * { export * }
+}

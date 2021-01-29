@@ -1,0 +1,6 @@
+framework module RijndaelSwift {
+  umbrella header "RijndaelSwift-umbrella.h"
+
+  export *
+  module * { export * }
+}
