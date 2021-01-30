@@ -393,6 +393,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getNotificaciones_iOS.php?usuario_id=\(idUsuario)"
                        let _url = URL(string: address);
                         self.obtenerNotificaciones(uri:address)
+                        self.leeNotificacion(idCircular: Int(self.id)!, idUsuario: Int(idUsuario)!)
                     }
                     
                 }
@@ -419,6 +420,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }
             if(tipoCircular==5){
              self.leerNotificaciones()
+             self.leeNotificacion(idCircular: Int(self.id)!, idUsuario: Int(idUsuario)!)
+            
             }
             
             let titulo = circulares[posicion].nombre
@@ -1615,9 +1618,40 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
            
    }
     
-    
-    
     func eliminaCircular(idCircular:Int,idUsuario:Int){
+           let fileUrl = try!
+               FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+           
+           if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+               print("Error en la base de datos")
+           }else{
+               
+               //La base de datos abrió correctamente
+               var statement:OpaquePointer?
+               
+                //Vaciar la tabla
+               
+              
+               let query = "UPDATE appCircularCHMD SET eliminada=1,favorita=0,leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+               
+               if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                   print("Error")
+               }
+               
+              
+               if sqlite3_step(statement) == SQLITE_DONE {
+                       print("Circular actualizada correctamente")
+                   }else{
+                       print("Circular no se pudo eliminar")
+                   }
+                   
+               }
+               
+       }
+       
+    
+    
+    func leeNotificacion(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
             FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
         
@@ -1631,7 +1665,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              //Vaciar la tabla
             
            
-            let query = "UPDATE appCircularCHMD SET eliminada=1,favorita=0,leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+            let query = "UPDATE appNotificacionCHMD SET leida=0 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
             
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
@@ -1647,6 +1681,10 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }
             
     }
+    
+    
+    
+    
     
     
     
