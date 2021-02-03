@@ -320,6 +320,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             imageView.addGestureRecognizer(tapGestureRecognizer)
             navigationItem.titleView = imageView
             
+            if(noLeido>0){
+                UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+            }
             
             if(!ConexionRed.isConnectedToNetwork()){
                 webView.isHidden=true
@@ -2127,7 +2130,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             switch (response.result) {
             case .success:
                 print(response)
-                UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                ///UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                 break
             case .failure:
                 print(Error.self)
