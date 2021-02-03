@@ -41,8 +41,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var indexEliminar:Int=0
     var buscando=false
     var editando=false
-    var circulares = [CircularTodas]()
-    var circularesFiltradas = [CircularTodas]()
+    var circulares = [CircularCompleta]()
+    var circularesFiltradas = [CircularCompleta]()
     var db: OpaquePointer?
     var idUsuario:String=""
     var descarga:Int=0
@@ -210,7 +210,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             return cell
         }
               cell.lblTitulo.text? = c.nombre
-            
+              cell.lblPara.text?="Para: \(c.espec)"
             
             
             if c.favorita == 1
@@ -680,7 +680,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func leerCirculares(){
         print("Leer desde la base de datos local")
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -690,7 +690,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD"
+           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD"
            var queryStatement: OpaquePointer? = nil
         var imagen:UIImage
         imagen = UIImage.init(named: "appmenu05")!
@@ -762,6 +762,15 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                       print("name not found")
                     }
                 
+                
+                var especiales:String="";
+                if  let es = sqlite3_column_text(queryStatement, 11) {
+                    especiales = String(cString: es)
+                    } else {
+                      print("name not found")
+                    }
+                
+                
                         let adj = sqlite3_column_int(queryStatement, 14)
                        
                         
@@ -800,7 +809,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 
                 if(eliminada==0 ){
-                   self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                    self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita),espec:especiales))
                 }
                
               }
@@ -823,7 +832,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func delete() {
         
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
                
                if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                    print("Error en la base de datos")
@@ -851,7 +860,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func deleteNotificaciones() {
            
            let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
                   
                   if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                       print("Error en la base de datos")
@@ -877,7 +886,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func borraCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -915,7 +924,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -953,7 +962,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -992,7 +1001,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaLeidosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1032,7 +1041,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaNoLeidosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1071,11 +1080,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     
-    func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int){
+    func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int,especiales:String){
         
         //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1091,7 +1100,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              //Vaciar la tabla
             
             
-            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -1146,7 +1155,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             if sqlite3_bind_text(statement,13,nivel, -1, nil) != SQLITE_OK {
                            print("Error campo 13")
             }
-            
+            let espec = especiales as NSString
+            if sqlite3_bind_text(statement,14,espec.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 14")
+            }
            
             
             
@@ -1166,7 +1178,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1326,6 +1338,14 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        }else{
                            nv=obj["nivel"] as? String
                        }
+                    
+                    
+                    var esp:String?=""
+                    if (obj["espec"] == nil){
+                        esp=""
+                    }else{
+                        esp=obj["espec"] as? String
+                    }
 
                        
                     var noLeido:Int=0
@@ -1369,7 +1389,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     
                     
                        if(Int(eliminada)!==0){
-                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!))
+                        self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!,espec:esp!))
                        }
                     
                    
@@ -1378,7 +1398,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     /*
                      guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
                      */
-                     self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
+                     self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: esp!)
                     
                     
                 }
@@ -1873,7 +1893,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          if ConexionRed.isConnectedToNetwork() == true {
              //
                     for c in circularesSeleccionadas{
-                      self.delCircularTodas(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
+                      self.delCircularCompleta(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: "\(c)")
                      
                    self.borraCirculares(idCircular: c, idUsuario: Int(self.idUsuario)!)
                                 }
@@ -1980,7 +2000,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        }
     
     
-    func delCircularTodas(direccion:String, usuario_id:String, circular_id:String){
+    func delCircularCompleta(direccion:String, usuario_id:String, circular_id:String){
         let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
         Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
             switch (response.result) {

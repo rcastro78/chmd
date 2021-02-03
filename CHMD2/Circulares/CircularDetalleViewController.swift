@@ -1601,7 +1601,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
    func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
        let fileUrl = try!
-           FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+           FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
        
        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
            print("Error en la base de datos")
@@ -1632,7 +1632,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func eliminaCircular(idCircular:Int,idUsuario:Int){
            let fileUrl = try!
-               FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+               FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
            
            if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                print("Error en la base de datos")
@@ -1665,7 +1665,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func leeNotificacion(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1702,7 +1702,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func leeCirc(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1810,7 +1810,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -2238,7 +2238,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
    /* func leerCirculares(){
      
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2349,7 +2349,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCirculares(){
            print("Leer desde la base de datos local")
            let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
            
            if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                print("error opening database")
@@ -2473,7 +2473,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func getFavorita(idCircular:Int)->Int{
               print("Leer desde la base de datos local")
               let fileUrl = try!
-                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
               
               if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                   print("error opening database")
@@ -2514,7 +2514,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerNotificaciones(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2637,7 +2637,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircularesNoLeidas(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2760,7 +2760,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircularesEliminadas(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2883,7 +2883,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircularesFavoritas(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -3007,7 +3007,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircular(idCircular:Int){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")

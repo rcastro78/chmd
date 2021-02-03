@@ -63,8 +63,8 @@ extension ViewController: ASAuthorizationControllerDelegate {
             
             let appleId = appleIDCredential.user
             let appleUserFirstName = appleIDCredential.fullName?.givenName
-            let appleUserLastName = appleIDCredential.fullName?.familyName
-            let appleUserEmail = appleIDCredential.email
+            _ = appleIDCredential.fullName?.familyName
+            _ = appleIDCredential.email
             
             //Revisar que el correo exista en el server del colegio
             UserDefaults.standard.set(appleUserFirstName!, forKey: "nombre")
@@ -78,8 +78,8 @@ extension ViewController: ASAuthorizationControllerDelegate {
             
         } else if let passwordCredential = authorization.credential as? ASPasswordCredential {
             
-            let appleUsername = passwordCredential.user
-            let applePassword = passwordCredential.password
+            _ = passwordCredential.user
+            _ = passwordCredential.password
             
             //Write your code
            
@@ -158,7 +158,7 @@ extension UIImageView {
 
 class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        if let err = error {
+        if error != nil {
             print(error)
         }
         else {
@@ -186,7 +186,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
          if ConexionRed.isConnectedToNetwork() == true {
              GIDSignIn.sharedInstance().uiDelegate = self
          }else{
-            let cuentaValida:Int = UserDefaults.standard.integer(forKey: "valida") ?? 0
+            let cuentaValida:Int = UserDefaults.standard.integer(forKey: "valida")
             if(cuentaValida==1){
                 print("Valida")
                 self.performSegue(withIdentifier: "validarSinInternetSegue", sender: self)
@@ -222,7 +222,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         
         //Sección para la base de datos
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -232,7 +232,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel
          */
         
-        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircularCHMD(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
+        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircularCHMD(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT, especiales TEXT)"
         if sqlite3_exec(db, crearTablaCirculares, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las circulares")
         }else{
@@ -304,7 +304,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         avPlayer.play()
         paused = false
         
-        let cuentaValida:Int = UserDefaults.standard.integer(forKey: "cuentaValida") ?? 0
+        let cuentaValida:Int = UserDefaults.standard.integer(forKey: "cuentaValida")
         if(cuentaValida==1){
             print("Valida")
             
@@ -405,7 +405,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             request.requestedScopes = [.fullName, .email]
             let authorizationController = ASAuthorizationController(authorizationRequests: [request])
             authorizationController.delegate = self
-            authorizationController.presentationContextProvider = self as! ASAuthorizationControllerPresentationContextProviding
+    authorizationController.presentationContextProvider = self as ASAuthorizationControllerPresentationContextProviding
             authorizationController.performRequests()
     
             
@@ -432,7 +432,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             (data, response, error) in
             if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
                 
-                let obj = datos[0] as! [String : AnyObject]
+                let obj = datos[0] as [String : AnyObject]
                     let existe = obj["existe"] as! String
                     print("existe: "+existe)
                     valida = Int(existe) ?? 0
