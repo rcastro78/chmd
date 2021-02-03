@@ -260,6 +260,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     var globalId:String=""
     var circFav:Int=0
     
+    @objc func volver(){
+        self.performSegue(withIdentifier: "unwindToPrincipal", sender: self)
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         circFav = UserDefaults.standard.integer(forKey: "circFav")
@@ -338,6 +343,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? "0")!
             obtenerCircular(uri: urlBase+"getCircularId6.php?id="+id)
+            
+            let btnVolver = UIBarButtonItem(title: "< Volver", style: .done, target: self, action: #selector(volver))
+            self.navigationItem.rightBarButtonItem  = btnVolver
            
         }
         
@@ -396,6 +404,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getNotificaciones_iOS.php?usuario_id=\(idUsuario)"
                        let _url = URL(string: address);
                         self.obtenerNotificaciones(uri:address)
+                        self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
                         self.leeNotificacion(idCircular: Int(self.id)!, idUsuario: Int(idUsuario)!)
                     }
                     
@@ -437,7 +446,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
             let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
             
-                            let dateFormatter = DateFormatter()
+                           let dateFormatter = DateFormatter()
                            dateFormatter.dateFormat = "dd/MM/yyyy"
                            dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
                            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
