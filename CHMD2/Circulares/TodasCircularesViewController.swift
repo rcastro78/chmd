@@ -1278,134 +1278,137 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
                 print(datos.count)
-                for index in 0...((datos).count) - 1
-                {
-                    let obj = datos[index] as! [String : AnyObject]
-                    guard let id = obj["id"] as? String else {
-                        print("No se pudo obtener el id")
-                        return
-                    }
-                    guard let titulo = obj["titulo"] as? String else {
-                        print("No se pudo obtener el titulo")
-                        return
-                    }
-                    
-                    var imagen:UIImage
-                       imagen = UIImage.init(named: "appmenu05")!
-                       
-                       
-                       guard let leido = obj["leido"] as? String else {
-                           return
-                       }
-                       
-                       guard let fecha = obj["created_at"] as? String else {
-                                                  return
-                                              }
-                       
-                       guard let favorito = obj["favorito"] as? String else {
-                           return
-                       }
-                       
-                       guard let adjunto = obj["adjunto"] as? String else {
-                                                  return
-                                              }
-                       
-                       guard let eliminada = obj["eliminado"] as? String else {
-                           return
-                       }
-                       
-                       guard let texto = obj["contenido"] as? String else {
-                           return
-                       }
-                       
-                       guard let fechaIcs = obj["fecha_ics"] as? String else {
-                         return
-                       }
-                       guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
-                                                return
-                                              }
-                       
-                      
-                       guard let horaFinIcs = obj["hora_final_ics"] as? String else {
-                                                                       return
-                                                                     }
-                       
-                    
-                       //Con esto se evita la excepcion por los valores nulos
-                       var nv:String?
-                       if (obj["nivel"] == nil){
-                           nv=""
-                       }else{
-                           nv=obj["nivel"] as? String
-                       }
-                    
-                    
-                    var esp:String?=""
-                    if (obj["espec"] == nil){
-                        esp=""
-                    }else{
-                        esp=obj["espec"] as? String
-                    }
+                if(datos.count>0){
+                    for index in 0...((datos).count) - 1
+                    {
+                        let obj = datos[index] as! [String : AnyObject]
+                        guard let id = obj["id"] as? String else {
+                            print("No se pudo obtener el id")
+                            return
+                        }
+                        guard let titulo = obj["titulo"] as? String else {
+                            print("No se pudo obtener el titulo")
+                            return
+                        }
+                        
+                        var imagen:UIImage
+                           imagen = UIImage.init(named: "appmenu05")!
+                           
+                           
+                           guard let leido = obj["leido"] as? String else {
+                               return
+                           }
+                           
+                           guard let fecha = obj["created_at"] as? String else {
+                                                      return
+                                                  }
+                           
+                           guard let favorito = obj["favorito"] as? String else {
+                               return
+                           }
+                           
+                           guard let adjunto = obj["adjunto"] as? String else {
+                                                      return
+                                                  }
+                           
+                           guard let eliminada = obj["eliminado"] as? String else {
+                               return
+                           }
+                           
+                           guard let texto = obj["contenido"] as? String else {
+                               return
+                           }
+                           
+                           guard let fechaIcs = obj["fecha_ics"] as? String else {
+                             return
+                           }
+                           guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
+                                                    return
+                                                  }
+                           
+                          
+                           guard let horaFinIcs = obj["hora_final_ics"] as? String else {
+                                                                           return
+                                                                         }
+                           
+                        
+                           //Con esto se evita la excepcion por los valores nulos
+                           var nv:String?
+                           if (obj["nivel"] == nil){
+                               nv=""
+                           }else{
+                               nv=obj["nivel"] as? String
+                           }
+                        
+                        
+                        var esp:String?=""
+                        if (obj["espec"] == nil){
+                            esp=""
+                        }else{
+                            esp=obj["espec"] as? String
+                        }
 
+                           
+                        var noLeido:Int=0
+                           
+                           //leídas
+                           if(Int(leido)!>0){
+                               imagen = UIImage.init(named: "circle_white")!
+                           }
+                           //No leídas
+                           if(Int(leido)==0 && Int(favorito)==0){
+                               imagen = UIImage.init(named: "circle")!
+                            noLeido=1
+                           }
+                           
+                           var noLeida:Int = 0
+                           if(Int(leido)! == 0){
+                               noLeida = 1
+                           }
+                           
+                           var adj=0;
+                           if(Int(adjunto)!==1){
+                               adj=1
+                           }
+                          
+                           if(Int(favorito)!>0){
+                               imagen = UIImage.init(named: "circle_white")!
+                            //imagen = nil
+                           }
+                           
+                           var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                           .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                           .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                           .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                           .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                           .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                           .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                           print("Contenido: "+str)
+                        
+                        
+                        
+                        
+                        
+                           if(Int(eliminada)!==0){
+                            self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!,espec:esp!))
+                           }
+                        
                        
-                    var noLeido:Int=0
-                       
-                       //leídas
-                       if(Int(leido)!>0){
-                           imagen = UIImage.init(named: "circle_white")!
-                       }
-                       //No leídas
-                       if(Int(leido)==0 && Int(favorito)==0){
-                           imagen = UIImage.init(named: "circle")!
-                        noLeido=1
-                       }
-                       
-                       var noLeida:Int = 0
-                       if(Int(leido)! == 0){
-                           noLeida = 1
-                       }
-                       
-                       var adj=0;
-                       if(Int(adjunto)!==1){
-                           adj=1
-                       }
-                      
-                       if(Int(favorito)!>0){
-                           imagen = UIImage.init(named: "circle_white")!
-                        //imagen = nil
-                       }
-                       
-                       var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
-                       .replacingOccurrences(of: "&amp;aacute;", with: "á")
-                       .replacingOccurrences(of: "&amp;eacute;", with: "é")
-                       .replacingOccurrences(of: "&amp;iacute;", with: "í")
-                       .replacingOccurrences(of: "&amp;oacute;", with: "ó")
-                       .replacingOccurrences(of: "&amp;uacute;", with: "ú")
-                       .replacingOccurrences(of: "&amp;ordm;", with: "o.")
-                       print("Contenido: "+str)
-                    
-                    
-                    
-                    
-                    
-                       if(Int(eliminada)!==0){
-                        self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!,espec:esp!))
-                       }
-                    
-                   
-                    print("hora _ics: \(horaInicioIcs)")
-                    print("fecha _ics: \(fechaIcs)")
-                    /*
-                     guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
-                     */
-                     self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: esp!)
-                    
-                    
+                        print("hora _ics: \(horaInicioIcs)")
+                        print("fecha _ics: \(fechaIcs)")
+                        /*
+                         guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
+                         */
+                         self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: esp!)
+                        
+                        
+                    }
+                    OperationQueue.main.addOperation {
+                        
+                        self.tableViewCirculares.reloadData();
+                    }
                 }
-                OperationQueue.main.addOperation {
-                    
-                    self.tableViewCirculares.reloadData();
-                }
+                
             }else{
                 print(error.debugDescription)
                 print(error?.localizedDescription)
