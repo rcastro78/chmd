@@ -256,7 +256,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     var idCirculares = [Int]()
     var db: OpaquePointer?
     var tipoCircular:Int=0
-    var noLeido:Int=0
+    var leido:Int=0
     var globalId:String=""
     var circFav:Int=0
     
@@ -279,7 +279,16 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         webView.configuration.preferences.javaScriptEnabled = true
         webView.navigationDelegate = self
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
-
+        leido = Int(UserDefaults.standard.string(forKey: "leido") ?? "0")!
+        print("leido: \(leido)")
+        //Si no se ha leido
+        if(leido==0){
+            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+            print("Reducir badge...")
+        }
+        
+        
+        
         if(tipoCircular==5){
             btnFavorita.isEnabled = false
             btnFavorita.isHidden = true
@@ -313,7 +322,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             id = UserDefaults.standard.string(forKey: "id") ?? ""
             globalId=id
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
-            noLeido = Int(UserDefaults.standard.string(forKey: "noLeido") ?? "0")!
+            leido = Int(UserDefaults.standard.string(forKey: "leido") ?? "0")!
              let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             let bannerWidth = navigationItem.accessibilityFrame.size.width
             let bannerX = bannerWidth / 2
@@ -325,9 +334,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             imageView.addGestureRecognizer(tapGestureRecognizer)
             navigationItem.titleView = imageView
             
-            if(noLeido>0){
-                UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-            }
+            
             
             if(!ConexionRed.isConnectedToNetwork()){
                 webView.isHidden=true
@@ -383,7 +390,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
                     }
                     //No leidas
-                    if(tipoCircular==3 || noLeido==1){
+                    if(tipoCircular==3 || leido==0){
                          self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
                         //Actualizarla en la base de datos
                         self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
@@ -2139,7 +2146,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             switch (response.result) {
             case .success:
                 print(response)
-                ///UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                //UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                 break
             case .failure:
                 print(Error.self)

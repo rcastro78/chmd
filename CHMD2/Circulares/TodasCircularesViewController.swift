@@ -113,7 +113,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         btnMarcarFavoritas.addTarget(self,action: #selector(agregarFavoritos), for: .touchUpInside)
         btnMarcarNoLeidas.addTarget(self,action: #selector(noleer), for: .touchUpInside)
-         btnMarcarLeidas.addTarget(self,action: #selector(leer), for: .touchUpInside)
+        btnMarcarLeidas.addTarget(self,action: #selector(leer), for: .touchUpInside)
         btnMarcarEliminadas.addTarget(self,action: #selector(eliminar), for: .touchUpInside)
        
         
@@ -585,7 +585,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                             let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                                 //Al eliminar una no leída, debe bajar el num. de notificaciones
-                                                if circular.noLeido==1 {
+                                                if circular.leido==0 {
                                                      UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                                                 }
                                                 
@@ -648,7 +648,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
-            UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
+            UserDefaults.standard.set(c.leido, forKey: "noLeido")
             UserDefaults.standard.set(1, forKey: "tipoCircular")
             UserDefaults.standard.set(c.favorita, forKey: "circFav")
             self.actualizaLeidosCirculares(idCircular: c.id, idUsuario: Int(self.idUsuario)!)
@@ -773,7 +773,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                         let adj = sqlite3_column_int(queryStatement, 14)
                        
-                        
+                       
                         if(Int(leida) == 1){
                            imagen = UIImage.init(named: "circle_white")!
                         }else{
@@ -797,7 +797,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                             imagen = UIImage.init(named: "circle_white")!
                         }*/
                 
-                        var noLeida:Int = 0
+                        
                        
                 var fechaCircular="";
                 if let fecha = sqlite3_column_text(queryStatement, 6) {
@@ -809,7 +809,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 
                 if(eliminada==0 ){
-                    self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita),espec:especiales))
+                    self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales))
                 }
                
               }
@@ -1277,7 +1277,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             print(data)
             
             if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
-                print(datos.count)
+                print("datos \(datos.count)")
                 if(datos.count>0){
                     for index in 0...((datos).count) - 1
                     {
@@ -1390,7 +1390,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         
                         
                            if(Int(eliminada)!==0){
-                            self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:noLeida,favorita:Int(favorito)!,espec:esp!))
+                            print(titulo)
+                            self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!))
                            }
                         
                        

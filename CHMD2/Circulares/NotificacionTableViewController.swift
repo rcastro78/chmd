@@ -13,8 +13,6 @@ import Firebase
 
 class NotificacionTableViewController:UIViewController,UITableViewDelegate, UITableViewDataSource,UISearchBarDelegate,UIGestureRecognizerDelegate,UITableViewDataSourcePrefetching {
     
-    
-    
     func leerNotificaciones(){
         print("Leer desde la base de datos local")
         let fileUrl = try!
