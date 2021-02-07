@@ -648,12 +648,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
-            UserDefaults.standard.set(c.leido, forKey: "noLeido")
+            UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
             UserDefaults.standard.set(1, forKey: "tipoCircular")
             UserDefaults.standard.set(c.favorita, forKey: "circFav")
             self.actualizaLeidosCirculares(idCircular: c.id, idUsuario: Int(self.idUsuario)!)
                                                            
-            
+            print("selected leido -> \(c.leido) selected no leido -> \(c.noLeido)")
             
             performSegue(withIdentifier: "TcircularSegue", sender:self)
             }
@@ -772,13 +772,18 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 
                         let adj = sqlite3_column_int(queryStatement, 14)
-                       
+                var nl:Int=0
                        
                         if(Int(leida) == 1){
                            imagen = UIImage.init(named: "circle_white")!
+                            nl=0
                         }else{
                             imagen = UIImage.init(named: "circle")!
+                            nl=1
                         }
+                
+                
+                        print("titulo> \(titulo), nl \(leida)")
                 
                         /*if(Int(favorita)==1){
                            imagen = UIImage.init(named: "circle_white")!
@@ -809,7 +814,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 
                 
                 if(eliminada==0 ){
-                    self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales))
+                    self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales,noLeido:nl))
                 }
                
               }
@@ -1412,15 +1417,16 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         
                            if(Int(eliminada)!==0){
                             print(titulo)
-                            self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!))
+                            self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!,noLeido:noLeida))
                            }
                         
                        
-                        print("hora _ics: \(horaInicioIcs)")
-                        print("fecha _ics: \(fechaIcs)")
+                        
+                        
                         /*
                          guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
                          */
+                        print("leida server: \(leido), no leida server: \(noLeida)")
                          self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: esp!)
                         
                         
@@ -1530,16 +1536,24 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        //leídas
                        if(Int(leido)!>0){
                            imagen = UIImage.init(named: "circle_white")!
+                           
                        }
                        //No leídas
                        if(Int(leido)==0 && Int(favorito)==0){
                            imagen = UIImage.init(named: "circle")!
                         noLeido=1
                        }
+                    
+                    if(Int(leido)==0){
+                     noLeido=1
+                    }
+                    
                        
                        var noLeida:Int = 0
                        if(Int(leido)! == 0){
                            noLeida = 1
+                       }else{
+                        noLeida = 0
                        }
                        
                        var adj=0;
@@ -1561,6 +1575,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                        .replacingOccurrences(of: "&amp;ordm;", with: "o.")
                      
                     
+                    print("notif- guardar nl: \(noLeida)")
                   
                     /*
                      guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)

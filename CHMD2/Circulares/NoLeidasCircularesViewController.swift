@@ -82,7 +82,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var db: OpaquePointer?
     var idUsuario:String=""
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
-    var metodoCirculares:String="getCirculares_iOS.php"
+    var metodoCirculares:String="getNotificaciones_iOS.php"
     var noleerMetodo:String="noleerCircular.php"
     var leerMetodo:String="leerCircular.php"
     var selecMultiple=false
@@ -195,7 +195,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
           guard let _url = URL(string: address) else { return };
           self.getDataFromURL(url: _url)
-          self.leerCirculares()
+          //self.leerCirculares()
       }
     }
     
@@ -721,7 +721,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(c.nivel,forKey:"nivel")
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(3, forKey: "tipoCircular")
-            UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
+            UserDefaults.standard.set(1, forKey: "noLeido")
             performSegue(withIdentifier: "CircularNoLeidaSegue", sender:self)
             }
         }else{

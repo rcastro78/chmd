@@ -279,12 +279,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         webView.configuration.preferences.javaScriptEnabled = true
         webView.navigationDelegate = self
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
-        leido = Int(UserDefaults.standard.string(forKey: "leido") ?? "0")!
-        print("leido: \(leido)")
+        let noLeido = Int(UserDefaults.standard.string(forKey: "noLeido") ?? "0")!
+        print("no leido: \(noLeido)")
         //Si no se ha leido
-        if(leido==0){
+        if(noLeido==1){
             UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-            print("Reducir badge...")
+            print("Reducir badge (-1)...")
         }
         
         
