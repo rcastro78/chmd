@@ -58,7 +58,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        
          var statement:OpaquePointer?
         let sqlRecuento1 = "select count(*) from appNotificacion"
           if sqlite3_prepare(self.db, sqlRecuento1, -1, &statement, nil) == SQLITE_OK{

@@ -1269,7 +1269,16 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         print("Leer desde el servidor....")
         print(url)
         circulares.removeAll()
-        
+        /*
+         
+         {"id":"16","titulo":"AJ\u00e1 \u00c1","contenido":"","fecha":"2021-01-15 09:27:09","descripcion":"","estatus":"2","adjunto":"0","ciclo_escolar_id":"3","created_at":"2021-01-15 09:27:09","updated_at":"2021-01-15 09:27:09","deleted_at":"0000-00-00 00:00:00","fecha_programada":"0000-00-00","status_envio":null,"envia_todos":"0","slug":null,"cu_id":"1214","usuario_id":"2132","leido":"0","eliminado":"0","favorito":"0","cu_created_at":null,"cu_updated_at":null,"compartida":"0","notificacion":"1","tema_ics":"","fecha_ics":"","hora_inicial_ics":"00:00:00","hora_final_ics":"00:00:00","ubicacion_ics":"","id_nivel":null,"nivel":null,"tipo":"1","niveles":null,"grados":null,"grupos":null,"espec":"especiales","adm":"admin","rts":"rutas"}
+         
+         
+         
+         {"id":"31","titulo":"qqq11","contenido":null,"fecha":"2021-01-15 09:27:09","descripcion":null,"estatus":"2","adjunto":"0","ciclo_escolar_id":"3","created_at":"2021-01-15 09:27:09","updated_at":"2021-01-15 09:27:09","deleted_at":"1999-12-31 00:00:00","fecha_programada":"0000-00-00","status_envio":null,"envia_todos":"0","slug":null,"cu_id":"1322","usuario_id":"2132","leido":"0","eliminado":"0","favorito":"0","cu_created_at":"2000-01-01 00:00:00","cu_updated_at":"2000-01-01 00:00:00","compartida":"0","notificacion":"1","tema_ics":null,"fecha_ics":null,"hora_inicial_ics":"00:00:00","hora_final_ics":"00:00:00","ubicacion_ics":null,"id_nivel":null,"nivel":null,"tipo":"1","niveles":null,"grados":null,"grupos":null,"espec":"especiales","adm":"admin","rts":"rutas"},
+         
+         
+         */
         self.delete()
                
         URLSession.shared.dataTask(with: url) {
@@ -1295,39 +1304,50 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                            imagen = UIImage.init(named: "appmenu05")!
                            
                            
-                           guard let leido = obj["leido"] as? String else {
-                               return
-                           }
+                          
                            
                            guard let fecha = obj["created_at"] as? String else {
+                            print("No se pudo obtener la fecha")
                                                       return
                                                   }
                            
                            guard let favorito = obj["favorito"] as? String else {
+                            print("No se pudo obtener el fav")
                                return
                            }
                            
                            guard let adjunto = obj["adjunto"] as? String else {
+                            print("No se pudo obtener el adj")
                                                       return
                                                   }
                            
                            guard let eliminada = obj["eliminado"] as? String else {
+                            print("No se pudo obtener el eliminado")
                                return
                            }
                            
                            guard let texto = obj["contenido"] as? String else {
+                            print("No se pudo obtener el contenido")
                                return
                            }
+                        
+                        guard let leido = obj["leido"] as? String else {
+                            print("No se pudo obtener el leido")
+                            return
+                        }
                            
                            guard let fechaIcs = obj["fecha_ics"] as? String else {
+                            print("No se pudo obtener la fecha ics")
                              return
                            }
                            guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
+                            print("No se pudo obtener la hora ini ics")
                                                     return
                                                   }
                            
                           
                            guard let horaFinIcs = obj["hora_final_ics"] as? String else {
+                            print("No se pudo obtener la hora fin ics")
                                                                            return
                                                                          }
                            
@@ -1335,6 +1355,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                            //Con esto se evita la excepcion por los valores nulos
                            var nv:String?
                            if (obj["nivel"] == nil){
+                            print("No se pudo obtener el nivel")
                                nv=""
                            }else{
                                nv=obj["nivel"] as? String
@@ -1349,8 +1370,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         }
 
                            
-                        var noLeido:Int=0
-                           
+                        var noLeida:Int = 0
+                       
                            //leídas
                            if(Int(leido)!>0){
                                imagen = UIImage.init(named: "circle_white")!
@@ -1358,10 +1379,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                            //No leídas
                            if(Int(leido)==0 && Int(favorito)==0){
                                imagen = UIImage.init(named: "circle")!
-                            noLeido=1
+                            noLeida=1
                            }
                            
-                           var noLeida:Int = 0
+                           
                            if(Int(leido)! == 0){
                                noLeida = 1
                            }
