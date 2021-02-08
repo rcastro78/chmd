@@ -774,6 +774,19 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 }else{
                  self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                 }
+                if(self.tipoCircular==5){
+                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                    if(leida==0){
+                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                    }
+                }else{
+                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                    if(leida==0){
+                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                    }
+                }
+                
+                
                 
                 var nextTitulo = titulos[p]
                 var nextFecha = fechas[p]
@@ -986,6 +999,21 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }
             //Saber si la circular es favorita
             
+            
+            if(self.tipoCircular==5){
+                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                if(leida==0){
+                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                }
+            }else{
+                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                if(leida==0){
+                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                }
+            }
+            
+            
+            
              self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
             
             self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
@@ -1051,6 +1079,21 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }else{
              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
             }
+            
+            
+            if(self.tipoCircular==5){
+                let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appNotificacionCHMD")
+                if(leida==0){
+                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                }
+            }else{
+                let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
+                if(leida==0){
+                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                }
+            }
+            
+            
             var nextHoraIniIcs = circulares[p].horaInicialIcs
             var nextHoraFinIcs = circulares[p].horaFinalIcs
             var nextFechaIcs = circulares[p].fechaIcs
@@ -1219,7 +1262,17 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     }else{
                      self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                     }
-                    
+                    if(self.tipoCircular==5){
+                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                        if(leida==0){
+                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                        }
+                    }else{
+                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                        if(leida==0){
+                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                        }
+                    }
                     
                     
                        var nextTitulo = titulos[p]
@@ -1271,6 +1324,22 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     }else{
                      self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                     }
+                    
+                    
+                    if(self.tipoCircular==5){
+                        let leida = self.getLeida(idCircular: Int(circulares[p].id), tabla: "appNotificacionCHMD")
+                        if(leida==0){
+                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                        }
+                    }else{
+                        let leida = self.getLeida(idCircular: Int(circulares[p].id), tabla: "appCircularCHMD")
+                        if(leida==0){
+                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                        }
+                    }
+                    
+                    
+                    
                                       
                                    webView.isHidden=true
                                              webViewSinConexion.isHidden=false
@@ -1418,6 +1487,18 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                  self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                 }
                 
+                if(self.tipoCircular==5){
+                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                    if(leida==0){
+                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                    }
+                }else{
+                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                    if(leida==0){
+                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                    }
+                }
+                
                 globalId=nextId
                 var nextTitulo = titulos[p]
                 var nextFecha = fechas[p]
@@ -1479,6 +1560,21 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }else{
              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
             }
+                
+                if(self.tipoCircular==5){
+                    let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appNotificacionCHMD")
+                    if(leida==0){
+                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                    }
+                }else{
+                    let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
+                    if(leida==0){
+                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                    }
+                }
+                
+                
+                
              let titulo = circulares[p].nombre
               let tituloP1 = self.partirTituloP1(titulo: titulo)
               let tituloP2 = self.partirTituloP2(titulo: titulo)
@@ -2516,6 +2612,43 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              }
     
     
+    func getLeida(idCircular:Int,tabla:String)->Int{
+              print("Leer desde la base de datos local")
+              let fileUrl = try!
+                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+              
+              if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+                  print("error opening database")
+              }
+              
+              /*
+               idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+               */
+              
+                 let consulta = "SELECT leida FROM \(tabla) WHERE idCircular=\(idCircular)"
+              var queryStatement: OpaquePointer? = nil
+              var imagen:UIImage
+              imagen = UIImage.init(named: "appmenu05")!
+              
+              if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+             
+                 
+                  
+                   while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let favorita = sqlite3_column_int(queryStatement, 0)
+                    esFavorita = Int(favorita)
+                    }
+                  
+                 
+                   }
+                  else {
+                   print("SELECT statement could not be prepared")
+                 }
+
+                 sqlite3_finalize(queryStatement)
+        
+               return esFavorita
+             }
     
     
     func leerNotificaciones(){
