@@ -265,6 +265,34 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     }
     
     
+    func contarNotificaciones()->Int32{
+        print("Leer desde la base de datos local")
+        var total:Int32=0
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+        
+        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+            print("error opening database")
+        }
+        
+        /*
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+         */
+        
+           let consulta = "SELECT count(*) FROM appNotificacionCHMD where leida=0"
+           var queryStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let id = sqlite3_column_int(queryStatement, 0)
+                total = id
+             }
+            
+        }
+        
+       return total
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         circFav = UserDefaults.standard.integer(forKey: "circFav")
@@ -1788,9 +1816,14 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
            
             if sqlite3_step(statement) == SQLITE_DONE {
-                    print("Circular actualizada correctamente")
+                    print("Notificacion actualizada correctamente")
+                
+                let totalNotif = contarNotificaciones()
+                UserDefaults.standard.set(totalNotif, forKey: "totalNotif")
+                
+                
                 }else{
-                    print("Circular no se pudo eliminar")
+                    print("Notificacion no se pudo eliminar")
                 }
                 
             }

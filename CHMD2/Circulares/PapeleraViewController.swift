@@ -76,8 +76,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     var buscando=false
-    var circulares = [CircularTodas]()
-    var circularesFiltradas = [CircularTodas]()
+    var circulares = [CircularCompleta]()
+    var circularesFiltradas = [CircularCompleta]()
     var db: OpaquePointer?
     var idUsuario:String=""
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
@@ -247,6 +247,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         //cell.lblEncabezado.text? = ""
         cell.lblTitulo.text? = c.nombre
+        cell.lblPara.text?="Para: \(c.espec)"
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
        cell.btnHacerFav.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
@@ -758,7 +759,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
      */
     
-       let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=1"
+       let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE eliminada=1"
        var queryStatement: OpaquePointer? = nil
     var imagen:UIImage
     imagen = UIImage.init(named: "appmenu05")!
@@ -767,94 +768,112 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
    
        
         
-         while(sqlite3_step(queryStatement) == SQLITE_ROW) {
-                 let id = sqlite3_column_int(queryStatement, 0)
-                    var titulo:String="";
-            
-                   if let name = sqlite3_column_text(queryStatement, 1) {
-                       titulo = String(cString: name)
-                      } else {
-                       print("name not found")
-                   }
-            
-            
-                    var cont:String="";
-            
-                   if let contenido = sqlite3_column_text(queryStatement,2) {
-                       cont = String(cString: contenido)
-                      } else {
-                       print("name not found")
-                   }
-          
-                    let leida = sqlite3_column_int(queryStatement, 3)
-                    let favorita = sqlite3_column_int(queryStatement, 4)
-                    let eliminada = sqlite3_column_int(queryStatement, 5)
-                    print("leida: \(leida)")
-                    print("favorita: \(favorita)")
-            
-                     var fechaIcs:String="";
-                     if let fIcs = sqlite3_column_text(queryStatement, 6) {
-                     fechaIcs = String(cString: fIcs)
+        while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                let id = sqlite3_column_int(queryStatement, 0)
+                   var titulo:String="";
+           
+                  if let name = sqlite3_column_text(queryStatement, 1) {
+                      titulo = String(cString: name)
                      } else {
-                          print("name not found")
-                     }
-            
-                           
-                                
-            
+                      print("name not found")
+                  }
+           
+           
+                   var cont:String="";
+           
+                  if let contenido = sqlite3_column_text(queryStatement,2) {
+                      cont = String(cString: contenido)
+                     } else {
+                      print("name not found")
+                  }
+         
+                   let leida = sqlite3_column_int(queryStatement, 3)
+                   let favorita = sqlite3_column_int(queryStatement, 4)
+                   let eliminada = sqlite3_column_int(queryStatement, 5)
+                   print("leida: \(leida)")
+                   print("favorita: \(favorita)")
+           
+                    var fechaIcs:String="";
+                    if let fIcs = sqlite3_column_text(queryStatement, 6) {
+                    fechaIcs = String(cString: fIcs)
+                    } else {
+                         print("name not found")
+                    }
+           
+                          
+                               
+           
+                  
+             var hIniIcs:String="";
+             if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+               hIniIcs = String(cString: horaInicioIcs)
+              } else {
+               print("name not found")
+           }
                    
-              var hIniIcs:String="";
-              if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
-                hIniIcs = String(cString: horaInicioIcs)
-               } else {
-                print("name not found")
-            }
-                    
-            
-             var hFinIcs:String="";
-             if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
-                 hFinIcs = String(cString: horaFinIcs)
-                 } else {
-                   print("name not found")
-                 }
-            
-            
-            
-                    
-                    
-            
-            var nivel:String="";
-            if  let nv = sqlite3_column_text(queryStatement, 10) {
-                nivel = String(cString: nv)
+           
+            var hFinIcs:String="";
+            if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                hFinIcs = String(cString: horaFinIcs)
                 } else {
                   print("name not found")
                 }
-            
-                    let adj = sqlite3_column_int(queryStatement, 14)
-                   
-                    
-                    if(Int(leida) == 1){
-                       imagen = UIImage.init(named: "circle_white")!
-                    }else{
-                        imagen = UIImage.init(named: "circle")!
-                    }
-            
-                    if(Int(favorita)==1){
-                       
-                      }
-                    var noLeida:Int = 0
-                   
-            var fechaCircular="";
-            if let fecha = sqlite3_column_text(queryStatement, 6) {
-                fechaCircular = String(cString: fecha)
-               
-               } else {
+           
+           
+          var especiales:String="";
+          if  let es = sqlite3_column_text(queryStatement, 11) {
+              especiales = String(cString: es)
+              } else {
                 print("name not found")
-            }
-            
+              }
+                   
+                   
+           
+           var nivel:String="";
+           if  let nv = sqlite3_column_text(queryStatement, 10) {
+               nivel = String(cString: nv)
+               } else {
+                 print("name not found")
+               }
+           
+                   let adj = sqlite3_column_int(queryStatement, 14)
+                  
+                   
+                   if(Int(leida) == 1){
+                      imagen = UIImage.init(named: "circle_white")!
+                   }else{
+                       imagen = UIImage.init(named: "circle")!
+                   }
+           
+                   if(Int(favorita)==1){
+                      
+                     }
+                   var noLeida:Int = 0
+          
+          var nl:Int=0
+                 
+                  if(Int(leida) == 1){
+                     imagen = UIImage.init(named: "circle_white")!
+                      nl=0
+                  }else{
+                      imagen = UIImage.init(named: "circle")!
+                      nl=1
+                  }
+          
+          
+          
+          
+                  
+           var fechaCircular="";
+           if let fecha = sqlite3_column_text(queryStatement, 6) {
+               fechaCircular = String(cString: fecha)
+              
+              } else {
+               print("name not found")
+           }
             
            
-               self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+            self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales,noLeido:nl))
             }
            
           
@@ -955,103 +974,116 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                
                if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
                    print(datos.count)
-                   for index in 0...((datos).count) - 1
-                   {
-                       let obj = datos[index] as! [String : AnyObject]
-                       guard let id = obj["id"] as? String else {
-                           print("No se pudo obtener el id")
-                           return
-                       }
-                       guard let titulo = obj["titulo"] as? String else {
-                           print("No se pudo obtener el titulo")
+                for index in 0...((datos).count) - 1
+                {
+                    let obj = datos[index] as! [String : AnyObject]
+                    guard let id = obj["id"] as? String else {
+                        print("No se pudo obtener el id")
+                        return
+                    }
+                    guard let titulo = obj["titulo"] as? String else {
+                        print("No se pudo obtener el titulo")
+                        return
+                    }
+                    
+                    var imagen:UIImage
+                       imagen = UIImage.init(named: "appmenu05")!
+                       
+                       
+                       guard let leido = obj["leido"] as? String else {
                            return
                        }
                        
-                       var imagen:UIImage
-                          imagen = UIImage.init(named: "appmenu05")!
-                          
-                          
-                          guard let leido = obj["leido"] as? String else {
-                              return
-                          }
-                          
-                          guard let fecha = obj["created_at"] as? String else {
-                                                     return
-                                                 }
-                          
-                          guard let favorito = obj["favorito"] as? String else {
-                              return
-                          }
-                          
-                          guard let adjunto = obj["adjunto"] as? String else {
-                                                     return
-                                                 }
-                          
-                          guard let eliminada = obj["eliminado"] as? String else {
-                              return
-                          }
-                          
-                          guard let texto = obj["contenido"] as? String else {
-                              return
-                          }
-                          
-                          guard let fechaIcs = obj["fecha_ics"] as? String else {
-                            return
-                          }
-                          guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
-                                                   return
-                                                 }
-                          
-                         
-                          guard let horaFinIcs = obj["hora_final_ics"] as? String else {
-                                                                          return
-                                                                        }
-                          
+                       guard let fecha = obj["created_at"] as? String else {
+                                                  return
+                                              }
                        
-                          //Con esto se evita la excepcion por los valores nulos
-                          var nv:String?
-                          if (obj["nivel"] == nil){
-                              nv=""
-                          }else{
-                              nv=obj["nivel"] as? String
-                          }
+                       guard let favorito = obj["favorito"] as? String else {
+                           return
+                       }
+                       
+                       guard let adjunto = obj["adjunto"] as? String else {
+                                                  return
+                                              }
+                       
+                       guard let eliminada = obj["eliminado"] as? String else {
+                           return
+                       }
+                       
+                       guard let texto = obj["contenido"] as? String else {
+                           return
+                       }
+                       
+                       guard let fechaIcs = obj["fecha_ics"] as? String else {
+                         return
+                       }
+                       guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
+                                                return
+                                              }
+                       
+                      
+                       guard let horaFinIcs = obj["hora_final_ics"] as? String else {
+                                                                       return
+                                                                     }
+                       
+                    
+                    var nv:String?
+                    if (obj["nivel"] == nil){
+                     print("No se pudo obtener el nivel")
+                        nv=""
+                    }else{
+                        nv=obj["nivel"] as? String
+                    }
+                 
+                 
+                 var esp:String?=""
+                 if (obj["espec"] == nil){
+                     esp=""
+                 }else{
+                     esp=obj["espec"] as? String
+                 }
 
-                          
-                         
-                          
-                          //leídas
-                          if(Int(leido)!>0){
-                              imagen = UIImage.init(named: "circle_white")!
-                          }
-                          //No leídas
-                          if(Int(leido)==0 && Int(favorito)==0){
-                              imagen = UIImage.init(named: "circle")!
-                          }
-                          
-                          var noLeida:Int = 0
-                          if(Int(leido)! == 0){
-                              noLeida = 1
-                          }
-                          
-                          var adj=0;
-                          if(Int(adjunto)!==1){
-                              adj=1
-                          }
-                         
-                          if(Int(favorito)!>0){
-                              imagen = UIImage.init(named: "star")!
-                          }
-                          
-                          var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
-                          .replacingOccurrences(of: "&amp;aacute;", with: "á")
-                          .replacingOccurrences(of: "&amp;eacute;", with: "é")
-                          .replacingOccurrences(of: "&amp;iacute;", with: "í")
-                          .replacingOccurrences(of: "&amp;oacute;", with: "ó")
-                          .replacingOccurrences(of: "&amp;uacute;", with: "ú")
-                          .replacingOccurrences(of: "&amp;ordm;", with: "o.")
-                          print("Contenido: "+str)
+                    
+                 var noLeida:Int = 0
+                 
+                    //leídas
+                    if(Int(leido)!>0){
+                        imagen = UIImage.init(named: "circle_white")!
+                    }
+                    //No leídas
+                    if(Int(leido)==0 && Int(favorito)==0){
+                        imagen = UIImage.init(named: "circle")!
+                     noLeida=1
+                    }
+                    
+                    
+                    if(Int(leido)! == 0){
+                        noLeida = 1
+                    }
+                    
+                    var adj=0;
+                    if(Int(adjunto)!==1){
+                        adj=1
+                    }
+                   
+                    if(Int(favorito)!>0){
+                        imagen = UIImage.init(named: "circle_white")!
+                     //imagen = nil
+                    }
+                    
+                    var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                    .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                    .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                    .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                    .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                    .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                    .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                        
+                
                           if(Int(eliminada)==1){
-                            self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:0,favorita:0))
+                           /* self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales,noLeido:nl))*/
+                            
+                            self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!,noLeido:noLeida))
                           }
                        
                       

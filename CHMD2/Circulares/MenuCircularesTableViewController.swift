@@ -14,6 +14,11 @@ class MenuCircularesTableViewController: UITableViewController {
     @IBOutlet weak var imgFotoPerfil: UIImageView!
     @IBOutlet var tableViewMenu: UITableView!
      var menu = [MenuCirculares]()
+    
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -68,38 +73,49 @@ class MenuCircularesTableViewController: UITableViewController {
         
        
         _ = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
-        
+       
        
         
 }
     
     @objc func refresh() {
         tableView.reloadData()
+        contarCirculares()
+        contarNotificaciones()
+        contarCircularesFavs()
+        contarCircularesEliminadas()
+        contarCircularesNoLeidas()
         print("Recargando...")
     }
     // MARK: - Table view data source
     func contarNotificaciones()->Int32{
-        print("Leer desde la base de datos local")
+        
         var total:Int32=0
-        let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+        total = Int32(UserDefaults.standard.integer(forKey: "totalNotif"))
+        print("Contar notif: \(total)")
         
-        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
-            print("error opening database")
-        }
-        
-        /*
-         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
-         */
-        
-           let consulta = "SELECT count(*)  FROM appNotificacionCHMD where leida=0"
-           var queryStatement: OpaquePointer? = nil
-        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
-              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
-                     let id = sqlite3_column_int(queryStatement, 0)
-                total = id
-             }
+        //si el total viene en 0, forzar lectura desde la db
+        if(total<=0){
+            let fileUrl = try!
+                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
             
+            if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+                print("error opening database")
+            }
+            
+            /*
+             idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+             */
+            
+               let consulta = "SELECT count(*) FROM appNotificacionCHMD where leida=0"
+               var queryStatement: OpaquePointer? = nil
+            if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+                  while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                         let id = sqlite3_column_int(queryStatement, 0)
+                    total = id
+                 }
+                
+            }
         }
         
        return total
@@ -148,7 +164,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*)  FROM appCircularCHMD where leida=0 and favorita=1"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where favorita=1"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -265,7 +281,7 @@ class MenuCircularesTableViewController: UITableViewController {
         
         print("total entrada: \(self.contarCirculares())")
         print("total fav: \(self.contarCircularesFavs())")
-        
+        print("total notif: \(self.contarNotificaciones())")
         if(m.id==1){
             if(self.contarCirculares()>10){
                 cell.lblConteo.text="10+"
@@ -289,7 +305,7 @@ class MenuCircularesTableViewController: UITableViewController {
                     cell.lblConteo.text="\(self.contarCircularesFavs())"
                 }else{
                     cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .white
+                    cell.lblConteo.backgroundColor = .clear
                 }
             }
             
@@ -304,12 +320,28 @@ class MenuCircularesTableViewController: UITableViewController {
                     cell.lblConteo.text="\(self.contarCircularesNoLeidas())"
                 }else{
                     cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .white
+                    cell.lblConteo.backgroundColor = .clear
                 }
             }
             
            
         }
+        
+        if(m.id==5){
+            if(self.contarNotificaciones()>10){
+                cell.lblConteo.text="10+"
+            }else{
+                if(self.contarNotificaciones()>0){
+                    cell.lblConteo.text="\(self.contarNotificaciones())"
+                }else{
+                    cell.lblConteo.text=""
+                    cell.lblConteo.backgroundColor = .clear
+                }
+            }
+            
+           
+        }
+        
         
         
         if(m.id==4){
@@ -321,26 +353,13 @@ class MenuCircularesTableViewController: UITableViewController {
                     cell.lblConteo.backgroundColor = .red
                 }else{
                     cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .white
+                    cell.lblConteo.backgroundColor = .clear
                 }
             }
             
            
         }
-        if(m.id==5){
-            if(self.contarNotificaciones()>10){
-                cell.lblConteo.text="10+"
-            }else{
-                if(self.contarNotificaciones()>0){
-                    cell.lblConteo.text="\(self.contarNotificaciones())"
-                }else{
-                    cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .white
-                }
-            }
-           
-            
-        }
+       
         if(m.id==6){
             cell.lblConteo.text=""
             cell.lblConteo.backgroundColor = .white

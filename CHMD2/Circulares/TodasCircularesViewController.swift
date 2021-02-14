@@ -1274,16 +1274,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         print("Leer desde el servidor....")
         print(url)
         circulares.removeAll()
-        /*
-         
-         {"id":"16","titulo":"AJ\u00e1 \u00c1","contenido":"","fecha":"2021-01-15 09:27:09","descripcion":"","estatus":"2","adjunto":"0","ciclo_escolar_id":"3","created_at":"2021-01-15 09:27:09","updated_at":"2021-01-15 09:27:09","deleted_at":"0000-00-00 00:00:00","fecha_programada":"0000-00-00","status_envio":null,"envia_todos":"0","slug":null,"cu_id":"1214","usuario_id":"2132","leido":"0","eliminado":"0","favorito":"0","cu_created_at":null,"cu_updated_at":null,"compartida":"0","notificacion":"1","tema_ics":"","fecha_ics":"","hora_inicial_ics":"00:00:00","hora_final_ics":"00:00:00","ubicacion_ics":"","id_nivel":null,"nivel":null,"tipo":"1","niveles":null,"grados":null,"grupos":null,"espec":"especiales","adm":"admin","rts":"rutas"}
-         
-         
-         
-         {"id":"31","titulo":"qqq11","contenido":null,"fecha":"2021-01-15 09:27:09","descripcion":null,"estatus":"2","adjunto":"0","ciclo_escolar_id":"3","created_at":"2021-01-15 09:27:09","updated_at":"2021-01-15 09:27:09","deleted_at":"1999-12-31 00:00:00","fecha_programada":"0000-00-00","status_envio":null,"envia_todos":"0","slug":null,"cu_id":"1322","usuario_id":"2132","leido":"0","eliminado":"0","favorito":"0","cu_created_at":"2000-01-01 00:00:00","cu_updated_at":"2000-01-01 00:00:00","compartida":"0","notificacion":"1","tema_ics":null,"fecha_ics":null,"hora_inicial_ics":"00:00:00","hora_final_ics":"00:00:00","ubicacion_ics":null,"id_nivel":null,"nivel":null,"tipo":"1","niveles":null,"grados":null,"grupos":null,"espec":"especiales","adm":"admin","rts":"rutas"},
-         
-         
-         */
+       
         self.delete()
                
         URLSession.shared.dataTask(with: url) {

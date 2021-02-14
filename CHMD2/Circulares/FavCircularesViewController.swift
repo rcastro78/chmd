@@ -76,8 +76,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     var buscando=false
-    var circulares = [CircularTodas]()
-    var circularesFiltradas = [CircularTodas]()
+    var circulares = [CircularCompleta]()
+    var circularesFiltradas = [CircularCompleta]()
     var db: OpaquePointer?
     var idUsuario:String=""
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
@@ -242,6 +242,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         
         cell.lblTitulo.text? = c.nombre
+        cell.lblPara.text?="Para: \(c.espec)"
+            
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
             if c.favorita == 1
@@ -649,7 +651,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
           idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
           */
          
-            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE favorita=1 AND eliminada=0"
+            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE favorita=1 AND eliminada=0"
             var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!
@@ -710,7 +712,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                       }
                  
                  
-                 
+                var especiales:String="";
+                if  let es = sqlite3_column_text(queryStatement, 11) {
+                    especiales = String(cString: es)
+                    } else {
+                      print("name not found")
+                    }
                          
                          
                  
@@ -734,6 +741,20 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                             
                            }
                          var noLeida:Int = 0
+                
+                var nl:Int=0
+                       
+                        if(Int(leida) == 1){
+                           imagen = UIImage.init(named: "circle_white")!
+                            nl=0
+                        }else{
+                            imagen = UIImage.init(named: "circle")!
+                            nl=1
+                        }
+                
+                
+                
+                
                         
                  var fechaCircular="";
                  if let fecha = sqlite3_column_text(queryStatement, 6) {
@@ -745,7 +766,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                  
                  
                 
-                    self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales,noLeido:nl))
                  }
                 
                
@@ -984,52 +1005,66 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                                      }
                        
                     
-                       //Con esto se evita la excepcion por los valores nulos
-                       var nv:String?
-                       if (obj["nivel"] == nil){
-                           nv=""
-                       }else{
-                           nv=obj["nivel"] as? String
-                       }
+                    var nv:String?
+                    if (obj["nivel"] == nil){
+                     print("No se pudo obtener el nivel")
+                        nv=""
+                    }else{
+                        nv=obj["nivel"] as? String
+                    }
+                 
+                 
+                 var esp:String?=""
+                 if (obj["espec"] == nil){
+                     esp=""
+                 }else{
+                     esp=obj["espec"] as? String
+                 }
 
-                       
-                      
-                       
-                       //leídas
-                       if(Int(leido)!>0){
-                           imagen = UIImage.init(named: "circle_white")!
-                       }
-                       //No leídas
-                       if(Int(leido)==0 && Int(favorito)==0){
-                           imagen = UIImage.init(named: "circle")!
-                       }
-                       
-                       var noLeida:Int = 0
-                       if(Int(leido)! == 0){
-                           noLeida = 1
-                       }
-                       
-                       var adj=0;
-                       if(Int(adjunto)!==1){
-                           adj=1
-                       }
-                      
-                       if(Int(favorito)!>0){
-                           imagen = UIImage.init(named: "star")!
-                       }
-                       
-                       var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
-                       .replacingOccurrences(of: "&amp;aacute;", with: "á")
-                       .replacingOccurrences(of: "&amp;eacute;", with: "é")
-                       .replacingOccurrences(of: "&amp;iacute;", with: "í")
-                       .replacingOccurrences(of: "&amp;oacute;", with: "ó")
-                       .replacingOccurrences(of: "&amp;uacute;", with: "ú")
-                       .replacingOccurrences(of: "&amp;ordm;", with: "o.")
-                       print("Contenido: "+str)
-                       if(Int(favorito)==1){
-                        self.circulares.append(CircularTodas(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",noLeido:0,favorita:1))
-                       }
                     
+                 var noLeida:Int = 0
+                
+                    //leídas
+                    if(Int(leido)!>0){
+                        imagen = UIImage.init(named: "circle_white")!
+                    }
+                    //No leídas
+                    if(Int(leido)==0 && Int(favorito)==0){
+                        imagen = UIImage.init(named: "circle")!
+                     noLeida=1
+                    }
+                    
+                    
+                    if(Int(leido)! == 0){
+                        noLeida = 1
+                    }
+                    
+                    var adj=0;
+                    if(Int(adjunto)!==1){
+                        adj=1
+                    }
+                   
+                    if(Int(favorito)!>0){
+                        imagen = UIImage.init(named: "circle_white")!
+                     //imagen = nil
+                    }
+                    
+                    var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                    .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                    .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                    .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                    .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                    .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                    .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                    
+                 
+                 
+                 
+                 
+                    if(Int(eliminada)!==0){
+                     print(titulo)
+                     self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!,noLeido:noLeida))
+                    }
                    
                     
                     

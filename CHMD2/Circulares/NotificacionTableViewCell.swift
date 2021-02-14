@@ -17,7 +17,8 @@ class NotificacionTableViewCell: UITableViewCell {
         @IBOutlet weak var lblHora: UILabel!
         @IBOutlet weak var imgAdjunto: UIImageView!
         @IBOutlet weak var chkSeleccionar: CheckBox!
-        
+    @IBOutlet weak var lblPara: UILabel!
+    
         @IBOutlet weak var btnHacerFav: UIButton!
         
         //@IBOutlet weak var btnModificarEstado: UIButton!
