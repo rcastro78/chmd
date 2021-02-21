@@ -15,7 +15,15 @@ class MenuCircularesTableViewController: UITableViewController {
     @IBOutlet var tableViewMenu: UITableView!
      var menu = [MenuCirculares]()
     
-    
+    override func viewDidAppear(_ animated: Bool){
+        super.viewDidAppear(_:true)
+        contarCirculares()
+        contarNotificaciones()
+        contarCircularesFavs()
+        contarCircularesEliminadas()
+        contarCircularesNoLeidas()
+        print("llamado viewdidappear")
+    }
     
     
     
@@ -71,6 +79,8 @@ class MenuCircularesTableViewController: UITableViewController {
             
         }
         
+     
+        
        
         _ = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
        
@@ -79,43 +89,38 @@ class MenuCircularesTableViewController: UITableViewController {
 }
     
     @objc func refresh() {
-        tableView.reloadData()
+        
         contarCirculares()
         contarNotificaciones()
         contarCircularesFavs()
         contarCircularesEliminadas()
         contarCircularesNoLeidas()
         print("Recargando...")
+        tableView.reloadData()
     }
     // MARK: - Table view data source
     func contarNotificaciones()->Int32{
-        
+        print("Leer desde la base de datos local")
         var total:Int32=0
-        total = Int32(UserDefaults.standard.integer(forKey: "totalNotif"))
-        print("Contar notif: \(total)")
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
-        //si el total viene en 0, forzar lectura desde la db
-        if(total<=0){
-            let fileUrl = try!
-                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+            print("error opening database")
+        }
+        
+        /*
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+         */
+        
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and tipo=2"
+           var queryStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let id = sqlite3_column_int(queryStatement, 0)
+                total = id
+             }
             
-            if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
-                print("error opening database")
-            }
-            
-            /*
-             idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
-             */
-            
-               let consulta = "SELECT count(*) FROM appNotificacionCHMD where leida=0"
-               var queryStatement: OpaquePointer? = nil
-            if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
-                  while(sqlite3_step(queryStatement) == SQLITE_ROW) {
-                         let id = sqlite3_column_int(queryStatement, 0)
-                    total = id
-                 }
-                
-            }
         }
         
        return total
@@ -126,7 +131,7 @@ class MenuCircularesTableViewController: UITableViewController {
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -136,7 +141,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*)  FROM appCircularCHMD where leida=0"
+           let consulta = "SELECT count(*)  FROM appCircularCHMD where leida=0 AND tipo=1"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -154,7 +159,7 @@ class MenuCircularesTableViewController: UITableViewController {
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -164,7 +169,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*) FROM appCircularCHMD where favorita=1"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where favorita=1 AND eliminada=0 and tipo=1"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -182,7 +187,7 @@ class MenuCircularesTableViewController: UITableViewController {
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -192,7 +197,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and favorita=0"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and eliminada=0 and favorita=0"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -211,7 +216,7 @@ class MenuCircularesTableViewController: UITableViewController {
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -221,7 +226,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*) FROM appCircularCHMD where eliminada=1"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where eliminada=1 AND tipo=1"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -262,6 +267,7 @@ class MenuCircularesTableViewController: UITableViewController {
         }
         if (valor.id==5){
             performSegue(withIdentifier: "notificacionSegue", sender: self)
+            
         }
         if (valor.id==6){
               self.performSegue(withIdentifier: "unwindToPrincipal", sender: self)
@@ -290,9 +296,12 @@ class MenuCircularesTableViewController: UITableViewController {
                     cell.lblConteo.text="\(self.contarCirculares())"
                 }else{
                     cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .white
+                    cell.lblConteo.backgroundColor = .clear
                 }
             }
+            
+            
+           
             
             
         }
@@ -327,23 +336,6 @@ class MenuCircularesTableViewController: UITableViewController {
            
         }
         
-        if(m.id==5){
-            if(self.contarNotificaciones()>10){
-                cell.lblConteo.text="10+"
-            }else{
-                if(self.contarNotificaciones()>0){
-                    cell.lblConteo.text="\(self.contarNotificaciones())"
-                }else{
-                    cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .clear
-                }
-            }
-            
-           
-        }
-        
-        
-        
         if(m.id==4){
             if(self.contarCircularesEliminadas()>10){
                 cell.lblConteo.text="10+"
@@ -359,6 +351,25 @@ class MenuCircularesTableViewController: UITableViewController {
             
            
         }
+        
+        
+        if(m.id==5){
+            if(self.contarNotificaciones()>10){
+                cell.lblConteo.text="10+"
+            }
+            if(self.contarNotificaciones()<=10){
+                cell.lblConteo.text="10-"
+            }
+            if(self.contarNotificaciones()==0){
+                cell.lblConteo.text=""
+                cell.lblConteo.backgroundColor = .clear
+            }
+           
+        }
+        
+        
+        
+       
        
         if(m.id==6){
             cell.lblConteo.text=""

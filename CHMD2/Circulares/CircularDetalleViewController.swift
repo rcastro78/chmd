@@ -269,7 +269,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -279,7 +279,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*) FROM appNotificacionCHMD where leida=0"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 AND tipo=2"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -803,7 +803,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                  self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                 }
                 if(self.tipoCircular==5){
-                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
                     if(leida==0){
                         UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                     }
@@ -1029,7 +1029,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
             
             if(self.tipoCircular==5){
-                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
                 if(leida==0){
                     UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                 }
@@ -1110,7 +1110,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
             
             if(self.tipoCircular==5){
-                let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appNotificacionCHMD")
+                let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
                 if(leida==0){
                     UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                 }
@@ -1291,7 +1291,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                      self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                     }
                     if(self.tipoCircular==5){
-                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
                         if(leida==0){
                             UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                         }
@@ -1355,7 +1355,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     
                     
                     if(self.tipoCircular==5){
-                        let leida = self.getLeida(idCircular: Int(circulares[p].id), tabla: "appNotificacionCHMD")
+                        let leida = self.getLeida(idCircular: Int(circulares[p].id), tabla: "appCircularCHMD")
                         if(leida==0){
                             UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                         }
@@ -1516,7 +1516,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 }
                 
                 if(self.tipoCircular==5){
-                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appNotificacionCHMD")
+                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
                     if(leida==0){
                         UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                     }
@@ -1590,7 +1590,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }
                 
                 if(self.tipoCircular==5){
-                    let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appNotificacionCHMD")
+                    let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
                     if(leida==0){
                         UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
                     }
@@ -1732,7 +1732,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
    func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
        let fileUrl = try!
-           FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+           FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
        
        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
            print("Error en la base de datos")
@@ -1744,7 +1744,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             //Vaciar la tabla
            
           
-           let query = "UPDATE appCircularCHMD SET favorita=0 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+           let query = "UPDATE appCircularCHMD SET favorita=0 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario) and tipo=1"
            
            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                print("Error")
@@ -1763,7 +1763,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func eliminaCircular(idCircular:Int,idUsuario:Int){
            let fileUrl = try!
-               FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+               FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
            
            if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                print("Error en la base de datos")
@@ -1775,7 +1775,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 //Vaciar la tabla
                
               
-               let query = "UPDATE appCircularCHMD SET eliminada=1,favorita=0,leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+               let query = "UPDATE appCircularCHMD SET eliminada=1,favorita=0,leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario) and tipo=1"
                
                if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                    print("Error")
@@ -1796,7 +1796,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func leeNotificacion(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1808,7 +1808,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              //Vaciar la tabla
             
            
-            let query = "UPDATE appNotificacionCHMD SET leida=0 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+            let query = "UPDATE appCircularCHMD SET leida=0 WHERE idCircular=\(idCircular) AND tipo=2"
             
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
@@ -1823,7 +1823,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 
                 
                 }else{
-                    print("Notificacion no se pudo eliminar")
+                    print("Notificacion no se pudo actualizar")
                 }
                 
             }
@@ -1838,7 +1838,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func leeCirc(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1850,7 +1850,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              //Vaciar la tabla
             
            
-            let query = "UPDATE appCircularCHMD SET leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+            let query = "UPDATE appCircularCHMD SET leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario) AND tipo=1"
             
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
@@ -1946,7 +1946,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1958,7 +1958,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              //Vaciar la tabla
             
             self.circulares.removeAll()
-            let query = "UPDATE appCircularCHMD SET favorita=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario)"
+            let query = "UPDATE appCircularCHMD SET favorita=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario) and tipo=1"
             
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
@@ -2374,7 +2374,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
    /* func leerCirculares(){
      
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2485,7 +2485,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCirculares(){
            print("Leer desde la base de datos local")
            let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
            
            if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                print("error opening database")
@@ -2495,7 +2495,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
             */
            
-              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD"
+              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE tipo=1"
            var queryStatement: OpaquePointer? = nil
            var imagen:UIImage
            imagen = UIImage.init(named: "appmenu05")!
@@ -2609,7 +2609,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func getFavorita(idCircular:Int)->Int{
               print("Leer desde la base de datos local")
               let fileUrl = try!
-                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
               
               if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                   print("error opening database")
@@ -2619,7 +2619,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
                */
               
-                 let consulta = "SELECT favorita FROM appCircularCHMD WHERE idCircular=\(idCircular)"
+                 let consulta = "SELECT favorita FROM appCircularCHMD WHERE idCircular=\(idCircular) AND tipo=1"
               var queryStatement: OpaquePointer? = nil
               var imagen:UIImage
               imagen = UIImage.init(named: "appmenu05")!
@@ -2648,7 +2648,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func getLeida(idCircular:Int,tabla:String)->Int{
               print("Leer desde la base de datos local")
               let fileUrl = try!
-                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                         FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
               
               if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                   print("error opening database")
@@ -2687,7 +2687,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerNotificaciones(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2697,7 +2697,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
       idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
       */
      
-        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appNotificacionCHMD"
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE tipo=2"
      var queryStatement: OpaquePointer? = nil
      var imagen:UIImage
      imagen = UIImage.init(named: "appmenu05")!
@@ -2810,7 +2810,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircularesNoLeidas(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2820,7 +2820,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
       idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
       */
      
-        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE leida=0 and favorita=0"
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE leida=0 and favorita=0 AND tipo=1"
      var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!
@@ -2933,7 +2933,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircularesEliminadas(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -2943,7 +2943,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
       idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
       */
      
-        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=1"
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=1 AND tipo=1"
      var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!
@@ -3056,7 +3056,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircularesFavoritas(){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -3066,7 +3066,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
       idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
       */
      
-        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE favorita=1"
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE favorita=1 AND tipo=1"
     var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!
@@ -3180,7 +3180,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     func leerCircular(idCircular:Int){
      print("Leer desde la base de datos local")
      let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1a.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
      
      if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
          print("error opening database")
@@ -3190,7 +3190,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
       idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
       */
      
-        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE idCircular=\(idCircular)"
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE idCircular=\(idCircular) AND tipo=1"
         var queryStatement: OpaquePointer? = nil
      var imagen:UIImage
      imagen = UIImage.init(named: "appmenu05")!
