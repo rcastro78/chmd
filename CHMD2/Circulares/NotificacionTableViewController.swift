@@ -712,7 +712,13 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
             
              
              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
-                     let id = sqlite3_column_int(queryStatement, 0)
+                     
+                
+                self.notifNoLeidas += 1
+                 
+                
+                
+                let id = sqlite3_column_int(queryStatement, 0)
                         var titulo:String="";
                 
                        if let name = sqlite3_column_text(queryStatement, 1) {
@@ -830,6 +836,8 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                    }
                   
                    sqlite3_finalize(queryStatement)
+                    UserDefaults.standard.set(self.notifNoLeidas, forKey: "totalNotif")
+           
                }
        
     
@@ -1047,7 +1055,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         print("Leer desde el servidor....")
         print(url)
         circulares.removeAll()
-        self.totalNotif = 0
+        self.notifNoLeidas = 0
       
                
         URLSession.shared.dataTask(with: url) {
@@ -1167,6 +1175,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                            if(Int(favorito)==0){
                             self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:0,favorita:Int(favorito)!,espec:esp!,noLeido:1))
                             
+                
                            }
                         
                         
@@ -1201,9 +1210,8 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         }
         
         
-        UserDefaults.standard.set(0, forKey: "descarga")
-        UserDefaults.standard.set(self.totalNotif, forKey: "totalNotif")
-        print("total-n: \(self.totalNotif)")
+        
+        print("total-n: \(notifNoLeidas)")
         
     }
     

@@ -15,17 +15,7 @@ class MenuCircularesTableViewController: UITableViewController {
     @IBOutlet var tableViewMenu: UITableView!
      var menu = [MenuCirculares]()
     
-    override func viewDidAppear(_ animated: Bool){
-        super.viewDidAppear(_:true)
-        contarCirculares()
-        contarNotificaciones()
-        contarCircularesFavs()
-        contarCircularesEliminadas()
-        contarCircularesNoLeidas()
-        print("llamado viewdidappear")
-    }
-    
-    
+  
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -141,7 +131,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*)  FROM appCircularCHMD where leida=0 AND tipo=1"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 AND tipo=1"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -353,25 +343,30 @@ class MenuCircularesTableViewController: UITableViewController {
         }
         
         
-        if(m.id==5){
-            if(self.contarNotificaciones()>10){
+        /*if(m.id==5){
+            //totalNotif
+            var total = UserDefaults.standard.integer(forKey: "totalNotif")
+            
+            if(total>10){
                 cell.lblConteo.text="10+"
             }
-            if(self.contarNotificaciones()<=10){
-                cell.lblConteo.text="10-"
-            }
-            if(self.contarNotificaciones()==0){
-                cell.lblConteo.text=""
-                cell.lblConteo.backgroundColor = .clear
+            else{
+                if(total>0){
+                    cell.lblConteo.text="\(total)"
+                    
+                }else{
+                    cell.lblConteo.text=""
+                    cell.lblConteo.backgroundColor = .clear
+                }
             }
            
-        }
+        }*/
         
         
         
        
        
-        if(m.id==6){
+        if(m.id>=5){
             cell.lblConteo.text=""
             cell.lblConteo.backgroundColor = .white
         }

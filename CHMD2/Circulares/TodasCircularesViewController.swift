@@ -1178,7 +1178,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
         
     }
-    
+    var notifNoLeidas=0
     func guardarNotificaciones(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int){
         
         //Abrir la base
@@ -1260,12 +1260,16 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             if sqlite3_step(statement) == SQLITE_DONE {
                 print("Circular almacenada correctamente")
+                self.notifNoLeidas += 1
+                
+                
             }else{
                 print("Circular no se pudo guardar")
             }
             
         }
         
+        UserDefaults.standard.set(self.notifNoLeidas, forKey: "totalNotif")
     
         
     }
