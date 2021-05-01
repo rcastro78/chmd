@@ -529,10 +529,10 @@
             </objects>
             <point key="canvasLocation" x="3400.0000000000005" y="-621.19565217391312"/>
         </scene>
-        <!--ENTRADA-->
+        <!--TodasCircularesViewController-->
         <scene sceneID="PjA-P2-uvI">
             <objects>
-                <viewController storyboardIdentifier="TodasCircularesViewController" modalPresentationStyle="fullScreen" id="Iqz-fv-dZ4" customClass="TodasCircularesViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TodasCircularesViewController" title="TodasCircularesViewController" modalPresentationStyle="fullScreen" id="Iqz-fv-dZ4" customClass="TodasCircularesViewController" customModule="CHMD" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dtX-18-b1W">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1147,6 +1147,8 @@
                         <outlet property="btnAnterior" destination="NEt-L5-I0a" id="WTu-l1-pUr"/>
                         <outlet property="btnCalendario" destination="XSw-vL-p3S" id="UFh-U2-5QX"/>
                         <outlet property="btnFavorita" destination="iwC-7W-79M" id="R39-Ll-pMb"/>
+                        <outlet property="btnHome" destination="cTJ-Ha-hsk" id="Wdf-31-SqJ"/>
+                        <outlet property="btnHome2" destination="N1h-pj-jqb" id="JbS-qM-YKk"/>
                         <outlet property="btnRecargar" destination="kcL-5J-7bF" id="n4e-Pb-oOS"/>
                         <outlet property="btnSiguiente" destination="Mtd-cR-yQe" id="PiL-C1-C9F"/>
                         <outlet property="imbCalendario" destination="tIX-Vb-Lf7" id="6DY-ty-Nyr"/>
@@ -2147,8 +2149,8 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Rfy-LS-0qo"/>
-        <segue reference="ya5-NF-oXJ"/>
-        <segue reference="mtg-fp-Lb4"/>
+        <segue reference="mG6-9K-z2c"/>
+        <segue reference="xjp-Eu-iMj"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="app03" width="300" height="134"/>

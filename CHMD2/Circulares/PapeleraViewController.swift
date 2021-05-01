@@ -97,16 +97,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         super.viewWillAppear(_:true)
          circulares.removeAll()
          self.leerCirculares()
-         /* if ConexionRed.isConnectedToNetwork() == true {
-             let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-                             guard let _url = URL(string: address) else { return };
-                             self.getDataFromURL(url: _url)
-            
-          }else{
-            var alert = UIAlertView(title: "No está conectado a Internet", message: "Se muestran las últimas circulares registradas", delegate: nil, cancelButtonTitle: "Aceptar")
-             alert.show()
-             self.leerCirculares()
-         }*/
+        
     }
     
     override func viewDidLoad() {
@@ -134,9 +125,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                    self.isModalInPresentation=true
                }
         
-        
-      
-     
         
         tableViewCirculares.prefetchDataSource = self
         //self.title="Circulares"
@@ -194,8 +182,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
       if ConexionRed.isConnectedToNetwork() == true {
          let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
           guard let _url = URL(string: address) else { return };
-          self.getDataFromURL(url: _url)
-        self.leerCirculares()
+        if(ConexionRed.isConnectedToNetwork()){
+            self.getDataFromURL(url: _url)
+        }else{
+            self.leerCirculares()
+        }
+          
+          
       }
     }
 
@@ -534,7 +527,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                            }
 
                                                            let shortLink = shortURL
-                                                           self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+                                                        self.compartir(message: "Comparto: \(UserDefaults.standard.string(forKey:"nombre"))", link: "\(shortLink!)")
                                                        }
                                                 
                                                 }

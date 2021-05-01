@@ -87,7 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             
         }
         
-      
+        UserDefaults.standard.setValue(0, forKey: "notificado")
         
         
         
@@ -181,10 +181,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         var statement:OpaquePointer?
-        let aps = userInfo[AnyHashable("aps")] as? NSDictionary
-        let alert = aps?["alert"] as? NSDictionary
-        let body = alert![AnyHashable("body")] as? String
-        let title = alert!["title"] as? String
+    let aps = userInfo[AnyHashable("aps")] as? NSDictionary
+        //let alert = aps?["alert"] as? NSDictionary
+        let body = aps![AnyHashable("body")] as? String
+        let title = aps!["title"] as? String
         let b = aps![AnyHashable("badge")] as? Int
 
        //Setear el badge si la app está abierta
@@ -223,18 +223,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             //Con esto capturamos los valores enviados en la notificacion
             //let idCircular = userInfo["id"] as! String
         
-        let aps = userInfo[AnyHashable("aps")] as? NSDictionary
-               let alert = aps?["alert"] as? NSDictionary
-               let body = alert![AnyHashable("body")] as? String
-               let title = alert!["title"] as? String
-               let b = aps![AnyHashable("badge")] as? Int
-
+                let aps = userInfo[AnyHashable("aps")] as? NSDictionary
+                let body = userInfo[("body")] as? String
+                let idCircular = userInfo[("idCircular")] as? String
+                let b = aps![AnyHashable("badge")] as? Int
+             
+        debugPrint("cuerpo: \(body!)")
+        debugPrint("cuerpo: \(idCircular!)")
+        
+        //let idCircular = aps![AnyHashable("idCircular")] as? String
               //Mostrar el badge
               UIApplication.shared.applicationIconBadgeNumber = b!
         
-            debugPrint("Notificaciones: \(userInfo)")
+            debugPrint("userInfo: \(userInfo)")
             UserDefaults.standard.set(1, forKey: "viaNotif")
-            UserDefaults.standard.set(0, forKey: "idCircularViaNotif")
+            UserDefaults.standard.set(idCircular, forKey: "idCircularViaNotif")
             
       
           

@@ -442,7 +442,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                                                                }
 
                                                                let shortLink = shortURL
-                                                               self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+                                                            self.compartir(message: "Comparto: \(UserDefaults.standard.string(forKey:"nombre"))", link: "\(shortLink!)")
                                                            }
                                                     
                                                     }
@@ -701,8 +701,8 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                 
                    //let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appNotificacionCHMD WHERE leida=0 AND eliminada=0"
             
-            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=0 AND tipo=2"
-                   
+            //let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=0 AND tipo=2"
+            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE tipo=2"
             var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!

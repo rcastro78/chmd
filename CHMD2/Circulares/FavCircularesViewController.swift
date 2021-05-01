@@ -426,7 +426,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                               }
 
                                                               let shortLink = shortURL
-                                                              self.compartir(message: "Comparto la circular del colegio", link: "\(shortLink!)")
+                                                            self.compartir(message: "Comparto: \(UserDefaults.standard.string(forKey:"nombre"))", link: "\(shortLink!)")
                                                           }
                                                    
                                                    }

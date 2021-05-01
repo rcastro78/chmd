@@ -15,7 +15,11 @@ class MenuCircularesTableViewController: UITableViewController {
     @IBOutlet var tableViewMenu: UITableView!
      var menu = [MenuCirculares]()
     
-  
+    override func viewDidAppear(_ animated:Bool) {
+        super.viewDidAppear(true)
+        //self.showToast(message:"llamado viewDidAppear",font:UIFont(name:"GothamRounded-Bold",size:11.0)!)
+        refresh()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +76,7 @@ class MenuCircularesTableViewController: UITableViewController {
      
         
        
-        _ = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
+        //_ = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(refresh), userInfo: nil, repeats: true)
        
        
         
@@ -342,7 +346,21 @@ class MenuCircularesTableViewController: UITableViewController {
            
         }
         
-        
+        if(m.id==5){
+            if(self.contarNotificaciones()>10){
+                cell.lblConteo.text="10+"
+            }else{
+                if(self.contarCircularesEliminadas()>0){
+                    cell.lblConteo.text="\(self.contarNotificaciones())"
+                    cell.lblConteo.backgroundColor = .blue
+                }else{
+                    cell.lblConteo.text=""
+                    cell.lblConteo.backgroundColor = .clear
+                }
+            }
+            
+           
+        }
         /*if(m.id==5){
             //totalNotif
             var total = UserDefaults.standard.integer(forKey: "totalNotif")

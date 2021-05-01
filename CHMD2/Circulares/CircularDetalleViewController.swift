@@ -213,6 +213,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     @IBOutlet weak var btnFavorita: UIButton!
     @IBOutlet weak var btnAnterior: UIButton!
     @IBOutlet weak var btnSiguiente: UIButton!
+    @IBOutlet weak var btnHome: UIButton!
+    @IBOutlet weak var btnHome2: UIButton!
     
     @IBOutlet weak var btnRecargar: UIBarButtonItem!
     @IBOutlet weak var lblFechaCircular: UILabel!
@@ -262,6 +264,14 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     @objc func volver(){
         self.performSegue(withIdentifier: "unwindToPrincipal", sender: self)
+    }
+    
+    
+    @objc func volverViaNotificacion(){
+        UserDefaults.standard.setValue(1, forKey: "notificado")
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let newViewController = storyBoard.instantiateViewController(withIdentifier: "ValidarCorreoViewController") as! ValidarCorreoViewController
+                self.present(newViewController, animated: true, completion: nil)
     }
     
     
@@ -381,6 +391,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
             let btnVolver = UIBarButtonItem(title: "< Volver", style: .done, target: self, action: #selector(volver))
             self.navigationItem.rightBarButtonItem  = btnVolver
+            
+            btnHome.addTarget(self,action: #selector(volverViaNotificacion),for:.touchUpInside)
+            btnHome2.addTarget(self,action: #selector(volverViaNotificacion),for:.touchUpInside)
            
         }
         

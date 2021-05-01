@@ -45,6 +45,9 @@ class PrincipalTableViewController: UITableViewController {
         
     }
     
+  
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -472,6 +475,11 @@ class PrincipalTableViewController: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
      
+        if(UserDefaults.standard.integer(forKey: "notificado")==1){
+            UserDefaults.standard.set(1,forKey:"descarga")
+            performSegue(withIdentifier: "inicioSegue", sender: self)
+        }
+        
         
         let valida:Int = UserDefaults.standard.integer(forKey: "valida")
                if(valida == 0){
