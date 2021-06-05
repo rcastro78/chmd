@@ -25,8 +25,15 @@ class CircularCompleta: NSObject {
     var espec:String
     var leido:Int
     var noLeido:Int
+    
+    var grados:String
+    var adm:String
+    var grupos:String
+    var rts:String
+    var enviaTodos:String
+    
    
-    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String, adjunto:Int,fechaIcs:String,horaInicialIcs:String,horaFinalIcs:String,nivel:String,leido:Int,favorita:Int,espec:String,noLeido:Int) {
+    init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String, adjunto:Int,fechaIcs:String,horaInicialIcs:String,horaFinalIcs:String,nivel:String,leido:Int,favorita:Int,espec:String,noLeido:Int,grados:String,adm:String,grupos:String,rts:String,enviaTodos:String) {
            self.id=id
            self.nombre=nombre
            self.encabezado = encabezado
@@ -43,6 +50,11 @@ class CircularCompleta: NSObject {
            self.favorita = favorita
         self.espec = espec
         self.noLeido = noLeido
+        self.grados = grados
+        self.adm = adm
+        self.grupos = grupos
+        self.rts = rts
+        self.enviaTodos = enviaTodos
        }
     
 }

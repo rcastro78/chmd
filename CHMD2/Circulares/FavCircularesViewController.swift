@@ -242,7 +242,52 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         
         cell.lblTitulo.text? = c.nombre
-        cell.lblPara.text?="Para: \(c.espec)"
+            
+            var nivel:String=""
+            if(c.nivel!.count>0){
+                nivel = "\(c.nivel!) /"
+            }
+            
+            var grados:String=""
+            if(c.grados.count>0){
+                grados = "\(c.grados) /"
+            }
+            
+            var espec:String=""
+            if(c.espec.count>0){
+                espec = "\(c.espec) /"
+            }
+            
+            var adm:String=""
+            if(c.adm.count>0){
+                adm = "\(c.adm) /"
+            }
+            
+            var rts:String=""
+            if(c.rts.count>0){
+                rts = "\(c.rts) /"
+            }
+            
+            var gps:String=""
+            if(c.grupos.count>0){
+                gps = "\(c.grupos) /"
+            }
+            
+            //nivel+grados+espec+adm+rts
+            var para:String = "\(nivel) \(grados) \(espec) \(adm) \(rts)"
+            para = para.trimmingCharacters(in: .whitespacesAndNewlines)
+            para = String(para.dropLast())
+            print("Para: \(para)")
+            if(c.enviaTodos=="1"){
+                para="Todos"
+            }
+            
+            if(c.enviaTodos=="0" && c.espec=="" && c.adm=="" && c.rts=="" && c.nivel!=="" && c.grados==""){
+                para="Personal"
+            }
+            
+            
+        cell.lblPara.text?="Para: \(para)"
             
         cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
        
@@ -431,8 +476,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                    
                                                    }
                                                    let actionCancelar = UIAlertAction(title: "Cancelar", style:.cancel) { (action:UIAlertAction) in
-                                                                 // self.dismiss(animated: true, completion: nil)
-                                                              }
+                                                   }
                                                   
                                                    alertController.addAction(actionLeer)
                                                    alertController.addAction(actionNoLeer)
@@ -766,7 +810,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                  
                  
                 
-                self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales,noLeido:nl))
+                self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales,noLeido:nl,grados: "",adm: "",grupos: "",rts: "",enviaTodos: ""))
                  }
                 
                
@@ -1022,6 +1066,43 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                  }
 
                     
+                    var grados:String?=""
+                    if (obj["grados"] == nil){
+                        grados=""
+                    }else{
+                        grados=obj["grados"] as? String
+                    }
+                    
+                    var grupos:String?=""
+                    if (obj["grupos"] == nil){
+                        grupos=""
+                    }else{
+                        grupos=obj["grupos"] as? String
+                    }
+                    
+                    var adm:String?=""
+                    if (obj["adm"] == nil){
+                        adm=""
+                    }else{
+                        adm=obj["adm"] as? String
+                    }
+                    
+                    var rts:String?=""
+                    if (obj["rts"] == nil){
+                        rts=""
+                    }else{
+                        adm=obj["rts"] as? String
+                    }
+                    
+                    
+                    
+                    var enviaTodos:String?=""
+                    if (obj["envia_todos"] == nil){
+                        enviaTodos=""
+                    }else{
+                        enviaTodos=obj["envia_todos"] as? String
+                    }
+                    
                  var noLeida:Int = 0
                 
                     //leídas
@@ -1063,7 +1144,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                  
                     if(Int(eliminada)!==0){
                      print(titulo)
-                     self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!,noLeido:noLeida))
+                     self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!,noLeido:noLeida,                      grados: grados!,adm: adm!,grupos: grupos!,rts: rts!,enviaTodos: enviaTodos!))
                     }
                    
                     
