@@ -1506,7 +1506,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         if(rts!.count>0){
                             rts = "\(rts!)/"
                         }
-                        
+                        nv=""
                         var para:String = "\(nv!) \(grados!) \(esp!) \(adm!) \(rts!)"
                         para = para.trimmingCharacters(in: .whitespacesAndNewlines)
                         para = String(para.dropLast())
