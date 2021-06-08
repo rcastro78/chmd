@@ -431,7 +431,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
                     }
                     //No leidas
-                    if(tipoCircular==3 || leido==0){
+                    if(tipoCircular==3){
                          self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
                         //Actualizarla en la base de datos
                         self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)

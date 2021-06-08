@@ -187,8 +187,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
           guard let _url = URL(string: address) else { return };
           self.getDataFromURL(url: _url)
-          self.leerCirculares()
-        
+         
+      }else{
+        self.leerCirculares()
       }
     }
     
@@ -988,7 +989,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     func getDataFromURL(url: URL) {
-        print("get data")
+        self.circulares.removeAll()
         print(url)
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
@@ -1142,7 +1143,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                  
                  
                  
-                    if(Int(eliminada)!==0){
+                    if(Int(favorito)==1){
                      print(titulo)
                      self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!,noLeido:noLeida,                      grados: grados!,adm: adm!,grupos: grupos!,rts: rts!,enviaTodos: enviaTodos!))
                     }
