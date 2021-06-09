@@ -597,7 +597,7 @@
                                                     </constraints>
                                                     <state key="normal" title="Button"/>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WQb-KB-gds">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="WQb-KB-gds">
                                                     <rect key="frame" x="48" y="60" width="294" height="17"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="WQb-KB-gds" secondAttribute="height" multiplier="294:17" id="gYi-sb-acc"/>
@@ -1245,10 +1245,10 @@
                                                     </constraints>
                                                     <state key="normal" image="favIcon"/>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ek7-pm-Ju2">
-                                                    <rect key="frame" x="28.000000000000014" y="60.000000000000007" width="238.33333333333337" height="14.333333333333336"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="Ek7-pm-Ju2">
+                                                    <rect key="frame" x="28" y="60.000000000000007" width="358.33333333333331" height="14.333333333333336"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" secondItem="Ek7-pm-Ju2" secondAttribute="height" multiplier="233:14" id="vh1-Tm-gWg"/>
+                                                        <constraint firstAttribute="width" secondItem="Ek7-pm-Ju2" secondAttribute="height" multiplier="233:14" constant="120" id="vh1-Tm-gWg"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="GothamRounded-Medium" family="Gotham Rounded" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.22352941179999999" blue="0.45882352939999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1563,7 +1563,7 @@
                                                     </constraints>
                                                     <state key="normal" image="favIcon"/>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xIE-Kt-ktD">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" id="xIE-Kt-ktD">
                                                     <rect key="frame" x="48" y="58" width="312" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="GothamRounded-Medium" family="Gotham Rounded" pointSize="14"/>
@@ -1825,8 +1825,8 @@
                                                     </constraints>
                                                     <state key="normal" image="favIcon"/>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Wco-r5-1t7">
-                                                    <rect key="frame" x="28" y="59" width="236" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Para:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" id="Wco-r5-1t7">
+                                                    <rect key="frame" x="28" y="59" width="353" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="GothamRounded-Medium" family="Gotham Rounded" pointSize="14"/>
                                                     <color key="textColor" red="0.0" green="0.22352941179999999" blue="0.45882352939999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2152,7 +2152,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Rfy-LS-0qo"/>
-        <segue reference="mG6-9K-z2c"/>
+        <segue reference="1CB-74-YjN"/>
         <segue reference="xjp-Eu-iMj"/>
     </inferredMetricsTieBreakers>
     <resources>
