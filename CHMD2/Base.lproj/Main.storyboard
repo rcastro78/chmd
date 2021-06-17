@@ -896,10 +896,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ecW-Ow-juS">
-                                <rect key="frame" x="16" y="143" width="358" height="652"/>
+                                <rect key="frame" x="0.0" y="143" width="390" height="652"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="ecW-Ow-juS" secondAttribute="height" multiplier="343:594" constant="-18.491582491582506" id="PCo-ii-KtF"/>
+                                    <constraint firstAttribute="width" secondItem="ecW-Ow-juS" secondAttribute="height" multiplier="343:594" constant="13.508417508417494" id="PCo-ii-KtF"/>
                                 </constraints>
                                 <wkWebViewConfiguration key="configuration">
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
@@ -1104,10 +1104,10 @@
                                 </constraints>
                             </stackView>
                             <textView clipsSubviews="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="QEL-Y4-hLX">
-                                <rect key="frame" x="16" y="175" width="358" height="635"/>
+                                <rect key="frame" x="0.0" y="148" width="390" height="662"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="635" id="HJE-Er-62H"/>
+                                    <constraint firstAttribute="height" constant="662" id="HJE-Er-62H"/>
                                 </constraints>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1123,12 +1123,12 @@
                             <constraint firstItem="QEL-Y4-hLX" firstAttribute="bottom" secondItem="ecW-Ow-juS" secondAttribute="bottom" constant="15" id="LtF-Mj-w3K"/>
                             <constraint firstItem="SIp-IZ-B7o" firstAttribute="leading" secondItem="wZn-RL-l1S" secondAttribute="leadingMargin" constant="-35" id="So7-1C-wdw"/>
                             <constraint firstItem="ecW-Ow-juS" firstAttribute="top" secondItem="SIp-IZ-B7o" secondAttribute="bottom" constant="3" id="TNi-Ne-EcM"/>
-                            <constraint firstItem="ecW-Ow-juS" firstAttribute="leading" secondItem="F1g-zB-akU" secondAttribute="leading" constant="16" id="YiE-1J-XDN"/>
+                            <constraint firstItem="ecW-Ow-juS" firstAttribute="leading" secondItem="F1g-zB-akU" secondAttribute="leading" id="YiE-1J-XDN"/>
                             <constraint firstItem="QEL-Y4-hLX" firstAttribute="leading" secondItem="ecW-Ow-juS" secondAttribute="leading" id="htF-yu-ppf"/>
                             <constraint firstItem="ecW-Ow-juS" firstAttribute="bottom" secondItem="F1g-zB-akU" secondAttribute="bottom" constant="-15" id="jju-8v-lry"/>
-                            <constraint firstItem="QEL-Y4-hLX" firstAttribute="top" secondItem="bBb-Qk-Wag" secondAttribute="top" constant="-5" id="tGx-6Q-tWS"/>
+                            <constraint firstItem="QEL-Y4-hLX" firstAttribute="top" secondItem="bBb-Qk-Wag" secondAttribute="top" constant="-32" id="tGx-6Q-tWS"/>
                             <constraint firstItem="SIp-IZ-B7o" firstAttribute="centerX" secondItem="QEL-Y4-hLX" secondAttribute="centerX" id="vKz-ky-bFG"/>
-                            <constraint firstItem="QEL-Y4-hLX" firstAttribute="trailing" secondItem="bBb-Qk-Wag" secondAttribute="trailing" id="zOb-5v-h8C"/>
+                            <constraint firstItem="QEL-Y4-hLX" firstAttribute="trailing" secondItem="bBb-Qk-Wag" secondAttribute="trailing" constant="16" id="zOb-5v-h8C"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="vdY-JI-i9v">
@@ -1164,7 +1164,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="chA-tY-zFH" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="3dG-yC-7hN" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="8963.076923076922" y="-126.54028436018957"/>
+            <point key="canvasLocation" x="8961.538461538461" y="-126.54028436018957"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="oLl-2L-fEl">

@@ -380,8 +380,6 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         //El trailingSwipe es para manejar el swipe de derecha a izquierda
         func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
             let eliminaAction = self.contextualDelAction(forRowAtIndexPath: indexPath)
-            //let leeAction = self.contextualReadAction(forRowAtIndexPath: indexPath)
-            //let noleeAction = self.contextualUnreadAction(forRowAtIndexPath: indexPath)
              let masAction = self.contextualMasAction(forRowAtIndexPath: indexPath)
             let swipeConfig = UISwipeActionsConfiguration(actions: [eliminaAction,masAction])
             return swipeConfig
@@ -742,7 +740,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                    //let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appNotificacionCHMD WHERE leida=0 AND eliminada=0"
             
             //let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=0 AND tipo=2"
-            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE tipo=2"
+            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE tipo=2 and eliminada=0"
             var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!
@@ -1249,7 +1247,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                         
                        
                         
-                           if(Int(favorito)==0){
+                           if(Int(eliminada)==0 ){
                             self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:0,favorita:Int(favorito)!,espec:esp!,noLeido:1,
                                                                     grados: grados!,adm: adm!,grupos: grupos!,rts: rts!,enviaTodos: enviaTodos!))
                             
