@@ -4331,21 +4331,17 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     }
     
     
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == WKNavigationType.linkActivated {
         print("link")
                self.btnRecargar.isEnabled=true
                self.btnRecargar.tintColor = UIColor.white
-               decisionHandler(WKNavigationActionPolicy.allow)
+            decisionHandler(WKNavigationActionPolicy.allow)
                return
         }else{
-           print("no link")
-            self.btnRecargar.isEnabled=false
-            self.btnRecargar.tintColor = UIColor.clear
-           decisionHandler(WKNavigationActionPolicy.allow)
+        decisionHandler(WKNavigationActionPolicy.allow)
         }
-        
-       
     
     }
 }

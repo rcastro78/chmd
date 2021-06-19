@@ -650,7 +650,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="97.666666666666671" height="59"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Leídas" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MR2-NH-7fh">
-                                                <rect key="frame" x="22.000000000000004" y="41" width="59.333333333333343" height="8.6666666666666643"/>
+                                                <rect key="frame" x="22.000000000000004" y="38" width="59.333333333333343" height="8.6666666666666643"/>
                                                 <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="10"/>
                                                 <color key="textColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -669,8 +669,8 @@
                                         <constraints>
                                             <constraint firstItem="MR2-NH-7fh" firstAttribute="centerX" secondItem="GtP-yF-ZmS" secondAttribute="centerX" constant="0.5" id="3Tx-LV-aqe"/>
                                             <constraint firstItem="GtP-yF-ZmS" firstAttribute="top" secondItem="jJr-Iv-Y74" secondAttribute="topMargin" constant="-8" id="7jp-vQ-5U6"/>
-                                            <constraint firstAttribute="bottom" secondItem="MR2-NH-7fh" secondAttribute="bottom" constant="9.3333333333333286" id="OWQ-U3-twk"/>
-                                            <constraint firstItem="MR2-NH-7fh" firstAttribute="top" secondItem="GtP-yF-ZmS" secondAttribute="bottom" constant="5" id="Unz-g6-OPH"/>
+                                            <constraint firstAttribute="bottom" secondItem="MR2-NH-7fh" secondAttribute="bottom" constant="12.333333333333336" id="OWQ-U3-twk"/>
+                                            <constraint firstItem="MR2-NH-7fh" firstAttribute="top" secondItem="GtP-yF-ZmS" secondAttribute="bottom" constant="2" id="Unz-g6-OPH"/>
                                             <constraint firstItem="MR2-NH-7fh" firstAttribute="leading" secondItem="jJr-Iv-Y74" secondAttribute="leading" constant="22" id="mOB-bG-0Gf"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="GtP-yF-ZmS" secondAttribute="trailing" constant="20.333333333333329" id="vag-yy-q9J"/>
                                         </constraints>
@@ -710,7 +710,7 @@
                                         <rect key="frame" x="195" y="0.0" width="97.666666666666686" height="59"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favoritas" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="az8-SP-MtS">
-                                                <rect key="frame" x="16.999999999999996" y="40" width="61.666666666666657" height="9.6666666666666643"/>
+                                                <rect key="frame" x="16.999999999999996" y="38" width="61.666666666666657" height="9.6666666666666643"/>
                                                 <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="10"/>
                                                 <color key="textColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -729,9 +729,9 @@
                                         <constraints>
                                             <constraint firstItem="eNo-04-Auc" firstAttribute="top" secondItem="NdM-yD-LPI" secondAttribute="top" id="3NE-Vz-dji"/>
                                             <constraint firstAttribute="trailing" secondItem="eNo-04-Auc" secondAttribute="trailing" constant="31.666666666666686" id="Hbz-UA-xUm"/>
-                                            <constraint firstAttribute="bottom" secondItem="az8-SP-MtS" secondAttribute="bottom" constant="9.3333333333333286" id="PVw-GA-fib"/>
+                                            <constraint firstAttribute="bottom" secondItem="az8-SP-MtS" secondAttribute="bottom" constant="11.333333333333336" id="PVw-GA-fib"/>
                                             <constraint firstItem="az8-SP-MtS" firstAttribute="leading" secondItem="NdM-yD-LPI" secondAttribute="leading" constant="17" id="Q4s-zo-tRn"/>
-                                            <constraint firstItem="az8-SP-MtS" firstAttribute="top" secondItem="NdM-yD-LPI" secondAttribute="top" constant="40" id="dQi-Tu-pgp"/>
+                                            <constraint firstItem="az8-SP-MtS" firstAttribute="top" secondItem="NdM-yD-LPI" secondAttribute="top" constant="38" id="dQi-Tu-pgp"/>
                                             <constraint firstItem="az8-SP-MtS" firstAttribute="centerX" secondItem="eNo-04-Auc" secondAttribute="centerX" id="ouP-LT-XNt"/>
                                         </constraints>
                                     </view>
@@ -1931,16 +1931,16 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ZZ-0Z-Ynw">
                                         <rect key="frame" x="260" y="0.0" width="130" height="65"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="25e-fY-Tgz">
-                                                <rect key="frame" x="51" y="8" width="28" height="32"/>
-                                                <state key="normal" image="appmenu06"/>
-                                            </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favoritas" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SSU-DH-OPP">
                                                 <rect key="frame" x="25" y="44" width="80" height="10.666666666666664"/>
                                                 <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="10"/>
                                                 <color key="textColor" red="0.0" green="0.31764705879999999" blue="0.53725490200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="25e-fY-Tgz">
+                                                <rect key="frame" x="49" y="8" width="32" height="32"/>
+                                                <state key="normal" image="appmenu06"/>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
@@ -1948,7 +1948,7 @@
                                             <constraint firstItem="SSU-DH-OPP" firstAttribute="top" secondItem="6ZZ-0Z-Ynw" secondAttribute="top" constant="44" id="JBr-VE-sat"/>
                                             <constraint firstAttribute="bottom" secondItem="25e-fY-Tgz" secondAttribute="bottom" constant="25" id="fpt-OE-AeE"/>
                                             <constraint firstItem="25e-fY-Tgz" firstAttribute="top" secondItem="6ZZ-0Z-Ynw" secondAttribute="top" constant="8" id="fyL-bf-Y7c"/>
-                                            <constraint firstItem="25e-fY-Tgz" firstAttribute="leading" secondItem="6ZZ-0Z-Ynw" secondAttribute="leading" constant="51" id="hVI-WY-7uL"/>
+                                            <constraint firstItem="25e-fY-Tgz" firstAttribute="leading" secondItem="6ZZ-0Z-Ynw" secondAttribute="leading" constant="49" id="hVI-WY-7uL"/>
                                             <constraint firstAttribute="bottom" secondItem="SSU-DH-OPP" secondAttribute="bottom" constant="10.333333333333336" id="j98-jF-lNW"/>
                                             <constraint firstItem="25e-fY-Tgz" firstAttribute="centerX" secondItem="6ZZ-0Z-Ynw" secondAttribute="centerX" id="nDM-re-QLk"/>
                                             <constraint firstItem="25e-fY-Tgz" firstAttribute="centerX" secondItem="SSU-DH-OPP" secondAttribute="centerX" id="r5O-dw-OKK"/>
