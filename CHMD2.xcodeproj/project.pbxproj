@@ -30,6 +30,7 @@
 		53FFC05E2440FBFA00F87F30 /* TodasCircularesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FFC05D2440FBFA00F87F30 /* TodasCircularesViewController.swift */; };
 		6EA576C6FA7C6FD915052216 /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11E7104BB344CB6EADC85E6A /* Pods_CHMD2.framework */; };
 		C84ECE5E25CA5CD20089DFDD /* CircularCompleta.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84ECE5D25CA5CD10089DFDD /* CircularCompleta.swift */; };
+		C8DEE71A2687DF38005E3FDD /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DEE7192687DF37005E3FDD /* PDFViewController.swift */; };
 		E0090AED22EBE92B00BC236C /* CircularesLeidasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */; };
 		E0090AF322EBEC8F00BC236C /* CircularesCompTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AF222EBEC8F00BC236C /* CircularesCompTableViewController.swift */; };
 		E0090AF522EBF5A500BC236C /* CircularDetalleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0090AF422EBF5A500BC236C /* CircularDetalleViewController.swift */; };
@@ -81,6 +82,7 @@
 		651BACF15838729AA6F8981C /* Pods-CHMD2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.release.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.release.xcconfig"; sourceTree = "<group>"; };
 		922FA5420D1E5626B0647563 /* Pods-CHMD2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.debug.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.debug.xcconfig"; sourceTree = "<group>"; };
 		C84ECE5D25CA5CD10089DFDD /* CircularCompleta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularCompleta.swift; sourceTree = "<group>"; };
+		C8DEE7192687DF37005E3FDD /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
 		E0090AEC22EBE92B00BC236C /* CircularesLeidasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesLeidasTableViewController.swift; sourceTree = "<group>"; };
 		E0090AF222EBEC8F00BC236C /* CircularesCompTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularesCompTableViewController.swift; sourceTree = "<group>"; };
 		E0090AF422EBF5A500BC236C /* CircularDetalleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularDetalleViewController.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 				531AF3742442888F000E0282 /* NoLeidasCircularesViewController.swift */,
 				5397ED822442939A009E3588 /* PapeleraViewController.swift */,
 				53BFA86724D8CB86003891B9 /* NotificacionTableViewController.swift */,
+				C8DEE7192687DF37005E3FDD /* PDFViewController.swift */,
 			);
 			path = Circulares;
 			sourceTree = "<group>";
@@ -499,6 +502,7 @@
 				E0B1E48322E7FB4000CD8EE6 /* CircularTodas.swift in Sources */,
 				5302F87D24422A29000B3167 /* CHMDValidarCorreoViewController.swift in Sources */,
 				E0090AED22EBE92B00BC236C /* CircularesLeidasTableViewController.swift in Sources */,
+				C8DEE71A2687DF38005E3FDD /* PDFViewController.swift in Sources */,
 				53BFA86824D8CB86003891B9 /* NotificacionTableViewController.swift in Sources */,
 				C84ECE5E25CA5CD20089DFDD /* CircularCompleta.swift in Sources */,
 				E06577A522D146A90089A05A /* PrincipalTableViewCell.swift in Sources */,
@@ -654,14 +658,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -680,14 +684,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				SWIFT_COMPILATION_MODE = wholemodule;

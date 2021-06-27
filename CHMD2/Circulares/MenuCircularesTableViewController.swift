@@ -191,7 +191,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and eliminada=0 and favorita=0"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and eliminada=0 and favorita=0 and tipo=1"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -295,9 +295,6 @@ class MenuCircularesTableViewController: UITableViewController {
             }
             
             
-           
-            
-            
         }
         if(m.id==2){
             
@@ -350,7 +347,7 @@ class MenuCircularesTableViewController: UITableViewController {
             if(self.contarNotificaciones()>10){
                 cell.lblConteo.text="10+"
             }else{
-                if(self.contarCircularesEliminadas()>0){
+                if(self.contarNotificaciones()>0){
                     cell.lblConteo.text="\(self.contarNotificaciones())"
                     cell.lblConteo.backgroundColor = .blue
                 }else{

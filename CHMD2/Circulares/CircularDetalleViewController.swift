@@ -418,6 +418,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     
                     //Todas
                     if(tipoCircular==1){
+                        
+                        
+                        self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
+                       //Actualizarla en la base de datos
+                       self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                        
+                        
                        let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                             let _url = URL(string: address);
                         self.obtenerCirculares2(uri:address)
@@ -4334,6 +4341,42 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == WKNavigationType.linkActivated {
+            
+            let docUrl = URL(string:navigationAction.request.url!.absoluteString)!
+            recursoRemoto(at: docUrl, isOneOf: [.pdf]) { (result) in
+                UserDefaults.standard.setValue(navigationAction.request.url!.absoluteString, forKey: "docUrl")
+                DispatchQueue.main.async{
+                    //self.performSegue(withIdentifier: "pdfSegue", sender: self)
+                    
+                    if UIPrintInteractionController.canPrint(docUrl) {
+                        let printInfo = UIPrintInfo(dictionary: nil)
+                                        printInfo.jobName = docUrl.lastPathComponent
+                                        printInfo.outputType = .general
+                                        let printController = UIPrintInteractionController.shared
+                                        printController.printInfo = printInfo
+                                        printController.showsNumberOfCopies = false
+                                        printController.printingItem = docUrl
+                                        printController.present(animated: true, completionHandler: nil)
+                    }
+                    
+                    
+                }
+               
+                //Detecta que es pdf
+                /*if UIPrintInteractionController.canPrint(docUrl) {
+                    let printInfo = UIPrintInfo(dictionary: nil)
+                                    printInfo.jobName = docUrl.lastPathComponent
+                                    printInfo.outputType = .general
+                                    let printController = UIPrintInteractionController.shared
+                                    printController.printInfo = printInfo
+                                    printController.showsNumberOfCopies = false
+                                    printController.printingItem = docUrl
+                                    printController.present(animated: true, completionHandler: nil)
+                }*/
+            }
+
+            
+            
         print("link")
                self.btnRecargar.isEnabled=true
                self.btnRecargar.tintColor = UIColor.white
@@ -4344,6 +4387,34 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         }
     
     }
+    
+    //Funcion para determinar si el contenido es pdf
+    enum MimeType: String {
+        case jpeg = "image/jpeg"
+        case png = "image/png"
+        case pdf = "application/pdf"
+    }
+
+    func recursoRemoto(at url: URL, isOneOf types: [MimeType], completion: @escaping ((Bool) -> Void)) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200, let mimeType = response.mimeType else {
+                completion(false)
+                return
+            }
+            if types.map({ $0.rawValue }).contains(mimeType) {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }
+        task.resume()
+    }
+    
+    
+    
+    
 }
 
     
