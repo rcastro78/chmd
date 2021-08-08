@@ -46,15 +46,73 @@ extension Date {
 
 extension ViewController: ASAuthorizationControllerDelegate {
      // ASAuthorizationControllerDelegate function for authorization failed
-     
     @available(iOS 13.0, *)
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        print(error.localizedDescription)
-}
+        func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+            print(error.localizedDescription)
+        }
+
+
+        // Authorization Succeeded
+        @available(iOS 13.0, *)
+        func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+                // Get user data with Apple ID credentitial
+                let userId = appleIDCredential.user
+                let userFirstName = appleIDCredential.fullName?.givenName
+                let userLastName = appleIDCredential.fullName?.familyName
+                let userEmail = appleIDCredential.email
+                print("User ID: \(userId)")
+                print("User First Name: \(userFirstName ?? "")")
+                print("User Last Name: \(userLastName ?? "")")
+                print("User Email: \(userEmail ?? "")")
+                
+                
+                let appleId = appleIDCredential.user
+                let appleUserFirstName = appleIDCredential.fullName?.givenName
+                _ = appleIDCredential.fullName?.familyName
+                _ = appleIDCredential.email
+                
+                if(appleIDCredential.email! != nil){
+                    UserDefaults.standard.set(appleUserFirstName!, forKey: "nombre")
+                    UserDefaults.standard.set(appleId, forKey: "appleId")
+                    UserDefaults.standard.set(appleIDCredential.email!, forKey: "email")
+                    UserDefaults.standard.set(1,forKey: "autenticado")
+                    UserDefaults.standard.set(1,forKey: "cuentaValida")
+                    UserDefaults.standard.set(1,forKey: "manzana")
+                    performSegue(withIdentifier: "inicioSegue", sender: self)
+                }else{
+                    var alert = UIAlertView(title: "Aviso", message: "Debes compartir tu dirección de correo para que podamos validar tu cuenta en nuestro sistema", delegate: nil, cancelButtonTitle: "Aceptar")
+                               alert.show()
+                    
+                        
+                        
+                }
+                //Revisar que el correo exista en el server del colegio
+               
+                
+                
+                
+                
+                
+                // Write your code here
+            } else if let passwordCredential = authorization.credential as? ASPasswordCredential {
+                // Get user data using an existing iCloud Keychain credential
+                let appleUsername = passwordCredential.user
+                let applePassword = passwordCredential.password
+                // Write your code here
+            }
+        }
+   
+    
+    
+    
+    
+    
+    
     
        // ASAuthorizationControllerDelegate function for successful authorization
   
-    @available(iOS 13.0, *)
+    /*@available(iOS 13.0, *)
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
   
     if #available(iOS 13.0, *) {
@@ -87,7 +145,7 @@ extension ViewController: ASAuthorizationControllerDelegate {
     } else {
         // Fallback on earlier versions
     }
-   }
+   }*/
 }
 
 extension ViewController:
@@ -290,6 +348,23 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     }
     
     
+    //funciones de Apple 08/08/2021
+    @objc func actionHandleAppleSignin() {
+            if #available(iOS 13.0, *) {
+                let appleIDProvider = ASAuthorizationAppleIDProvider()
+                let request = appleIDProvider.createRequest()
+                request.requestedScopes = [.fullName, .email]
+                let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+                authorizationController.delegate = self
+                authorizationController.presentationContextProvider = self
+                authorizationController.performRequests()
+            }
+        }
+    
+   
+    
+    
+    
     
     @objc func playerItemDidReachEnd(notification: NSNotification) {
         let p: AVPlayerItem = notification.object as! AVPlayerItem
@@ -340,10 +415,6 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             //Esta función maneja el login via Apple
             actionHandleAppleSignin()
             
-            /*let alert = UIAlertController(title: "CHMD", message: "Esta opción estará disponible muy pronto", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Cerrar", style: .cancel, handler: nil))
-            self.present(alert, animated: true)*/
-            
             
         }else{
             let alert = UIAlertController(title: "CHMD", message: "Esta opción sólo está disponible a partir de iOS 13", preferredStyle: .alert)
@@ -371,15 +442,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             customAppleLoginBtn.imageEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
             customAppleLoginBtn.addTarget(self, action: #selector(actionHandleAppleSignin), for: .touchUpInside)
             customAppleLoginBtn.frame = CGRect(x: 140, y: 700, width: 96, height: 96)
-            //self.view.addSubview(customAppleLoginBtn)
-            // Setup Layout Constraints to be in the center of the screen
-            /*customAppleLoginBtn.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                customAppleLoginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                customAppleLoginBtn.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-                customAppleLoginBtn.widthAnchor.constraint(equalToConstant: 200),
-                customAppleLoginBtn.heightAnchor.constraint(equalToConstant: 40)
-                ])*/
+           
         }
         
     }
@@ -398,30 +461,31 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
           
     }
     
-    @objc func actionHandleAppleSignin() {
- if #available(iOS 13.0, *) {
-            let appleIDProvider = ASAuthorizationAppleIDProvider()
-            let request = appleIDProvider.createRequest()
-            request.requestedScopes = [.fullName, .email]
-            let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-            authorizationController.delegate = self
-    authorizationController.presentationContextProvider = self as ASAuthorizationControllerPresentationContextProviding
-            authorizationController.performRequests()
-    
+    func getCredentialState() {
+        if #available(iOS 13.0, *) {
+           let appleIDProvider = ASAuthorizationAppleIDProvider()
+           appleIDProvider.getCredentialState(forUserID: "USER_ID") { (credentialState, error) in
+               switch credentialState {
+               case .authorized:
+                   // Credential is valid
+                   // Continiue to show 'User's Profile' Screen
+                   break
+               case .revoked:
+                   // Credential is revoked.
+                   // Show 'Sign In' Screen
+                   break
+               case .notFound:
+                   // Credential not found.
+                   // Show 'Sign In' Screen
+                   break
+               default:
+                   break
+               }
+           }
             
-    
-    /*
-     
-     UserDefaults.standard.set(1,forKey: "autenticado")
-                UserDefaults.standard.set(nombre, forKey: "nombre")
-                UserDefaults.standard.set(email, forKey: "email")
-               
-     
-     */
-    
-
         }
-    }
+       }
+
     
     
     //Se ocupara solo para iOS

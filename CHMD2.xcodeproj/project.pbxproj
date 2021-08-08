@@ -150,6 +150,7 @@
 		53AB8079239C915D0073833F /* Utilerias */ = {
 			isa = PBXGroup;
 			children = (
+				E0F7AD0A2356A00D002ECB1B /* Padres */,
 				53AB807A239C91AC0073833F /* ConexionRed.swift */,
 				53DA15A623F24B2F006D3553 /* SignInWithApple.swift */,
 				5321DB79242FC5D80027FCA7 /* CheckBox.swift */,
@@ -200,7 +201,6 @@
 				53ACC4942449145800BA64BF /* GoogleService-Info.plist */,
 				530EC2C623D407D600A8BDBD /* Notificaciones */,
 				53AB8079239C915D0073833F /* Utilerias */,
-				E0F7AD0A2356A00D002ECB1B /* Padres */,
 				E0DCF68A230E2FAC00F5624B /* CHMD2.entitlements */,
 				E0E8293A230CD9DB005D5A6D /* resources */,
 				E06577AC22D14DAB0089A05A /* Alumnos */,
@@ -658,14 +658,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -684,14 +684,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				SWIFT_COMPILATION_MODE = wholemodule;
