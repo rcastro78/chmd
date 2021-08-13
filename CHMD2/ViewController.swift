@@ -83,8 +83,6 @@ extension ViewController: ASAuthorizationControllerDelegate {
                 }else{
                     var alert = UIAlertView(title: "Aviso", message: "Debes compartir tu dirección de correo para que podamos validar tu cuenta en nuestro sistema", delegate: nil, cancelButtonTitle: "Aceptar")
                                alert.show()
-                    
-                        
                         
                 }
                 //Revisar que el correo exista en el server del colegio
@@ -350,7 +348,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     
     //funciones de Apple 08/08/2021
     @objc func actionHandleAppleSignin() {
-            if #available(iOS 13.0, *) {
+            if #available(iOS 14.0, *) {
                 let appleIDProvider = ASAuthorizationAppleIDProvider()
                 let request = appleIDProvider.createRequest()
                 request.requestedScopes = [.fullName, .email]
@@ -411,7 +409,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     
     
     @IBAction func appleLogin(_ sender: UIButton) {
-        if #available(iOS 13.0, *){
+        if #available(iOS 14.0, *){
             //Esta función maneja el login via Apple
             actionHandleAppleSignin()
             
@@ -430,7 +428,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
 
     
     func appleCustomLoginButton() {
-    if #available(iOS 13.0, *) {
+    if #available(iOS 14.0, *) {
             let customAppleLoginBtn = UIButton()
             customAppleLoginBtn.layer.cornerRadius = 80.0
             customAppleLoginBtn.layer.borderWidth = 0.0
@@ -449,7 +447,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     
     
     func setupSOAppleSignIn() {
-        if #available(iOS 13.0, *) {
+        if #available(iOS 14.0, *) {
                     let btnAuthorization = ASAuthorizationAppleIDButton()
                     btnAuthorization.frame = CGRect(x: 180, y: 20, width: 200, height: 40)
                     btnAuthorization.center = self.view.center
@@ -462,7 +460,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     }
     
     func getCredentialState() {
-        if #available(iOS 13.0, *) {
+        if #available(iOS 14.0, *) {
            let appleIDProvider = ASAuthorizationAppleIDProvider()
            appleIDProvider.getCredentialState(forUserID: "USER_ID") { (credentialState, error) in
                switch credentialState {
