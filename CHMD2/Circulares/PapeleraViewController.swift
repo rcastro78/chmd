@@ -283,8 +283,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
        
        cell.btnHacerFav.addTarget(self, action: #selector(hacerFavorita), for: .touchUpInside)
         
-         if(c.fecha != "")
-         {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            if(c.fecha.contains(":"))
+            //if(df.date(from: c.fecha) != nil)
+            {
                 let dateFormatter = DateFormatter()
                                         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                                         dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
@@ -746,7 +749,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
         let cell = tableView.cellForRow(at: indexPath)
             cell?.selectionStyle = .none
-        UserDefaults.standard.set(indexPath.row,forKey:"posicion")
+        /*UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
@@ -758,6 +761,31 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(4, forKey: "tipoCircular")
             UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
+            UserDefaults.standard.set(0, forKey: "clickeado")*/
+                
+                
+                UserDefaults.standard.set(indexPath.row,forKey:"posicion")
+                UserDefaults.standard.set(c.id,forKey:"id")
+                print("CIRCULAR_ID \(c.id)")
+                UserDefaults.standard.set(c.nombre,forKey:"nombre")
+                UserDefaults.standard.set(c.fecha,forKey:"fecha")
+                UserDefaults.standard.set(c.contenido,forKey:"contenido")
+                UserDefaults.standard.set(c.fechaIcs,forKey:"fechaIcs")
+                UserDefaults.standard.set(c.horaInicialIcs,forKey:"horaInicialIcs")
+                UserDefaults.standard.set(c.horaFinalIcs,forKey:"horaFinalIcs")
+                UserDefaults.standard.set(c.nivel,forKey:"nivel")
+                UserDefaults.standard.set(0, forKey: "viaNotif")
+                UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
+                UserDefaults.standard.set(4, forKey: "tipoCircular")
+                UserDefaults.standard.set(0, forKey: "clickeado")
+                UserDefaults.standard.set(c.favorita, forKey: "circFav")
+                //self.actualizaLeidosCirculares(idCircular: c.id, idUsuario: Int(self.idUsuario)!)
+                                                               
+                print("selected leido -> \(c.leido) selected no leido -> \(c.noLeido)")
+                
+                
+                
+                
             performSegue(withIdentifier: "CircularEliminadaSegue", sender:self)
             }
         }else{
@@ -790,7 +818,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
      */
     
-       let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE eliminada=1 AND tipo=1"
+       let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE eliminada=1 AND tipo=1  ORDER BY idCircular DESC"
        var queryStatement: OpaquePointer? = nil
     var imagen:UIImage
     imagen = UIImage.init(named: "appmenu05")!

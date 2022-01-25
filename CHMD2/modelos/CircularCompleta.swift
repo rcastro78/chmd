@@ -31,7 +31,7 @@ class CircularCompleta: NSObject {
     var grupos:String
     var rts:String
     var enviaTodos:String
-    
+ 
    
     init(id:Int,imagen:UIImage,encabezado:String,nombre:String,fecha:String,estado:Int,contenido:String, adjunto:Int,fechaIcs:String,horaInicialIcs:String,horaFinalIcs:String,nivel:String,leido:Int,favorita:Int,espec:String,noLeido:Int,grados:String,adm:String,grupos:String,rts:String,enviaTodos:String) {
            self.id=id

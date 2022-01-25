@@ -11,8 +11,8 @@ import AVFoundation
 import GoogleSignIn
 import SQLite3
 import AuthenticationServices
-
-
+import Alamofire
+import Firebase
 extension UIImageView {
     func cargar(url: URL) {
         DispatchQueue.global().async { [weak self] in
@@ -51,40 +51,68 @@ extension ViewController: ASAuthorizationControllerDelegate {
             print(error.localizedDescription)
         }
 
+    
+    
+    
 
         // Authorization Succeeded
         @available(iOS 13.0, *)
         func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
             if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
                 // Get user data with Apple ID credentitial
-                let userId = appleIDCredential.user
-                let userFirstName = appleIDCredential.fullName?.givenName
-                let userLastName = appleIDCredential.fullName?.familyName
-                let userEmail = appleIDCredential.email
-                print("User ID: \(userId)")
-                print("User First Name: \(userFirstName ?? "")")
-                print("User Last Name: \(userLastName ?? "")")
-                print("User Email: \(userEmail ?? "")")
+                let emailValidado = UserDefaults.standard.string(forKey:"emailApple")
                 
-                
-                let appleId = appleIDCredential.user
-                let appleUserFirstName = appleIDCredential.fullName?.givenName
-                _ = appleIDCredential.fullName?.familyName
-                _ = appleIDCredential.email
-                
-                if(appleIDCredential.email! != nil){
-                    UserDefaults.standard.set(appleUserFirstName!, forKey: "nombre")
-                    UserDefaults.standard.set(appleId, forKey: "appleId")
-                    UserDefaults.standard.set(appleIDCredential.email!, forKey: "email")
-                    UserDefaults.standard.set(1,forKey: "autenticado")
-                    UserDefaults.standard.set(1,forKey: "cuentaValida")
-                    UserDefaults.standard.set(1,forKey: "manzana")
-                    performSegue(withIdentifier: "inicioSegue", sender: self)
-                }else{
-                    var alert = UIAlertView(title: "Aviso", message: "Debes compartir tu dirección de correo para que podamos validar tu cuenta en nuestro sistema", delegate: nil, cancelButtonTitle: "Aceptar")
-                               alert.show()
+                if(emailValidado == nil){
+                    let userId = appleIDCredential.user
+                    let userFirstName = appleIDCredential.fullName?.givenName
+                    let userLastName = appleIDCredential.fullName?.familyName
+                    let userEmail = appleIDCredential.email
+                    //obtenerDatosUsuario(uri:base_url+get_usuario+"?correo="+userEmail!)
+                    
+                    print("User ID: \(userId)")
+                    print("User First Name: \(userFirstName ?? "")")
+                    print("User Last Name: \(userLastName ?? "")")
+                    print("User Email: \(userEmail ?? "")")
+                    
+                    
+                    let appleId = appleIDCredential.user
+                    let appleUserFirstName = appleIDCredential.fullName?.givenName
+                    _ = appleIDCredential.fullName?.familyName
+                    _ = appleIDCredential.email
+                    
+                    
+                        UserDefaults.standard.set(userFirstName, forKey: "nombre")
+                       UserDefaults.standard.set(userLastName, forKey: "apellido")
+                        UserDefaults.standard.set(appleId, forKey: "appleId")
+                        UserDefaults.standard.set(userEmail, forKey: "email")
+                        UserDefaults.standard.set(userEmail, forKey: "emailApple")
+                        UserDefaults.standard.set(1,forKey: "autenticado")
+                        UserDefaults.standard.set(1,forKey: "cuentaValida")
+                        UserDefaults.standard.set(1,forKey: "manzana")
+                        performSegue(withIdentifier: "inicioSegue", sender: self)
+                    
+                    
+                    
                         
+                }else{
+                    performSegue(withIdentifier: "inicioSegue", sender: self)
                 }
+                
+                let cuentaValida = UserDefaults.standard.integer(forKey:"cuentaValida")
+                if(cuentaValida==1){
+                    
+                    print("User ID: \(UserDefaults.standard.string(forKey:"appleId"))")
+                    print("User First Name: \(UserDefaults.standard.string(forKey:"nombre") ?? "")")
+                    print("User Last Name: \(UserDefaults.standard.string(forKey:"apellido") ?? "")")
+                    print("User Email: \(UserDefaults.standard.string(forKey:"email") ?? "")")
+                    
+                    
+                }
+                //}else{
+               //     var alert = UIAlertView(title: "Aviso", message: "Debes compartir tu dirección de correo para que podamos validar tu cuenta en nuestro sistema", delegate: nil, cancelButtonTitle: "Aceptar")
+                //               alert.show()
+                        
+                //}
                 //Revisar que el correo exista en el server del colegio
                
                 
@@ -212,6 +240,8 @@ extension UIImageView {
 }
 
 
+
+
 class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         if error != nil {
@@ -226,7 +256,11 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     var avPlayerLayer:AVPlayerLayer!
     var paused:Bool = false
     var db: OpaquePointer?
-    
+    let base_url_foto:String="http://chmd.chmd.edu.mx:65083/CREDENCIALES/padres/"
+    let base_url:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/";
+    let get_usuario:String="getUsuarioEmail.php";
+    var resp = [Responsable]()
+    var email:String=""
     @IBOutlet weak var btnAppleLogin: UIButton!
     @IBOutlet weak var signInButton: GIDSignInButton!
     override func viewDidLoad() {
@@ -288,24 +322,37 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel
          */
         
-        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircularCHMD(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT, especiales TEXT, tipo INTEGER)"
+        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircularCHMD(idCircular INTEGER NOT NULL PRIMARY KEY, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT, especiales TEXT, tipo INTEGER)"
         if sqlite3_exec(db, crearTablaCirculares, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las circulares")
         }else{
            print("creada la tabla de las circulares")
         }
         
-        let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacionCHMD(idCircular INTEGER, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
+        let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacionCHMD(idCircular INTEGER NOT NULL PRIMARY KEY, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
         if sqlite3_exec(db, crearTablaNotificaciones, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las notificaciones")
         }else{
            print("creada la tabla de las notificaciones")
         }
         
+        
+        let crearTablaUsuarios="CREATE TABLE IF NOT EXISTS Usuario(idUsuario TEXT, email TEXT,fotoUrl TEXT)"
+        if sqlite3_exec(db, crearTablaUsuarios, nil, nil, nil) != SQLITE_OK {
+            print("Error creando la tabla de usuarios")
+        }else{
+           print("creada la tabla de las usuarios")
+        }
+        
+        
          //self.setupSOAppleSignIn()
         self.appleCustomLoginButton()
        
     }
+    
+    
+   
+
     
     
     @IBAction func googleSignIn(_ sender: UIButton) {
@@ -316,15 +363,15 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!, withError error: NSError!){
         if (error != nil){
             let nombre:String = user.profile.givenName
-            let email:String = user.profile.email
-            
+            email = user.profile.email
+            //obtenerDatosUsuario(uri:base_url+get_usuario+"?correo="+email)
             print(nombre)
             print(email)
             UserDefaults.standard.set(1,forKey: "autenticado")
             UserDefaults.standard.set(nombre, forKey: "nombre")
             UserDefaults.standard.set(email, forKey: "email")
             UserDefaults.standard.set(0,forKey: "manzana")
-            
+            UserDefaults.standard.synchronize()
            
         }
     }
@@ -346,9 +393,15 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     }
     
     
+    
+    
+    
+   
+    
+    
     //funciones de Apple 08/08/2021
     @objc func actionHandleAppleSignin() {
-            if #available(iOS 14.0, *) {
+            if #available(iOS 13.0, *) {
                 let appleIDProvider = ASAuthorizationAppleIDProvider()
                 let request = appleIDProvider.createRequest()
                 request.requestedScopes = [.fullName, .email]
@@ -409,7 +462,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     
     
     @IBAction func appleLogin(_ sender: UIButton) {
-        if #available(iOS 14.0, *){
+        if #available(iOS 13.0, *){
             //Esta función maneja el login via Apple
             actionHandleAppleSignin()
             
@@ -428,7 +481,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
 
     
     func appleCustomLoginButton() {
-    if #available(iOS 14.0, *) {
+    if #available(iOS 13.0, *) {
             let customAppleLoginBtn = UIButton()
             customAppleLoginBtn.layer.cornerRadius = 80.0
             customAppleLoginBtn.layer.borderWidth = 0.0
@@ -447,7 +500,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     
     
     func setupSOAppleSignIn() {
-        if #available(iOS 14.0, *) {
+        if #available(iOS 13.0, *) {
                     let btnAuthorization = ASAuthorizationAppleIDButton()
                     btnAuthorization.frame = CGRect(x: 180, y: 20, width: 200, height: 40)
                     btnAuthorization.center = self.view.center
@@ -460,7 +513,7 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
     }
     
     func getCredentialState() {
-        if #available(iOS 14.0, *) {
+        if #available(iOS 13.0, *) {
            let appleIDProvider = ASAuthorizationAppleIDProvider()
            appleIDProvider.getCredentialState(forUserID: "USER_ID") { (credentialState, error) in
                switch credentialState {

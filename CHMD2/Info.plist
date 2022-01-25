@@ -36,6 +36,8 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
+    
+    
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
@@ -50,8 +52,18 @@
 			</dict>
 		</dict>
 	</dict>
+    
+    <key>FirebaseDynamicLinksCustomDomains</key>
+    <array>
+      <string>https://chmd1.page.link/</string>
+    </array>
+    
 	<key>NSCalendarsUsageDescription</key>
 	<string>La aplicación necesita permiso para acceder al calendario y crear eventos del colegio</string>
+	<key>NSCameraUsageDescription</key>
+	<string>La app necesita acceder a la cámara</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>La app necesita abrir la galería</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>GothamRoundedMedium_21022.ttf</string>
@@ -69,7 +81,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

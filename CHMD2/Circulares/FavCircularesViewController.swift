@@ -301,9 +301,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
             
        
-        
-         if(c.fecha != "")
-         {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            if(c.fecha != nil)
+            //if(df.date(from: c.fecha) != nil)
+            {
                           let dateFormatter = DateFormatter()
                           dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                           dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
@@ -661,6 +663,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(2, forKey: "tipoCircular")
             UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
+            UserDefaults.standard.set(0, forKey: "clickeado")
             performSegue(withIdentifier: "circularFavoritaSegue", sender:self)
             }
          }else{
@@ -696,7 +699,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
           idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
           */
          
-            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE favorita=1 AND eliminada=0 AND tipo=1"
+            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE favorita=1 AND eliminada=0 AND tipo=1  ORDER BY idCircular DESC"
             var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!

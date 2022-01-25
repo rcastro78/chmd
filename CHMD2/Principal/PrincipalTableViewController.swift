@@ -11,7 +11,7 @@ import AVFoundation
 import GoogleSignIn
 import Alamofire
 import Firebase
-
+import SQLite3
 extension Collection where Indices.Iterator.Element == Index {
     subscript (safe index: Index) -> Iterator.Element? {
         return indices.contains(index) ? self[index] : nil
@@ -27,7 +27,7 @@ class PrincipalTableViewController: UITableViewController {
       var avPlayer:AVPlayer!
       var avPlayerLayer:AVPlayerLayer!
       var paused:Bool = false
-    
+    var db: OpaquePointer?
     
     @IBOutlet var tableViewMenu: UITableView!
     
@@ -42,6 +42,8 @@ class PrincipalTableViewController: UITableViewController {
         let backItem = UIBarButtonItem()
         backItem.title = ""
         navigationItem.backBarButtonItem = backItem
+        
+       
         
     }
     
@@ -89,7 +91,7 @@ class PrincipalTableViewController: UITableViewController {
     */
         
         
-        obtenerDatosUsuario(uri:base_url+get_usuario+"?correo="+email)
+        //obtenerDatosUsuario(uri:base_url+get_usuario+"?correo="+email)
         cifrarIdUsuario(uri:base_url+"cifrar.php?idUsuario="+self.idUsuario)
         getVigenciaUsuario(uri:base_url+"getVigencia.php?idUsuario="+self.idUsuario)
     }
@@ -179,125 +181,84 @@ class PrincipalTableViewController: UITableViewController {
     
     }
     
-    func obtenerDatosUsuario(uri:String){
-        Alamofire.request(uri)
-               .responseJSON { response in
-                   // check for errors
-                   guard response.result.error == nil else {
-                       // got an error in getting the data, need to handle it
-                       print("error en la consulta")
-                       print(response.result.error!)
-                       return
-                   }
-                
-                if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
-                for diccionario in diccionarios{
-                    //print(diccionario)
+    
+    func deleteUsuario() {
+           
+           let fileUrl = try!
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
                   
-                    guard let id = diccionario["id"] as? String else {
-                        print("No se pudo obtener el codigo")
-                        return
-                    }
-                    
-                    guard let nombre = diccionario["nombre"] as? String else {
-                                           print("No se pudo obtener el codigo")
-                                           return
-                    }
-                    
-                    guard let numero = diccionario["numero"] as? String else {
-                                           print("No se pudo obtener el numero")
-                                           return
-                    }
-                    
-                    guard let familia = diccionario["familia"] as? String else {
-                                                              print("No se pudo obtener el numero")
-                                                              return
-                                       }
-                    
-                    guard let fotografia = diccionario["fotografia"] as? String else {
-                                                              print("No se pudo obtener el numero")
-                                                              return
-                                       }
-                    
-                    guard let responsable = diccionario["responsable"] as? String else {
-                                           print("No se pudo obtener el numero")
-                                           return
-                    }
-                    
-                    
-                    guard let correo = diccionario["correo"] as? String else {
-                                           print("No se pudo obtener el correo")
-                                           return
-                    }
-                    
-                    
-                    
-                    
-                    var foto:String = ""
-                    
-                    if(fotografia.count>5){
-                        foto = self.base_url_foto+fotografia.components(separatedBy: "\\")[4]
-                    }else{
-                        foto = self.base_url_foto+"sinfoto.png"
-                    }
-                    
-                    
-                    
-                    
-                    var fotoUrl=foto;
-                    //Guardar las variables
-                    self.resp.append(Responsable(id:id,nombre:nombre,numero:numero,familia:familia,foto:foto,responsable: responsable))
-                    
-                    
-                    UserDefaults.standard.set(id, forKey: "idUsuario")
-                    UserDefaults.standard.set(nombre, forKey: "nombreUsuario")
-                    UserDefaults.standard.set(numero, forKey: "numeroUsuario")
-                    UserDefaults.standard.set(familia, forKey: "familia")
-                    UserDefaults.standard.set(fotoUrl, forKey: "fotoUrl")
-                    print("FOTO: \(fotoUrl)")
-                    UserDefaults.standard.set(responsable, forKey: "responsable")
-                    UserDefaults.standard.set(correo, forKey: "correo")
-                  
-                    
-                    //Registrar dispositivo
-                             
-                               let os = ProcessInfo().operatingSystemVersion
-                               let so = "iOS \(os.getFullVersion())"
-                               
-                    
-                    InstanceID.instanceID().instanceID { (result, error) in
-                      if let error = error {
-                        print("Error fetching remote instance ID: \(error)")
-                      } else if let result = result {
-                        print("Remote instance ID token: \(result.token)")
-                        self.registrarDispositivo(direccion: "https://www.chmd.edu.mx/WebAdminCirculares/ws/registrarDispositivo.php", correo: correo, device_id: result.token, so: so,id:id)
-                                           
-                      }
-                    }
-                    
-                    
-                      
-                    }
-                }
-                
+                  if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+                      print("Error en la base de datos")
+                  }else{
+           
+         var deleteStatement: OpaquePointer?
+           var deleteStatementString="DELETE FROM USUARIO"
+         if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) ==
+             SQLITE_OK {
+           if sqlite3_step(deleteStatement) == SQLITE_DONE {
+             print("BASE:Successfully deleted row.")
+           } else {
+             print("BASE:Could not delete row.")
+           }
+         } else {
+           print("BASE:DELETE statement could not be prepared")
+         }
+         
+         sqlite3_finalize(deleteStatement)
+           }
+       
+       }
+    
+    
+    
+    
+    func guardarUsuario(idUsuario:String,correo:String,fotoUrl:String){
+        
+        //Abrir la base
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            let query="INSERT INTO USUARIO(idUsuario, email,fotoUrl) VALUES(?,?,?)"
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            let id = idUsuario as NSString
+            if sqlite3_bind_text(statement,1,id.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            
+            let c = correo as NSString
+            if sqlite3_bind_text(statement,2,c.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 2")
+            }
+            
+            
+            let f = fotoUrl as NSString
+            if sqlite3_bind_text(statement,3,f.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 3")
+            }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                print("Usuario almacenado correctamente")
+            }
+            
+            
+            
         }
         
-    
     }
     
+   
     
-    func registrarDispositivo(direccion:String, correo:String, device_id:String, so:String,id:String){
-        let parameters: Parameters = ["correo": correo, "device_token": device_id,"plataforma":so,"id_usuario":id]      //This will be your parameter
-        Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
-            switch (response.result) {
-            case .success:
-                print(response)
-                break
-            case .failure:
-                print(Error.self)
-            }
-        }
-    }
+   
     
     
     /*

@@ -266,9 +266,11 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                 }
             cell.lblPara.text?="Para: \(para)"
              
-            
-             if(c.fecha != "")
-             {
+                let df = DateFormatter()
+                df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                if(c.fecha != nil)
+                //if(df.date(from: c.fecha) != nil)
+                {
                               let dateFormatter = DateFormatter()
                               dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
@@ -740,7 +742,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                    //let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appNotificacionCHMD WHERE leida=0 AND eliminada=0"
             
             //let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=0 AND tipo=2"
-            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE tipo=2 and eliminada=0"
+            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE tipo=2 and eliminada=0  ORDER BY idCircular DESC"
             var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!

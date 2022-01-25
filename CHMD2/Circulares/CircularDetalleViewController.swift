@@ -207,7 +207,7 @@ extension UIView {
 
 class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 //WKNavigationDelegate
-    
+    @IBOutlet weak var activity: UIActivityIndicatorView!
     @IBOutlet weak var webView: WKWebView!
     
     @IBOutlet weak var btnFavorita: UIButton!
@@ -226,6 +226,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     @IBOutlet weak var webViewSinConexion: UITextView!
     @IBOutlet weak var btnCalendario: UIButton!
     @IBOutlet weak var lblNivel: UILabel!
+    var pinchGesture = UIPinchGestureRecognizer()
     var ids = [String]()
     var titulos = [String]()
     var fechas = [String]()
@@ -261,6 +262,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     var leido:Int=0
     var globalId:String=""
     var circFav:Int=0
+    var clickeado:Int=0
+    
+    
+    var html1:String=""
+    var htmlBottom:String=""
     
     @objc func volver(){
         self.performSegue(withIdentifier: "unwindToPrincipal", sender: self)
@@ -303,9 +309,684 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     }
     
     
+    func mostrarCircular(tituloP1:String,tituloP2:String,decoded:String,nivel:String,d:String){
+       
+        if(tituloP1.count>0 && tituloP2.count<=0){
+            htmlBottom = "<h4><div style='color:#0E497B;font-weight:normal'>\(decoded)</div></h4>"
+            if(nivel.count>0){
+                html1 = """
+                           <html>
+                             <head>
+                                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+                           <!-- jQuery library -->
+                           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+                           <!-- Latest compiled JavaScript -->
+                           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+                                 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
+                           <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                           <meta name="HandheldFriendly" content="true">
+                            <meta name="viewport" content="width=device-width, initial-scale=1">
+                            
+                           <style>
+                               @-webkit-viewport { width: device-width; }
+                               @-moz-viewport { width: device-width; }
+                               @-ms-viewport { width: device-width; }
+                               @-o-viewport { width: device-width; }
+                               @viewport { width: device-width; }
+                           </style>
+                             </head>
+                            
+                               <style>
+                               @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
+                                @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
+                               h3 {
+                                    font-family: GothamRoundedBold;
+                                    color:#ffffff;
+                                 }
+                                 
+                                  h4 {
+                                    font-family: GothamRoundedMedium;
+                                   color:#0E497B;
+                                 }
+                                 
+                               h5 {
+                                    font-family: GothamRoundedMedium;
+                                    color:#0E497B;
+                                 }
+                                   
+                                 a {
+                                   font-size: 14px;
+                                   font-family: GothamRoundedBold;
+                                   color:#0E497B;
+                                 }
+                              
+                           body {
+                           padding: 2px;
+                           margin: 2px;
+                           font-family: GothamRoundedMedium;
+                           color:#0E497B;
+
+                           }
+
+                           p{
+                               //text-align:justify;
+                               line-height:20px;
+                               width:100%;
+                               resize:both;
+                           }
+
+                           li{
+                               line-height:20px;
+                                  width:100%;
+                                  resize:both;
+                           }
+
+                           ol,ul{
+                               line-height:20px;
+                                  width:100%;
+                                  resize:both;
+                           }
+
+                           .rgCol
+                           {
+                               width: 25%;
+                               height: 100%;
+                               text-align: center;
+                               vertical-align: middle;
+                               display: table-cell;
+                           }
+
+                           .boxCol
+                           {
+                               display: inline-block;
+                               width: 100%;
+                               text-align: center;
+                               vertical-align: middle;
+                           }
+
+                           span{
+                           color:#0E497B;
+                           }
+                           .marquee-parent {
+                             position: relative;
+                             width: 100%;
+                             overflow: hidden;
+                             height: 48px;
+                             text-align:center;
+                             vertical-align: center;
+                           }
+                           .marquee-child {
+                             display: block;
+                             width: 100%;
+                             text-align:center;
+                             vertical-align: center;
+                             /* width of your text div */
+                             height: 48px;
+                             /* height of your text div */
+                             position: absolute;
+                             animation: marquee 8s linear infinite; /* change 5s value to your desired speed */
+                           }
+                           .marquee-child:hover {
+                             animation-play-state: paused;
+                             cursor: pointer;
+                           }
+                           @keyframes marquee {
+                             0% {
+                               left: 100%;
+                             }
+                             100% {
+                               left: -100% /* same as your text width */
+                             }
+                           }
+
+
+                               </style>
+                               
+                               <body style="padding:1px;">
+                                 
+                                     
+                           <div id="nivel"  style="text-align:right; width:100%;text-color:#0E497B">
+                                   <h5>\(nivel)</h5>
+                            </div>
+                           </p>
+                           <div id="fecha"  style="text-align:right; width:100%;text-color:#0E497B">
+                                   <h5>
+                                 \(d.lowercased())</h5>
+                           </div>
+
+                           <center>
+                            <div id="titulo" style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                              <h3><center><span id='text' style='display:inline-block;'><b>\(tituloP1)</b></span></center></div>
+                            
+                           
+                           """
+            }else{
+                html1 = """
+                           <html>
+                             <head>
+                                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+                           <!-- jQuery library -->
+                           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+                           <!-- Latest compiled JavaScript -->
+                           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+                                 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
+                           <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                           <meta name="HandheldFriendly" content="true">
+                            <meta name="viewport" content="width=device-width, initial-scale=1">
+                            
+                           <style>
+                               @-webkit-viewport { width: device-width; }
+                               @-moz-viewport { width: device-width; }
+                               @-ms-viewport { width: device-width; }
+                               @-o-viewport { width: device-width; }
+                               @viewport { width: device-width; }
+                           </style>
+                             </head>
+                            
+                               <style>
+                               @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
+                                @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
+                               h3 {
+                                    font-family: GothamRoundedBold;
+                                    color:#ffffff;
+                                 }
+                                 
+                                  h4 {
+                                    font-family: GothamRoundedMedium;
+                                   color:#0E497B;
+                                 }
+                                 
+                               h5 {
+                                    font-family: GothamRoundedMedium;
+                                    color:#0E497B;
+                                 }
+                                   
+                                 a {
+                                   font-size: 14px;
+                                   font-family: GothamRoundedBold;
+                                   color:#0E497B;
+                                 }
+                              
+                           body {
+                           padding: 2px;
+                           margin: 2px;
+                           font-family: GothamRoundedMedium;
+                           color:#0E497B;
+
+                           }
+
+                           p{
+                               //text-align:justify;
+                               line-height:20px;
+                               width:100%;
+                               resize:both;
+                           }
+
+                           li{
+                               line-height:20px;
+                                  width:100%;
+                                  resize:both;
+                           }
+
+                           ol,ul{
+                               line-height:20px;
+                                  width:100%;
+                                  resize:both;
+                           }
+
+                           .rgCol
+                           {
+                               width: 25%;
+                               height: 100%;
+                               text-align: center;
+                               vertical-align: middle;
+                               display: table-cell;
+                           }
+
+                           .boxCol
+                           {
+                               display: inline-block;
+                               width: 100%;
+                               text-align: center;
+                               vertical-align: middle;
+                           }
+
+                           span{
+                           color:#0E497B;
+                           }
+                           .marquee-parent {
+                             position: relative;
+                             width: 100%;
+                             overflow: hidden;
+                             height: 48px;
+                             text-align:center;
+                             vertical-align: center;
+                           }
+                           .marquee-child {
+                             display: block;
+                             width: 100%;
+                             text-align:center;
+                             vertical-align: center;
+                             /* width of your text div */
+                             height: 48px;
+                             /* height of your text div */
+                             position: absolute;
+                             animation: marquee 8s linear infinite; /* change 5s value to your desired speed */
+                           }
+                           .marquee-child:hover {
+                             animation-play-state: paused;
+                             cursor: pointer;
+                           }
+                           @keyframes marquee {
+                             0% {
+                               left: 100%;
+                             }
+                             100% {
+                               left: -100% /* same as your text width */
+                             }
+                           }
+
+
+                               </style>
+                               
+                               <body style="padding:1px;">
+                           
+                           <div id="fecha"  style="text-align:right; width:100%;text-color:#0E497B">
+                                   <h5>
+                                 \(d.lowercased())</h5>
+                           </div>
+
+                           <center>
+                              <div id="titulo"  style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                               <h3><center><span id='text' style='display:inline-block;'><b>\(tituloP1)</b></span></center></div>
+                            
+                           
+                           """
+            }
+           
+        }
+        
+        
+        if(tituloP1.count>0 && tituloP2.count>0){
+            htmlBottom = "<h4><div style='color:#0E497B;font-weight:normal'>\(decoded)</div></h4>"
+            if(nivel.count>0){
+                html1 = """
+                                                      <html>
+                                                        <head>
+                                                            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+                                                      <!-- jQuery library -->
+                                                      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+                                                      <!-- Latest compiled JavaScript -->
+                                                      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+                                                            <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
+                                                      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                                                      <meta name="HandheldFriendly" content="true">
+                                                       <meta name="viewport" content="width=device-width, initial-scale=1">
+                                                       
+                                                      <style>
+                                                          @-webkit-viewport { width: device-width; }
+                                                          @-moz-viewport { width: device-width; }
+                                                          @-ms-viewport { width: device-width; }
+                                                          @-o-viewport { width: device-width; }
+                                                          @viewport { width: device-width; }
+                                                      </style>
+                                                        </head>
+                                                       
+                                                          <style>
+                                                          @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
+                                                           @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
+                                                          h3 {
+                                                               font-family: GothamRoundedBold;
+                                                               color:#ffffff;
+                                                            }
+                                                            
+                                                             h4 {
+                                                               font-family: GothamRoundedMedium;
+                                                              color:#0E497B;
+                                                            }
+                                                            
+                                                          h5 {
+                                                               font-family: GothamRoundedMedium;
+                                                               color:#0E497B;
+                                                            }
+                                                              
+                                                            a {
+                                                              font-size: 14px;
+                                                              font-family: GothamRoundedBold;
+                                                              color:#0E497B;
+                                                            }
+                                                         
+                                                      body {
+                                                      padding: 2px;
+                                                      margin: 2px;
+                                                      font-family: GothamRoundedMedium;
+                                                      color:#0E497B;
+
+                                                      }
+
+                                                      p{
+                                                          //text-align:justify;
+                                                          line-height:20px;
+                                                          width:100%;
+                                                          resize:both;
+                                                      }
+
+                                                      li{
+                                                          line-height:20px;
+                                                             width:100%;
+                                                             resize:both;
+                                                      }
+
+                                                      ol,ul{
+                                                          line-height:20px;
+                                                             width:100%;
+                                                             resize:both;
+                                                      }
+
+                                                      .rgCol
+                                                      {
+                                                          width: 25%;
+                                                          height: 100%;
+                                                          text-align: center;
+                                                          vertical-align: middle;
+                                                          display: table-cell;
+                                                      }
+
+                                                      .boxCol
+                                                      {
+                                                          display: inline-block;
+                                                          width: 100%;
+                                                          text-align: center;
+                                                          vertical-align: middle;
+                                                      }
+
+                                                      span{
+                                                      color:#0E497B;
+                                                      }
+                                                      .marquee-parent {
+                                                        position: relative;
+                                                        width: 100%;
+                                                        overflow: hidden;
+                                                        height: 48px;
+                                                        text-align:center;
+                                                        vertical-align: center;
+                                                      }
+                                                      .marquee-child {
+                                                        display: block;
+                                                        width: 100%;
+                                                        text-align:center;
+                                                        vertical-align: center;
+                                                        /* width of your text div */
+                                                        height: 48px;
+                                                        /* height of your text div */
+                                                        position: absolute;
+                                                        animation: marquee 8s linear infinite; /* change 5s value to your desired speed */
+                                                      }
+                                                      .marquee-child:hover {
+                                                        animation-play-state: paused;
+                                                        cursor: pointer;
+                                                      }
+                                                      @keyframes marquee {
+                                                        0% {
+                                                          left: 100%;
+                                                        }
+                                                        100% {
+                                                          left: -100% /* same as your text width */
+                                                        }
+                                                      }
+                                                          </style>
+                                                         
+                                                          <body style="padding:9px;">
+                                                           
+                                                                
+                                                       
+                                                      <div id="nivel"  style="text-align:right; width:100%;text-color:#0E497B">
+                                                              <h5>\(nivel)</h5>
+                                                       </div>
+                                                      </p>
+                                                      <div id="fecha"  style="text-align:right; width:100%;text-color:#0E497B">
+                                                              <h5>
+                                                            \(d.lowercased())</h5>
+                                                      </div>
+
+                                                      <div id="titulo"  style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                                                          <h3>
+                                                          
+                                                      <center><span id='text' style='display: inline-block;'><b>\(tituloP1)</b></span></center></div><div id='titulo' style='width:100%;padding-top:6px;padding-bottom:6px;padding-left:12px;padding-right:12px;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-10px'><center><span id='text'  style='display: inline-block; width:100%;'><b>\(tituloP2)</b></span></center></div>
+                                                      <h3>
+                                                      <p>
+                                                         
+                                                              </center>
+                                                          
+                                                             </div>
+                                                          
+                                                      
+                           """
+            }else{
+                html1 = """
+                                                      <html>
+                                                        <head>
+                                                            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+                                                      <!-- jQuery library -->
+                                                      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+                                                      <!-- Latest compiled JavaScript -->
+                                                      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+                                                            <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
+                                                      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                                                      <meta name="HandheldFriendly" content="true">
+                                                       <meta name="viewport" content="width=device-width, initial-scale=1">
+                                                       
+                                                      <style>
+                                                          @-webkit-viewport { width: device-width; }
+                                                          @-moz-viewport { width: device-width; }
+                                                          @-ms-viewport { width: device-width; }
+                                                          @-o-viewport { width: device-width; }
+                                                          @viewport { width: device-width; }
+                                                      </style>
+                                                        </head>
+                                                       
+                                                          <style>
+                                                          @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
+                                                           @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
+                                                          h3 {
+                                                               font-family: GothamRoundedBold;
+                                                               color:#ffffff;
+                                                            }
+                                                            
+                                                             h4 {
+                                                               font-family: GothamRoundedMedium;
+                                                              color:#0E497B;
+                                                            }
+                                                            
+                                                          h5 {
+                                                               font-family: GothamRoundedMedium;
+                                                               color:#0E497B;
+                                                            }
+                                                              
+                                                            a {
+                                                              font-size: 14px;
+                                                              font-family: GothamRoundedBold;
+                                                              color:#0E497B;
+                                                            }
+                                                         
+                                                      body {
+                                                      padding: 2px;
+                                                      margin: 2px;
+                                                      font-family: GothamRoundedMedium;
+                                                      color:#0E497B;
+
+                                                      }
+
+                                                      p{
+                                                          //text-align:justify;
+                                                          line-height:20px;
+                                                          width:100%;
+                                                          resize:both;
+                                                      }
+
+                                                      li{
+                                                          line-height:20px;
+                                                             width:100%;
+                                                             resize:both;
+                                                      }
+
+                                                      ol,ul{
+                                                          line-height:20px;
+                                                             width:100%;
+                                                             resize:both;
+                                                      }
+
+                                                      .rgCol
+                                                      {
+                                                          width: 25%;
+                                                          height: 100%;
+                                                          text-align: center;
+                                                          vertical-align: middle;
+                                                          display: table-cell;
+                                                      }
+
+                                                      .boxCol
+                                                      {
+                                                          display: inline-block;
+                                                          width: 100%;
+                                                          text-align: center;
+                                                          vertical-align: middle;
+                                                      }
+
+                                                      span{
+                                                      color:#0E497B;
+                                                      }
+                                                      .marquee-parent {
+                                                        position: relative;
+                                                        width: 100%;
+                                                        overflow: hidden;
+                                                        height: 48px;
+                                                        text-align:center;
+                                                        vertical-align: center;
+                                                      }
+                                                      .marquee-child {
+                                                        display: block;
+                                                        width: 100%;
+                                                        text-align:center;
+                                                        vertical-align: center;
+                                                        /* width of your text div */
+                                                        height: 48px;
+                                                        /* height of your text div */
+                                                        position: absolute;
+                                                        animation: marquee 8s linear infinite; /* change 5s value to your desired speed */
+                                                      }
+                                                      .marquee-child:hover {
+                                                        animation-play-state: paused;
+                                                        cursor: pointer;
+                                                      }
+                                                      @keyframes marquee {
+                                                        0% {
+                                                          left: 100%;
+                                                        }
+                                                        100% {
+                                                          left: -100% /* same as your text width */
+                                                        }
+                                                      }
+                                                          </style>
+                                                         
+                                                          <body style="padding:9px;">
+                                                        
+                                                      <div id="fecha"  style="text-align:right; width:100%;text-color:#0E497B">
+                                                              <h5>
+                                                            \(d.lowercased())</h5>
+                                                      </div>
+
+                                                      <div id="titulo"  style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
+                                                          <h3>
+                                                          
+                                                      <center><span id='text' style='display: inline-block;'><b>\(tituloP1)</b></span></center></div><div id='titulo' style='width:100%;padding-top:6px;padding-bottom:6px;padding-left:12px;padding-right:12px;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-10px'><center><span id='text'  style='display: inline-block; width:100%;'><b>\(tituloP2)</b></span></center></div>
+                                                      <h3>
+                                                      <p>
+                                                         
+                                                              </center>
+                                                          
+                                                             </div>
+                                                          
+                                                      
+                           """
+            }
+           
+       
+        }
+        
+        let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
+
+                   let attrStr = try! NSMutableAttributedString(
+                       data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
+                       options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                       documentAttributes: nil)
+                   let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
+                   attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:18)!], range: textRangeForFont)
+            
+            
+            let modifiedFont2 = NSString(format:"<span>%@</span>" as NSString, htmlBottom) as String
+            let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .natural
+        
+        
+                       let attrStr2 = try! NSMutableAttributedString(
+                           data: modifiedFont2.data(using: .unicode, allowLossyConversion: true)!,
+                           options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
+                           documentAttributes: nil)
+                       let textRangeForFont2 : NSRange = NSMakeRange(0, attrStr2.length)
+        //attrStr2.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:15)!,NSAttributedString.Key.paragraphStyle:paragraph], range: textRangeForFont2)
+        attrStr2.addAttributes([NSAttributedString.Key.font:UIFont.systemFont(ofSize: CGFloat(16), weight: .medium)], range: textRangeForFont2)
+        
+            let finalAttributedString = NSMutableAttributedString()
+            finalAttributedString.append(attrStr)
+            finalAttributedString.append(attrStr2)
+            webViewSinConexion.attributedText = finalAttributedString
+        
+    }
+    @objc func pinchText(sender:UIPinchGestureRecognizer){
+        print("Se ha llamado al gesto del webview")
+        /*var pSize = CGFloat(UserDefaults.standard.float(forKey: "fontSize"))
+        pSize = ((sender.velocity>0) ? 1:-1)*1+pSize
+        UserDefaults.standard.setValue(pSize, forKey: "fontSize")
+        UserDefaults.standard.synchronize()
+        let formattedText = NSMutableAttributedString.init(attributedString: webViewSinConexion!.attributedText)
+        formattedText.addAttribute(NSAttributedString.Key.font,value:UIFont.systemFont(ofSize: pSize),range: NSRange(location: 0, length: formattedText.length))
+        webViewSinConexion.attributedText = formattedText*/
+        
+        var pinchScale = sender.scale
+               pinchScale = round(pinchScale * 1000) / 1000.0
+
+               if (pinchScale > 1) {
+                webViewSinConexion.font = UIFont( name: "arial", size: webViewSinConexion.font!.pointSize + pinchScale)
+               }
+                webViewSinConexion.frame.height * pinchScale
+                webViewSinConexion.frame.size.height *= pinchScale
+                webViewSinConexion.frame.size.width *= pinchScale
+               self.webViewSinConexion.layoutIfNeeded()
+               print(webViewSinConexion.frame.size.height)
+               print(webViewSinConexion.frame.size.width)
+        
+        
+        }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         circFav = UserDefaults.standard.integer(forKey: "circFav")
+        clickeado = UserDefaults.standard.integer(forKey: "clickeado")
+        pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchText(sender:)))
         if(circFav==1)
         {
              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
@@ -315,7 +996,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.pinchGestureRecognizer?.isEnabled = false
         webView.configuration.preferences.javaScriptEnabled = true
-        webView.navigationDelegate = self
+
+            self.webView.navigationDelegate = self
+            self.activity.hidesWhenStopped = true
+        
+        
         tipoCircular = UserDefaults.standard.integer(forKey: "tipoCircular")
         let noLeido = Int(UserDefaults.standard.string(forKey: "noLeido") ?? "0")!
         print("no leido: \(noLeido)")
@@ -352,6 +1037,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             btnCalendario.isUserInteractionEnabled=true
          }
         
+        
+        webView.isHidden=true
+        webViewSinConexion.isHidden=false
+        
+        
         if (viaNotif == 0){
             let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
             circularTitulo = titulo
@@ -374,17 +1064,22 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
             
             
-            if(!ConexionRed.isConnectedToNetwork()){
-                webView.isHidden=true
-                webViewSinConexion.isHidden=false
+           
+                //webView.isHidden=true
+                //webViewSinConexion.isHidden=false
+                idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
+                print("id de la circular: \(idInicial)")
                leerCircular(idCircular: idInicial)
+                //let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
+                //     let _url = URL(string: address);
+                // self.obtenerCirculares(uri:address)
                
-            }
-          
+            
             
             //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
         }else{
+           
             id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? "0")!
             obtenerCircular(uri: urlBase+"getCircularId6.php?id="+id)
@@ -398,7 +1093,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         }
         
         
-        if(ConexionRed.isConnectedToNetwork()){
+        self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
+       //Actualizarla en la base de datos
+       self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+        
+        
+        if(!ConexionRed.isConnectedToNetwork()){
          
           webView.isHidden=false
           webViewSinConexion.isHidden=true
@@ -425,9 +1125,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                        self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
                         
                         
-                       let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
-                            let _url = URL(string: address);
-                        self.obtenerCirculares2(uri:address)
+                      
                     }
                     
                     //Favoritas
@@ -466,11 +1164,23 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 }
                                 
                   posicion = find(value: id,in: ids) ?? 0
-                  
+                 }else{
+            
+            if (viaNotif == 1){
+                let link = URL(string:urlBase+"getCircularId6.php?id=\(id)")!
+                circularUrl = urlBase+"getCircularId6.php?id=\(id)"
+                print(urlBase+"getCircularId6.php?id=\(id)")
+                let request = URLRequest(url: link)
+                self.webViewSinConexion.isHidden=true;
+                self.webView.isHidden=false;
+                webView.load(request)
+                
+            }
             
             
-        }else{
             
+            
+            if (viaNotif == 0){
             if(tipoCircular==1){
               self.leerCirculares()
             }
@@ -498,128 +1208,48 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
             //aqui dio error sin internet
             let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-            
             let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
+            let nivel = circulares[posicion].nivel
             
                            let dateFormatter = DateFormatter()
                            dateFormatter.dateFormat = "dd/MM/yyyy"
                            dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
                            let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                            dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                           let d = dateFormatter.string(from: date1!)
+                           var d = dateFormatter.string(from: date1!)
+                           d = d.lowercased()
+
             webView.isHidden=true
             webViewSinConexion.isHidden=false
             
             let decoded = circulares[posicion].contenido.stringByDecodingHTMLEntities
-            var html1=""
-            if(tituloP1.count>0 && tituloP2.count<=0){
-                html1 = """
-                           <html>
-                            <head>
-                            <style>
-                                .myDiv {
-                                    background-color: #ffffff;
-                                    color:#0e497B;
-                                    padding:12px;
-                                    width:100%;
-                                }
-                            .myDiv2 {
-                                background-color: #ffffff;
-                                color:#0e497B;
-                                padding:12px;
-                                width:100%;
-                                text-align:right;
-                            }
-                           h4 {
-
-                             color:#0E497B;
-                           }
-                            </style>
-                            </head>
-                           <body>
-                           
-                           <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                           
-                           <div id="titulo"  style="width:100%;background-color:#91CAEE;height:48px;text-align:center; vertical-align: middle;">
-                           <h4>\(tituloP1)</h4>
-                           </div>
-                           
-                                <div class="myDiv">\(decoded)<br></div>
-                               
-                           
-                           
-                           
-                           </body>
-                           </html>
-                           """
-            }
-            
-            
-            if(tituloP1.count>0 && tituloP2.count>0){
-                html1 = """
-                           <html>
-                            <head>
-                            <style>
-                                .myDiv {
-                                    background-color: #ffffff;
-                                    color:#0e497B;
-                                    padding:12px;
-                                    width:100%;
-                                }
-                            .myDiv2 {
-                                background-color: #ffffff;
-                                color:#0e497B;
-                                padding:12px;
-                                width:100%;
-                                text-align:right;
-                            }
-                           h4 {
-
-                             color:#0E497B;
-                           }
-                            </style>
-                            </head>
-                           <body>
-                           
-                           <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                           
-                           <div id="titulo"  style="width:100%;background-color:#91CAEE;height:48px;text-align:center; vertical-align: middle;">
-                           <h4>\(tituloP1)</h4>
-                           </div>
-                           <div id='titulo2' style='width:100%;background-color:#098FCF;height:48px;text-align:center; vertical-align: middle;margin-top:-24px'>
-                           <h4>\(tituloP2)</h4>
-                           </div>
-                           <div class="myDiv">\(decoded)<br></div>
-                               
-                           
-                           
-                           
-                           </body>
-                           </html>
-                           """
-            }
+            mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
            
-            
-            
-            let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
-
-                       let attrStr = try! NSMutableAttributedString(
-                           data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                           options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                           documentAttributes: nil)
-                       let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                       attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
+                /*
+                 aqui estaba*/
+                
                        
-                       webViewSinConexion.attributedText = attrStr
+                   //webViewSinConexion.attributedText = attrStr
             
             
-            
+            }
             
           
         }
         
        
     }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        activity.stopAnimating()
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        activity.stopAnimating()
+    }
+    
+    
+    
    
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
@@ -692,7 +1322,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     
     @IBAction func btnCalendarioClick(_ sender: Any) {
-        if(ConexionRed.isConnectedToNetwork()){
+        //if(ConexionRed.isConnectedToNetwork()){
                
                 let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
                 
@@ -741,13 +1371,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 dialogMessage.addAction(cancel)
                 self.present(dialogMessage, animated: true, completion: nil)
              
-        }else{
+        /*}else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                        alert.show()
-        }
+        }*/
     }
     @IBAction func insertaEventoClick(_ sender: UIButton) {
-       if(ConexionRed.isConnectedToNetwork()){
+       //if(ConexionRed.isConnectedToNetwork()){
               
                let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar este evento a tu calendario?", preferredStyle: .alert)
                
@@ -788,10 +1418,10 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                dialogMessage.addAction(ok)
                dialogMessage.addAction(cancel)
             
-       }else{
+      /* }else{
            var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                       alert.show()
-       }
+       }*/
     }
     
     
@@ -799,9 +1429,14 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
         
    var p = UserDefaults.standard.integer(forKey:"posicion")
-    @IBAction func btnSiguienteClick(_ sender: Any) {
-        if(ConexionRed.isConnectedToNetwork()){
-             print("posicion \(p)")
+    @IBAction func btnSiguienteClick(_ sender: UIButton) {
+        
+        
+        
+        
+        //self.activity.startAnimating()
+        //if(!ConexionRed.isConnectedToNetwork()){
+             /*print("posicion \(p)")
              p = p+1
             if(p >= ids.count){
               btnSiguiente.isUserInteractionEnabled=false
@@ -868,18 +1503,61 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }
                 
                 
+            */
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1), execute: {
             
-           
-            
-        }else{
-            //No hay conexion
+        })
+        if(clickeado==0){
+            p=p+1
+        }
+        clickeado=1
+        
+        
+       print("posicion \(p)")
+        p = p+1
             
             if(p<circulares.count){
-               p = p+1
+              
                 if(p>=circulares.count){
                     p = 0
                 }
                
+               
+                    
+                    if(p<ids.count){
+                                   
+                                    let nextId = ids[p]
+                                    globalId=nextId
+                                    //leer al server
+                                   self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+                                    //leer local
+                                    self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                                    
+                                    let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+                                    if(f==1){
+                                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                                    }else{
+                                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                                    }
+                                    if(self.tipoCircular==5){
+                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                        if(leida==0){
+                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                        }
+                                    }else{
+                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                        if(leida==0){
+                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                        }
+                                    }
+                    
+                    
+                    
+                }
+                
+                
+                
+                
                 let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                 let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
                 let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
@@ -911,112 +1589,15 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                           let titulo = circulares[p].nombre
                            let tituloP1 = self.partirTituloP1(titulo: titulo)
                            let tituloP2 = self.partirTituloP2(titulo: titulo)
-                           
+                            let nivel=circulares[p].nivel
                           
                            let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-                           var html1=""
-                           if(tituloP1.count>0 && tituloP2.count<=0){
-                               html1 = """
-                                          <html>
-                                           <head>
-                                           <style>
-                                               .myDiv {
-                                                   background-color: #ffffff;
-                                                   color:#0e497B;
-                                                   padding:12px;
-                                                   width:100%;
-                                               }
-                                           .myDiv2 {
-                                               background-color: #ffffff;
-                                               color:#0e497B;
-                                               padding:12px;
-                                               width:100%;
-                                               text-align:right;
-                                           }
-                                          h4 {
-
-                                            color:#0E497B;
-                                          }
-                                           </style>
-                                           </head>
-                                          <body>
-                                          
-                                          <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                                          
-                                          <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                                          <h4>\(tituloP1)</h4>
-                                          </div>
-                                          
-                                               <div class="myDiv">\(decoded)<br></div>
-                                              
-                                          
-                                          
-                                          
-                                          </body>
-                                          </html>
-                                          """
-                           }
-                           
-                           
-                           if(tituloP1.count>0 && tituloP2.count>0){
-                               html1 = """
-                                          <html>
-                                           <head>
-                                           <style>
-                                               .myDiv {
-                                                   background-color: #ffffff;
-                                                   color:#0e497B;
-                                                   padding:12px;
-                                                   width:100%;
-                                               }
-                                           .myDiv2 {
-                                               background-color: #ffffff;
-                                               color:#0e497B;
-                                               padding:12px;
-                                               width:100%;
-                                               text-align:right;
-                                           }
-                                          h4 {
-
-                                            color:#0E497B;
-                                          }
-                                           </style>
-                                           </head>
-                                          <body>
-                                          
-                                          <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                                          
-                                          <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                                          <h4>\(tituloP1)</h4>
-                                          </div>
-                                          <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
-                                          <h4>\(tituloP2)</h4>
-                                          </div>
-                                          <div class="myDiv">\(decoded)<br></div>
-                                              
-                                          
-                                          
-                                          
-                                          </body>
-                                          </html>
-                                          """
-                           }
-                          
-                           
-                           
-                           let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
-
-                                      let attrStr = try! NSMutableAttributedString(
-                                          data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                                          options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                                          documentAttributes: nil)
-                                      let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                                      attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
-                                      
-                                      webViewSinConexion.attributedText = attrStr
+                          //aqui estaba
+                            mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+               
                 
             
-            }
+            //}
           
             
         }
@@ -1027,100 +1608,57 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
   
     @IBAction func btnNextClick(_ sender: UIButton) {
-       //obtener la posición del elemento cargado
+
+      
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1), execute: {
+            
+        })
+        
        print("posicion \(p)")
-       if(ConexionRed.isConnectedToNetwork()){
-       p = p+1
-        if(p >= ids.count){
-            btnSiguiente.isUserInteractionEnabled=false
+        if(clickeado==0){
+            p=p+1
         }
-        if(p<ids.count){
-            
-            var nextId = ids[p]
-            print("id siguiente: \(nextId)")
-            print("pos siguiente: \(p)")
-            let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
-            if(f==1){
-             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
-            }else{
-             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
-            }
-            //Saber si la circular es favorita
-            
-            
-            if(self.tipoCircular==5){
-                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                if(leida==0){
-                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                }
-            }else{
-                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                if(leida==0){
-                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                }
-            }
-            
-            
-            
-             self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
-            
-            self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
-            globalId=nextId
-            var nextTitulo = titulos[p]
-            var nextFecha = fechas[p]
-            //self.lblTituloParte1.text=nextTitulo
-            
-            //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
-            var nextHoraIniIcs = horasInicioIcs[p]
-            var nextHoraFinIcs = horasFinIcs[p]
-            var nextFechaIcs = fechasIcs[p]
-            var nextNivel = niveles[p]
-            nextHoraIcs = horasInicioIcs[p]
-            print("NEXT HORA \(nextHoraIcs)")
-            
-            if(nextHoraIniIcs != "00:00:00"){
-                imbCalendario.isHidden=false
-                btnCalendario.isHidden=false
-            }else{
-                imbCalendario.isHidden=true
-                btnCalendario.isHidden=true
-            }
-           
-            
-            circularTitulo = nextTitulo
-            let link = URL(string:urlBase+"getCircularId6.php?id=\(nextId)")!
-            let request = URLRequest(url: link)
-            circularUrl = urlBase+"getCircularId6.php?id=\(nextId)"
-            webView.load(request)
-            self.title = "Circular"
-            //nextTitulo.uppercased()
-            
-            let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-            let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-            let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-          
-           
-            id = nextId;
-        }else{
-            
-        }
-            
-            
-        
-       
-        
-    }else{
-        //No hay conexion
+        clickeado=1
         
         if(p<circulares.count){
-           p = p+1
+            p = p+1
             if(p>=circulares.count){
                 p = 0
             }
-            //lblTituloParte1.text = circulares[posicion].nombre
-            //lblNivel.text = circulares[posicion].nivel
-            //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
            
+            
+            if(p<ids.count){
+                           
+                            let nextId = ids[p]
+                            globalId=nextId
+                            //leer al server
+                           self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+                            //leer local
+                            self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                            
+                            let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+                            if(f==1){
+                             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                            }else{
+                             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                            }
+                            if(self.tipoCircular==5){
+                                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                if(leida==0){
+                                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                }
+                            }else{
+                                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                if(leida==0){
+                                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                }
+                            }
+            
+            
+            
+        }
+            
+            
             let f = self.getFavorita(idCircular:Int(circulares[p].id) ?? 0)
             if(f==1){
              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
@@ -1163,11 +1701,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             let titulo = circulares[p].nombre
              let tituloP1 = self.partirTituloP1(titulo: titulo)
              let tituloP2 = self.partirTituloP2(titulo: titulo)
-             
+            let nivel = circulares[p].nivel
              let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
              //aqui dio error sin internet
              let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-             
+            
              let dia = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
              
                              let dateFormatter = DateFormatter()
@@ -1180,192 +1718,71 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              webViewSinConexion.isHidden=false
              
              let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-             var html1=""
-             if(tituloP1.count>0 && tituloP2.count<=0){
-                 html1 = """
-                            <html>
-                             <head>
-                             <style>
-                                 .myDiv {
-                                     background-color: #ffffff;
-                                     color:#0e497B;
-                                     padding:12px;
-                                     width:100%;
-                                 }
-                             .myDiv2 {
-                                 background-color: #ffffff;
-                                 color:#0e497B;
-                                 padding:12px;
-                                 width:100%;
-                                 text-align:right;
-                             }
-                            h4 {
-
-                              color:#0E497B;
-                            }
-                             </style>
-                             </head>
-                            <body>
-                            
-                            <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                            
-                            <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                            <h4>\(tituloP1)</h4>
-                            </div>
-                            
-                                 <div class="myDiv">\(decoded)<br></div>
-                                
-                            
-                            
-                            
-                            </body>
-                            </html>
-                            """
-             }
-             
-             
-             if(tituloP1.count>0 && tituloP2.count>0){
-                 html1 = """
-                            <html>
-                             <head>
-                             <style>
-                                 .myDiv {
-                                     background-color: #ffffff;
-                                     color:#0e497B;
-                                     padding:12px;
-                                     width:100%;
-                                 }
-                             .myDiv2 {
-                                 background-color: #ffffff;
-                                 color:#0e497B;
-                                 padding:12px;
-                                 width:100%;
-                                 text-align:right;
-                             }
-                            h4 {
-
-                              color:#0E497B;
-                            }
-                             </style>
-                             </head>
-                            <body>
-                            
-                            <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                            
-                            <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                            <h4>\(tituloP1)</h4>
-                            </div>
-                            <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
-                            <h4>\(tituloP2)</h4>
-                            </div>
-                            <div class="myDiv">\(decoded)<br></div>
-                                
-                            
-                            
-                            
-                            </body>
-                            </html>
-                            """
-             }
+             //aqui estaba
+            mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+           
             
-             
-             
-             let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
-
-                        let attrStr = try! NSMutableAttributedString(
-                            data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                            options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                            documentAttributes: nil)
-                        let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                        attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
-                        
-                        webViewSinConexion.attributedText = attrStr
+            
+            
+                        //webViewSinConexion.attributedText = attrStr
              
             
         
         }
       
         
-    }
+    //}
         
     }
         
+    
+    @IBAction func btnAnteriorClick(_ sender: UIButton) {
+      
+        if(clickeado==0){
+            if(p>0){
+                p=p-1
+            }
+        }
+        clickeado=1
         
-    
-    
-    @IBAction func btnAnteriorClick(_ sender: Any) {
-        if(ConexionRed.isConnectedToNetwork()){
-                   p = p-1
-                    if(p<0){
-                        p=0
-                    }
-                   print("Anterior...")
-                   if(p>=0){
-                       var nextId = ids[p]
-                        globalId=nextId
-                    
-                    let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
-                    if(f==1){
-                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
-                    }else{
-                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
-                    }
-                    if(self.tipoCircular==5){
-                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                        if(leida==0){
-                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                        }
-                    }else{
-                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                        if(leida==0){
-                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                        }
-                    }
-                    
-                    
-                       var nextTitulo = titulos[p]
-                       var nextFecha = fechas[p]
-                        self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
-                    
-                    self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
-                    
-                       var nextHoraIniIcs = horasInicioIcs[p]
-                       var nextHoraFinIcs = horasFinIcs[p]
-                       var nextFechaIcs = fechasIcs[p]
-                       var nextNivel = niveles[p]
-                    //self.lblTituloParte1.text=nextTitulo
-                    //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
-                       nextHoraIcs = horasInicioIcs[p]
-                       if(nextHoraIniIcs != "00:00:00"){
-                           imbCalendario.isHidden=false
-                           btnCalendario.isHidden=false
-                       }else{
-                           imbCalendario.isHidden=true
-                           btnCalendario.isHidden=true
-                       }
-                       
-                     
-                       
-                       
-                        circularTitulo = nextTitulo
-                       let link = URL(string:urlBase+"getCircularId6.php?id=\(nextId)")!
-                       circularUrl = urlBase+"getCircularId6.php?id=\(nextId)"
-                       let request = URLRequest(url: link)
-                       webView.load(request)
-                       self.title = "Circular"
-                      let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                      let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                      let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                     
-                       
-                       id = nextId
-                   }else{
-                       p = ids.count
-                   }
-               }else{
                       
                       p = p-1
                    if(p>0){
+                    
+                    
+                    if(p<ids.count){
+                                   
+                                    let nextId = ids[p]
+                                    globalId=nextId
+                                    //leer al server
+                                   self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+                                    //leer local
+                                    self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                                    
+                                    let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+                                    if(f==1){
+                                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                                    }else{
+                                     self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                                    }
+                                    if(self.tipoCircular==5){
+                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                        if(leida==0){
+                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                        }
+                                    }else{
+                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                        if(leida==0){
+                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                        }
+                                    }
+                    
+                    
+                    
+                }
+                    
+                    
+                    
                     let f = self.getFavorita(idCircular:Int(circulares[p].id) ?? 0)
                     if(f==1){
                      self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
@@ -1395,7 +1812,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                               let titulo = circulares[p].nombre
                                                let tituloP1 = self.partirTituloP1(titulo: titulo)
                                                let tituloP2 = self.partirTituloP2(titulo: titulo)
-                                               
+                                               let nivel = circulares[p].nivel
                                                let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
                                                //aqui dio error sin internet
                                                let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
@@ -1407,199 +1824,74 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                                               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
                                                               let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                                                               dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                                                              let d = dateFormatter.string(from: date1!)
+                                                              var d = dateFormatter.string(from: date1!)
+                                                              d = d.lowercased()
+                                               print("fecha: \(d)")
                                                webView.isHidden=true
                                                webViewSinConexion.isHidden=false
                                                
                                                let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-                                               var html1=""
-                                               if(tituloP1.count>0 && tituloP2.count<=0){
-                                                   html1 = """
-                                                              <html>
-                                                               <head>
-                                                               <style>
-                                                                   .myDiv {
-                                                                       background-color: #ffffff;
-                                                                       color:#0e497B;
-                                                                       padding:12px;
-                                                                       width:100%;
-                                                                   }
-                                                               .myDiv2 {
-                                                                   background-color: #ffffff;
-                                                                   color:#0e497B;
-                                                                   padding:12px;
-                                                                   width:100%;
-                                                                   text-align:right;
-                                                               }
-                                                              h4 {
-
-                                                                color:#0E497B;
-                                                              }
-                                                               </style>
-                                                               </head>
-                                                              <body>
-                                                              
-                                                              <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                                                              
-                                                              <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                                                              <h4>\(tituloP1)</h4>
-                                                              </div>
-                                                              
-                                                                   <div class="myDiv">\(decoded)<br></div>
-                                                                  
-                                                              
-                                                              
-                                                              
-                                                              </body>
-                                                              </html>
-                                                              """
-                                               }
-                                               
-                                               
-                                               if(tituloP1.count>0 && tituloP2.count>0){
-                                                   html1 = """
-                                                              <html>
-                                                               <head>
-                                                               <style>
-                                                                   .myDiv {
-                                                                       background-color: #ffffff;
-                                                                       color:#0e497B;
-                                                                       padding:12px;
-                                                                       width:100%;
-                                                                   }
-                                                               .myDiv2 {
-                                                                   background-color: #ffffff;
-                                                                   color:#0e497B;
-                                                                   padding:12px;
-                                                                   width:100%;
-                                                                   text-align:right;
-                                                               }
-                                                              h4 {
-
-                                                                color:#0E497B;
-                                                              }
-                                                               </style>
-                                                               </head>
-                                                              <body>
-                                                              
-                                                              <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                                                              
-                                                              <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                                                              <h4>\(tituloP1)</h4>
-                                                              </div>
-                                                              <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
-                                                              <h4>\(tituloP2)</h4>
-                                                              </div>
-                                                              <div class="myDiv">\(decoded)<br></div>
-                                                                  
-                                                              
-                                                              
-                                                              
-                                                              </body>
-                                                              </html>
-                                                              """
-                                               }
-                                              
-                                               
-                                               
-                                               let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
-
-                                                          let attrStr = try! NSMutableAttributedString(
-                                                              data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                                                              options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                                                              documentAttributes: nil)
-                                                          let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                                                          attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
-                                                          
-                                                          webViewSinConexion.attributedText = attrStr
+                                               mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+                   
+                       
+                       
+                       
+                       
+                                                          //webViewSinConexion.attributedText = attrStr
                                    
                               }
-                   }
+                   //}
     }
     
     @IBAction func btnAntClick(_ sender: UIButton) {
+    
         
-        if(ConexionRed.isConnectedToNetwork()){
-            p = p-1
-            if(p<0){
-                p=0
-              btnAnterior.isUserInteractionEnabled=false
+        if(clickeado==0){
+            if(p>0){
+                p=p-1
             }
-            if(p>=0){
-                var nextId = ids[p]
-                
-                let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
-                if(f==1){
-                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
-                }else{
-                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
-                }
-                
-                if(self.tipoCircular==5){
-                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                    if(leida==0){
-                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                    }
-                }else{
-                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                    if(leida==0){
-                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                    }
-                }
-                
-                globalId=nextId
-                var nextTitulo = titulos[p]
-                var nextFecha = fechas[p]
-                 self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id:nextId)
-                self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
-                var nextHoraIniIcs = horasInicioIcs[p]
-                var nextHoraFinIcs = horasFinIcs[p]
-                var nextFechaIcs = fechasIcs[p]
-                var nextNivel = niveles[p]
-                nextHoraIcs = horasInicioIcs[p]
-                //self.lblTituloParte1.text=nextTitulo
-                if(nextHoraIniIcs != "00:00:00"){
-                    imbCalendario.isHidden=false
-                    btnCalendario.isHidden=false
-                }else{
-                    imbCalendario.isHidden=true
-                    btnCalendario.isHidden=true
-                }
-                
-                //lblNivel.text = nextNivel
-                
-                //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
-                
-                 circularTitulo = nextTitulo
-                let link = URL(string:urlBase+"getCircularId6.php?id=\(nextId)")!
-                circularUrl = urlBase+"getCircularId6.php?id=\(nextId)"
-                let request = URLRequest(url: link)
-                webView.load(request)
-                self.title = "Circular"
-               let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-               let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-               let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-               //self.lblFechaCircular.text = "\(dia)/\(mes)/\(anio)"
-                
-                          /*let dateFormatter = DateFormatter()
-                          dateFormatter.dateFormat = "dd/MM/yyyy"
-                          dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                          let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-                          dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                          let d = dateFormatter.string(from: date1!)
-                          lblFechaCircular.text = d*/
-                
-                
-               
-                id = nextId
-            }else{
-                p = ids.count
-            }
-        }else{
+        }
+        clickeado=1
+        
+        
             p = p-1
             if(p>0){
                 //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
                                //lblNivel.text = circulares[p].nivel
+                
+                if(p<ids.count){
+                               
+                                let nextId = ids[p]
+                                globalId=nextId
+                                //leer al server
+                               self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
+                                //leer local
+                                self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                                
+                                let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
+                                if(f==1){
+                                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+                                }else{
+                                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+                                }
+                                if(self.tipoCircular==5){
+                                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                    if(leida==0){
+                                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                    }
+                                }else{
+                                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
+                                    if(leida==0){
+                                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                                    }
+                                }
+                
+                
+                
+            }
+                
+                
+                
             webView.isHidden=true
             webViewSinConexion.isHidden=false
                 let f = self.getFavorita(idCircular:Int(circulares[p].id) ?? 0)
@@ -1626,7 +1918,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              let titulo = circulares[p].nombre
               let tituloP1 = self.partirTituloP1(titulo: titulo)
               let tituloP2 = self.partirTituloP2(titulo: titulo)
-              
+              let nivel = circulares[p].nivel
               let anio = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
               //aqui dio error sin internet
               let mes = circulares[p].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
@@ -1643,109 +1935,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
               webViewSinConexion.isHidden=false
               
               let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-              var html1=""
-              if(tituloP1.count>0 && tituloP2.count<=0){
-                  html1 = """
-                             <html>
-                              <head>
-                              <style>
-                                  .myDiv {
-                                      background-color: #ffffff;
-                                      color:#0e497B;
-                                      padding:12px;
-                                      width:100%;
-                                  }
-                              .myDiv2 {
-                                  background-color: #ffffff;
-                                  color:#0e497B;
-                                  padding:12px;
-                                  width:100%;
-                                  text-align:right;
-                              }
-                             h4 {
-
-                               color:#0E497B;
-                             }
-                              </style>
-                              </head>
-                             <body>
-                             
-                             <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                             
-                             <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                             <h4>\(tituloP1)</h4>
-                             </div>
-                             
-                                  <div class="myDiv">\(decoded)<br></div>
-                                 
-                             
-                             
-                             
-                             </body>
-                             </html>
-                             """
-              }
-              
-              
-              if(tituloP1.count>0 && tituloP2.count>0){
-                  html1 = """
-                             <html>
-                              <head>
-                              <style>
-                                  .myDiv {
-                                      background-color: #ffffff;
-                                      color:#0e497B;
-                                      padding:12px;
-                                      width:100%;
-                                  }
-                              .myDiv2 {
-                                  background-color: #ffffff;
-                                  color:#0e497B;
-                                  padding:12px;
-                                  width:100%;
-                                  text-align:right;
-                              }
-                             h4 {
-
-                               color:#0E497B;
-                             }
-                              </style>
-                              </head>
-                             <body>
-                             
-                             <div class="myDiv2"><h5>\(circulares[posicion].nivel!)</h5></div><div  class="myDiv2"><h5>\(d)</h5></div>
-                             
-                             <div id="titulo"  style="width:100%;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                             <h4>\(tituloP1)</h4>
-                             </div>
-                             <div id='titulo2' style='width:100%;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-24px'>
-                             <h4>\(tituloP2)</h4>
-                             </div>
-                             <div class="myDiv">\(decoded)<br></div>
-                                 
-                             
-                             
-                             
-                             </body>
-                             </html>
-                             """
-              }
-             
-              
-              
-              let modifiedFont = NSString(format:"<span>%@</span>" as NSString, html1) as String
-
-                         let attrStr = try! NSMutableAttributedString(
-                             data: modifiedFont.data(using: .unicode, allowLossyConversion: true)!,
-                             options: [NSAttributedString.DocumentReadingOptionKey.documentType:NSAttributedString.DocumentType.html, NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8.rawValue],
-                             documentAttributes: nil)
-                         let textRangeForFont : NSRange = NSMakeRange(0, attrStr.length)
-                         attrStr.addAttributes([NSAttributedString.Key.font : UIFont(name: "Gotham Rounded",size:12)!], range: textRangeForFont)
-                         
-                         webViewSinConexion.attributedText = attrStr
+                mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+               
+                         //webViewSinConexion.attributedText = attrStr
                             
-                       }
-            }
+               }
+        
+           // }
             
         
     }
@@ -1804,11 +2000,17 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
               
                if sqlite3_step(statement) == SQLITE_DONE {
                        print("Circular actualizada correctamente")
+                       //self.btnSiguienteClick(self)
+                   btnSiguiente.sendActions(for: .touchUpInside)
                    }else{
                        print("Circular no se pudo eliminar")
                    }
                    
                }
+        
+        
+        
+        
                
        }
        
@@ -1887,7 +2089,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
     }
     
-    @IBAction func btnFavoritoClick(_ sender: Any) {
+    @IBAction func btnFavoritoClick(_ sender: UIButton) {
         
         if(tipoCircular != 5){
             if(ConexionRed.isConnectedToNetwork()){
@@ -2084,7 +2286,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         
     }
     var pos = UserDefaults.standard.integer(forKey:"posicion")
-    @IBAction func btnEliminaClick(_ sender: Any) {
+    @IBAction func btnEliminaClick(_ sender: UIButton) {
        if(ConexionRed.isConnectedToNetwork()){
         
         var tituloEliminar:String
@@ -2102,8 +2304,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.globalId)
                     self.eliminaCircular(idCircular:Int(self.globalId) ?? 0 ,idUsuario:Int(self.idUsuario) ?? 0)
                       //Pasar a la siguiente
-                      
-                      self.pos = self.pos+1
+                    //self.btnSiguienteClick(self)
+                      self.btnSiguiente.sendActions(for: .touchUpInside)
+                      /*self.pos = self.pos+1
                       
                       //if(self.posicion<self.ids.count){
                           var nextId = self.ids[self.pos]
@@ -2118,7 +2321,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                           if(nextHoraIniIcs != "00:00:00"){
                               self.imbCalendario.isHidden=false
                           }
-                           //self.lblNivel.text = nextNivel
+                          
                           
                           self.circularTitulo = nextTitulo
                           let link = URL(string:self.urlBase+"getCircularId6.php?id=\(nextId)")!
@@ -2126,24 +2329,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                           self.circularUrl = self.urlBase+"getCircularId6.php?id=\(nextId)"
                           self.webView.load(request)
                           self.title = "Circular"
-                          //nextTitulo.uppercased()
-                          
-                          /*let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-                          let mes = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
-                          let dia = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
-                          let dateFormatter = DateFormatter()
-                          dateFormatter.dateFormat = "dd/MM/yyyy"
-                          dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                          let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
-                          dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
-                          let d = dateFormatter.string(from: date1!)
-                          self.lblFechaCircular.text = d*/
-                      
-                          //self.lblTituloParte1.text=nextTitulo
-                          
-                          
                           self.id = nextId;
-                     
+                     */
                       
                       
                       
@@ -2187,10 +2374,10 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 self.delCircularSinDialogo(direccion: self.urlBase+self.delMetodo, usuario_id:self.idUsuario, circular_id: self.globalId)
                  self.eliminaCircular(idCircular:Int(self.globalId) ?? 0 ,idUsuario:Int(self.idUsuario) ?? 0)
                 //Pasar a la siguiente
+               
+                /*self.pos = self.pos+1
                 
-                self.pos = self.pos+1
-                
-                //if(self.posicion<self.ids.count){
+               
                     var nextId = self.ids[self.pos]
                     var nextTitulo = self.titulos[self.pos]
                     var nextFecha = self.fechas[self.pos]
@@ -2210,7 +2397,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     let request = URLRequest(url: link)
                     self.circularUrl = self.urlBase+"getCircularId6.php?id=\(nextId)"
                     self.webView.load(request)
-                    self.title = "Circular"
+                    self.title = "Circular"*/
                     //nextTitulo.uppercased()
                     
                     /*let anio = nextFecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
@@ -2227,7 +2414,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     //self.lblTituloParte1.text=nextTitulo
                     
                     
-                    self.id = nextId;
+                    //self.id = nextId;
                
                 
                 
@@ -2578,7 +2765,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                        } else {
                          print("name not found")
                        }
-                   
+                           print("nivel \(nivel)")
                            let adj = sqlite3_column_int(queryStatement, 11)
                           
                            
@@ -2610,9 +2797,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                    }
                    
                    
-                   if(eliminada==0 ){
+                   //if(eliminada==0 ){
                       self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
-                   }
+                    
+                    
+                    self.ids.append("\(id)")
+                    
+                  // }
                   
                  }
                
@@ -2625,7 +2816,132 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
               sqlite3_finalize(queryStatement)
           }
     
-    
+    func leerCirculares(idCircular:Int){
+           print("Leer desde la base de datos local")
+           let fileUrl = try!
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+           
+           if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+               print("error opening database")
+           }
+           
+           /*
+            idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+            */
+           
+              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE idCircular=\(idCircular)"
+           var queryStatement: OpaquePointer? = nil
+           var imagen:UIImage
+           imagen = UIImage.init(named: "appmenu05")!
+           
+           if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+          
+              
+               
+                while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                        let id = sqlite3_column_int(queryStatement, 0)
+                           var titulo:String="";
+                   
+                          if let name = sqlite3_column_text(queryStatement, 1) {
+                              titulo = String(cString: name)
+                             } else {
+                              print("name not found")
+                          }
+                   
+                   
+                           var cont:String="";
+                   
+                          if let contenido = sqlite3_column_text(queryStatement,2) {
+                              cont = String(cString: contenido)
+                             } else {
+                              print("name not found")
+                          }
+                 
+                           let leida = sqlite3_column_int(queryStatement, 3)
+                           let favorita = sqlite3_column_int(queryStatement, 4)
+                           let eliminada = sqlite3_column_int(queryStatement, 5)
+                           
+                           
+                   
+                            var fechaIcs:String="";
+                            if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                            fechaIcs = String(cString: fIcs)
+                            } else {
+                                 print("name not found")
+                            }
+                        
+                    
+                     var hIniIcs:String="";
+                     if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                       hIniIcs = String(cString: horaInicioIcs)
+                      } else {
+                       print("hIniIcs not found")
+                   }
+                    
+                    
+                    var hFinIcs:String="";
+                    if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                        hFinIcs = String(cString: horaFinIcs)
+                        } else {
+                          print("name not found")
+                        }
+                    
+                   var nivel:String="";
+                   if  let nv = sqlite3_column_text(queryStatement, 10) {
+                       nivel = String(cString: nv)
+                       } else {
+                         print("name not found")
+                       }
+                           print("nivel \(nivel)")
+                           let adj = sqlite3_column_int(queryStatement, 11)
+                          
+                           
+                           if(Int(leida) == 1){
+                              imagen = UIImage.init(named: "circle_white")!
+                           }else{
+                               imagen = UIImage.init(named: "circle")!
+                           }
+                   
+                           if(Int(favorita)==1){
+                              imagen = UIImage.init(named: "circle_white")!
+                           }
+                   
+                           /*if(Int(favorita)==1 && Int(leida) == 0){
+                               imagen = UIImage.init(named: "circle")!
+                            }
+                           if(Int(favorita)==1 && Int(leida) == 1){
+                               imagen = UIImage.init(named: "circle_white")!
+                           }*/
+                   
+                           var noLeida:Int = 0
+                          
+                   var fechaCircular="";
+                   if let fecha = sqlite3_column_text(queryStatement, 6) {
+                       fechaCircular = String(cString: fecha)
+                      
+                   } else {
+                       print("name not found")
+                   }
+                   
+                   
+                   //if(eliminada==0 ){
+                      self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                    
+                    
+                    self.ids.append("\(id)")
+                    
+                   //}
+                  
+                 }
+               
+              
+                }
+               else {
+                print("SELECT statement could not be prepared")
+              }
+
+              sqlite3_finalize(queryStatement)
+          }
     func getFavorita(idCircular:Int)->Int{
               print("Leer desde la base de datos local")
               let fileUrl = try!
@@ -2812,9 +3128,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              }
              
              
-             if(eliminada==0 ){
+             //if(eliminada==0 ){
                 self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
-             }
+             //}
             
            }
          
@@ -3312,10 +3628,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                  print("name not found")
              }
              
+            print("FECHA \(fechaCircular)")
              
-             if(eliminada==0 ){
+             //if(eliminada==0 ){
                 self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
-             }
+            // }
             
            }
          
@@ -3428,8 +3745,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                    print("No se pudo obtener el id")
                                    return
                                }
-                               print(id)
-                               
+                               //print(id)
+                            print("Tengo el id")
                                guard let titulo = diccionario["titulo"] as? String else {
                                    print("No se pudo obtener el titulo")
                                    return
@@ -4418,5 +4735,6 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 }
 
     
+
 
 

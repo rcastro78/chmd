@@ -60,6 +60,8 @@ class ValidarCuentaViewController: UIViewController {
     func validarEmail(url:URL)->Int{
         var valida:Int=0
         self.lblMensaje.text="Validando cuenta de correo"
+        
+        
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
@@ -74,7 +76,7 @@ class ValidarCuentaViewController: UIViewController {
             }
             
             }.resume()
-        
+       
         return valida
         
     }

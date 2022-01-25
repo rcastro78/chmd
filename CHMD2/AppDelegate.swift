@@ -125,9 +125,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
         
         
         
-        UINavigationBar.appearance().barTintColor = UIColor(red: 9.0/255.0, green: 143.0/255.0, blue: 207.0/255.0, alpha: 1.0)
+        /*UINavigationBar.appearance().barTintColor = UIColor(red: 9.0/255.0, green: 143.0/255.0, blue: 207.0/255.0, alpha: 1.0)
         UINavigationBar.appearance().tintColor = UIColor.white
-        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]*/
+        if #available(iOS 13.0, *) {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        appearance.backgroundColor = UIColor(red: 9.0/255.0, green: 143.0/255.0, blue: 207.0/255.0, alpha: 1.0)
+    
+        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().standardAppearance = appearance;
+        UINavigationBar.appearance().scrollEdgeAppearance = UINavigationBar.appearance().standardAppearance
+        
+            
+        }else{
+            UINavigationBar.appearance().barTintColor = UIColor(red: 9.0/255.0, green: 143.0/255.0, blue: 207.0/255.0, alpha: 1.0)
+            UINavigationBar.appearance().tintColor = UIColor.white
+            UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        }
+        
+        
+        
         
         return true
     }
@@ -220,20 +239,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
             print("Se dio click a la notificacion")
             let request = response.notification.request
             let userInfo = request.content.userInfo
-            //Con esto capturamos los valores enviados en la notificacion
-            //let idCircular = userInfo["id"] as! String
+
         
                 let aps = userInfo[AnyHashable("aps")] as? NSDictionary
                 let body = userInfo[("body")] as? String
-                let idCircular = userInfo[("idCircular")] as? String
+                let idCircular = userInfo[("body")] as? String
                 let b = aps![AnyHashable("badge")] as? Int
              
         debugPrint("cuerpo: \(body!)")
         debugPrint("cuerpo: \(idCircular!)")
-        
-        //let idCircular = aps![AnyHashable("idCircular")] as? String
-              //Mostrar el badge
-              UIApplication.shared.applicationIconBadgeNumber = b!
+        UIApplication.shared.applicationIconBadgeNumber = b!
         
             debugPrint("userInfo: \(userInfo)")
             UserDefaults.standard.set(1, forKey: "viaNotif")

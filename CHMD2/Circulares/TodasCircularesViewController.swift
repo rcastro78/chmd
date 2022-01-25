@@ -10,6 +10,7 @@ import UIKit
 import Alamofire
 import SQLite3
 import Firebase
+import Foundation
 
 
 class TodasCircularesViewController: UIViewController,UITableViewDelegate, UITableViewDataSource,UISearchBarDelegate,UIGestureRecognizerDelegate,UITableViewDataSourcePrefetching {
@@ -61,34 +62,56 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(_:true)
-         circulares.removeAll()
-        descarga = UserDefaults.standard.integer(forKey: "descarga")
-         if ConexionRed.isConnectedToNetwork() == true {
-            let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-             guard let _url = URL(string: address) else { return };
-            
-            let addressN=self.urlBase+self.metodoNotificaciones+"?usuario_id=\(self.idUsuario)"
-            guard let _urlN = URL(string: addressN) else { return };
-            
-            //La primera vez, va a descargar, las siguientes siempre leer desde la base local
-            if(descarga==1){
-                self.getDataFromURL(url: _url)
-                self.getDataFromURLNotificaciones(url:_urlN)
-            }else{
-              self.leerCirculares()
-            }
-                
-           
-         }else{
-           self.leerCirculares()
-        }
+        circulares.removeAll()
+        
        
+        descarga = UserDefaults.standard.integer(forKey: "descarga")
+        self.leerCirculares()
+        
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(_:true)
+        circulares.removeAll()
+        descarga = UserDefaults.standard.integer(forKey: "descarga")
+        self.leerCirculares()
+        
+    }
+    
+    func contarCircularesNoLeidas()->Int32{
+        print("Leer desde la base de datos local")
+        var total:Int32=0
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+        
+        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+            print("error opening database")
+        }
+        
+        /*
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+         */
+        
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and eliminada=0 and favorita=0 and tipo=1"
+           var queryStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let id = sqlite3_column_int(queryStatement, 0)
+                total = id
+             }
+            
+        }
+        
+       return total
+    }
+    
+    
+    
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        circulares.removeAll()
+        //circulares.removeAll()
        
         self.hideKeyboardWhenTappedAround()
         self.tableViewCirculares.delegate=self
@@ -152,21 +175,33 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
       self.tableViewCirculares.addSubview(refreshControl)
        
         
+      let totalNoLeidas = contarCircularesNoLeidas()
+        if(totalNoLeidas<=0){
+            //Al no tener ninguna no leída, poner el badge a 0
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }else{
+            UIApplication.shared.applicationIconBadgeNumber = Int(totalNoLeidas)
+        }
+        /*let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+         guard let _url = URL(string: address) else { return };
+        
+        obtenerCirculares(url: _url)*/
     }
   
     @objc func refresh(_ sender: AnyObject) {
       circulares.removeAll()
         print("se ha refrescado...")
-      if ConexionRed.isConnectedToNetwork() == true {
+        self.leerCirculares()
+      /*if ConexionRed.isConnectedToNetwork() == true {
          let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
           guard let _url = URL(string: address) else { return };
           self.getDataFromURL(url: _url)
-        //Actualizar las notificaciones
+      
         let addressN=self.urlBase+self.metodoNotificaciones+"?usuario_id=\(self.idUsuario)"
                    guard let _urlN = URL(string: addressN) else { return };
         self.getDataFromURLNotificaciones(url:_urlN)
         self.leerCirculares()
-       }
+       }*/
     }
 
    
@@ -271,33 +306,44 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
              //cell.btnHacerFav.addTarget(self, action: #selector(makeNoLeida), for: .touchUpInside)
              cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
-            
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd HH:mm:ss"
              
-             
-              if(c.fecha != "")
+            if(c.fecha.contains(":"))
               {
                                let dateFormatter = DateFormatter()
                                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                                dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
                                let date1 = dateFormatter.date(from: c.fecha)
+                
                                
-                               let intervalo = Date() - date1!
-                               let diferenciaDias:Int = intervalo.day!
-                               if(diferenciaDias<=7){
-                                   dateFormatter.dateFormat = "EEEE"
-                               }
-                            if(diferenciaDias>7 && diferenciaDias<=365){
-                                 dateFormatter.dateFormat = "dd/MM/yyyy"
-                             }
-                             if(diferenciaDias>365){
-                                 dateFormatter.dateFormat = "MMMM/yyyy"
-                             }
-                 
-                               let dia = dateFormatter.string(from: date1!)
-                       
-                        
-                        cell.lblFecha.text?=dia
-              }
+                                let intervalo = Date() - date1!
+                                let diferenciaDias:Int = intervalo.day!
+                                print("Intervalo en dias: \(diferenciaDias)")
+                                
+                                if(diferenciaDias<=7){
+                                    dateFormatter.dateFormat = "EEEE"
+                                }
+                             if(diferenciaDias>7 && diferenciaDias<=365){
+                                  dateFormatter.dateFormat = "dd/MM/yyyy"
+                              }
+                              if(diferenciaDias>365){
+                                  dateFormatter.dateFormat = "MMMM/yyyy"
+                              }
+                  
+                                let dia = dateFormatter.string(from: date1!)
+                                   
+            
+          
+            
+            
+            
+                cell.lblFecha.text?=dia
+                               
+                               
+            }else{
+                cell.lblFecha.text? = ""
+            }
                    
              cell.imgCircular.image = c.imagen
              
@@ -682,7 +728,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             cell?.selectionStyle = .none
             UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
-            print("posicion \(indexPath.row)")
+            print("CIRCULAR_ID \(c.id)")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
             UserDefaults.standard.set(c.contenido,forKey:"contenido")
@@ -693,6 +739,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             UserDefaults.standard.set(0, forKey: "viaNotif")
             UserDefaults.standard.set(c.noLeido, forKey: "noLeido")
             UserDefaults.standard.set(1, forKey: "tipoCircular")
+            UserDefaults.standard.set(0, forKey: "clickeado")
             UserDefaults.standard.set(c.favorita, forKey: "circFav")
             self.actualizaLeidosCirculares(idCircular: c.id, idUsuario: Int(self.idUsuario)!)
                                                            
@@ -733,7 +780,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE tipo=1"
+           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE tipo=1 ORDER BY idCircular DESC"
            var queryStatement: OpaquePointer? = nil
         var imagen:UIImage
         imagen = UIImage.init(named: "appmenu05")!
@@ -814,6 +861,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     }
                 
                 
+               
                         let adj = sqlite3_column_int(queryStatement, 14)
                 var nl:Int=0
                        
@@ -855,6 +903,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     print("name not found")
                 }
                 
+                print("FECHACIRC \(fechaCircular)")
+                
+                
                 //grados:String,adm:String,grupos:String,rts:String,enviaTodos:String
                 if(eliminada==0 ){
                     self.circulares.append(CircularCompleta(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,leido:Int(leida),favorita: Int(favorita),espec:especiales,noLeido:nl,grados: "",adm: "",grupos: "",rts: "",enviaTodos: ""))
@@ -862,14 +913,24 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                
               }
             
-            self.tableViewCirculares.reloadData()
+            //self.tableViewCirculares.reloadData()
 
              }
             else {
              print("SELECT statement could not be prepared")
            }
 
+        
+        if self.refreshControl.isRefreshing {
+          self.refreshControl.endRefreshing()
+        }
+        
+        
            sqlite3_finalize(queryStatement)
+        
+        self.tableViewCirculares.reloadData()
+        
+        
        }
    
     
@@ -1317,13 +1378,22 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
     }
     
+    
+    
+    
+   
+    
+    
+    
+    
+    
     func getDataFromURL(url: URL) {
         print("Leer desde el servidor....")
         print(url)
         circulares.removeAll()
        
         self.delete()
-               
+        
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
             
@@ -1429,7 +1499,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         var rts:String?=""
                         rts=obj["rts"] as? String
                         
-                        
+                    
                         
                         
                         var enviaTodos:String?=""
@@ -1483,7 +1553,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                            if(Int(eliminada)!==0){
                             print(titulo)
                             self.circulares.append(CircularCompleta(id:Int(id)!,imagen: imagen,encabezado: "",nombre: titulo,fecha: fecha,estado: 0,contenido:"",adjunto:adj,fechaIcs: fechaIcs,horaInicialIcs: horaInicioIcs,horaFinalIcs: horaFinIcs, nivel:nv ?? "",leido:Int(leido)!,favorita:Int(favorito)!,espec:esp!,noLeido:noLeida,
-                                grados: grados!,adm: adm!,grupos: "",rts: rts!,enviaTodos: enviaTodos!))
+                                                                    grados: grados!,adm: adm!,grupos: "",rts: rts!,enviaTodos: enviaTodos!))
                            }
                         
                         
@@ -1506,7 +1576,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                         if(rts!.count>0){
                             rts = "\(rts!)/"
                         }
-                        nv=""
+                        
                         var para:String = "\(nv!) \(grados!) \(esp!) \(adm!) \(rts!)"
                         para = para.trimmingCharacters(in: .whitespacesAndNewlines)
                         para = String(para.dropLast())
@@ -1524,7 +1594,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                          guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
                          */
                         print("leida server: \(leido), no leida server: \(noLeida)")
-                         self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: para)
+                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: para)
                         
                         
                     }
@@ -1618,7 +1688,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                                        return
                                                                      }
                        
-                    
+                   
                        //Con esto se evita la excepcion por los valores nulos
                        var nv:String?
                        if (obj["nivel"] == nil){
@@ -2282,6 +2352,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
               }
           }
       }
+    
+    
+    
+    
     
     
     

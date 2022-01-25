@@ -135,7 +135,7 @@ class MenuCircularesTableViewController: UITableViewController {
          idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 AND tipo=1"
+           let consulta = "SELECT count(*) FROM appCircularCHMD where tipo=1 AND eliminada=0"
            var queryStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
               while(sqlite3_step(queryStatement) == SQLITE_ROW) {
@@ -283,29 +283,38 @@ class MenuCircularesTableViewController: UITableViewController {
         print("total fav: \(self.contarCircularesFavs())")
         print("total notif: \(self.contarNotificaciones())")
         if(m.id==1){
-            if(self.contarCirculares()>10){
-                cell.lblConteo.text="10+"
+           
+            if(self.contarCirculares()>50){
+                cell.lblConteo.text="50+"
+                cell.lblConteo.textColor = .systemBlue
+                cell.lblConteo.backgroundColor = .clear
             }else{
+            
                 if(self.contarCirculares()>0){
                     cell.lblConteo.text="\(self.contarCirculares())"
+                    cell.lblConteo.textColor = .systemBlue
+                    cell.lblConteo.backgroundColor = .clear
                 }else{
                     cell.lblConteo.text=""
+                    cell.lblConteo.textColor = .clear
                     cell.lblConteo.backgroundColor = .clear
                 }
-            }
-            
-            
+             }
         }
         if(m.id==2){
             
             if(self.contarCircularesFavs()>10){
                 cell.lblConteo.text="10+"
+                cell.lblConteo.backgroundColor = .clear
+                cell.lblConteo.textColor = .systemBlue
             }else{
                 if(self.contarCircularesFavs()>0){
                     cell.lblConteo.text="\(self.contarCircularesFavs())"
+                    cell.lblConteo.backgroundColor = .clear
+                    cell.lblConteo.textColor = .systemBlue
                 }else{
                     cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .clear
+                    cell.lblConteo.textColor = .clear
                 }
             }
             
@@ -315,12 +324,16 @@ class MenuCircularesTableViewController: UITableViewController {
         if(m.id==3){
             if(self.contarCircularesNoLeidas()>10){
                 cell.lblConteo.text="10+"
+                cell.lblConteo.backgroundColor = .clear
+                cell.lblConteo.textColor = .systemBlue
             }else{
                 if(self.contarCircularesNoLeidas()>0){
                     cell.lblConteo.text="\(self.contarCircularesNoLeidas())"
+                    cell.lblConteo.backgroundColor = .clear
+                    cell.lblConteo.textColor = .systemBlue
                 }else{
                     cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .clear
+                    cell.lblConteo.textColor = .systemBlue
                 }
             }
             
@@ -330,13 +343,16 @@ class MenuCircularesTableViewController: UITableViewController {
         if(m.id==4){
             if(self.contarCircularesEliminadas()>10){
                 cell.lblConteo.text="10+"
+                cell.lblConteo.backgroundColor = .clear
+                cell.lblConteo.textColor = .systemRed
             }else{
                 if(self.contarCircularesEliminadas()>0){
                     cell.lblConteo.text="\(self.contarCircularesEliminadas())"
-                    cell.lblConteo.backgroundColor = .red
+                    cell.lblConteo.backgroundColor = .clear
+                    cell.lblConteo.textColor = .systemRed
                 }else{
                     cell.lblConteo.text=""
-                    cell.lblConteo.backgroundColor = .clear
+                    cell.lblConteo.textColor = .clear
                 }
             }
             
@@ -346,18 +362,29 @@ class MenuCircularesTableViewController: UITableViewController {
         if(m.id==5){
             if(self.contarNotificaciones()>10){
                 cell.lblConteo.text="10+"
+                cell.lblConteo.textColor = .systemBlue
+                cell.lblConteo.backgroundColor = .clear
             }else{
                 if(self.contarNotificaciones()>0){
                     cell.lblConteo.text="\(self.contarNotificaciones())"
-                    cell.lblConteo.backgroundColor = .blue
+                    cell.lblConteo.textColor = .systemBlue
+                    cell.lblConteo.backgroundColor = .clear
                 }else{
                     cell.lblConteo.text=""
                     cell.lblConteo.backgroundColor = .clear
+                    cell.lblConteo.textColor = .clear
                 }
             }
             
            
         }
+        
+        
+        if(m.id==6){
+            cell.lblConteo.text=""
+            cell.lblConteo.textColor = .clear
+        }
+        
         /*if(m.id==5){
             //totalNotif
             var total = UserDefaults.standard.integer(forKey: "totalNotif")
