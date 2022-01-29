@@ -29,6 +29,10 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://chmd1.page.link/</string>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>whatsapp</string>
@@ -36,8 +40,6 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
-    
-    
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
@@ -52,12 +54,6 @@
 			</dict>
 		</dict>
 	</dict>
-    
-    <key>FirebaseDynamicLinksCustomDomains</key>
-    <array>
-      <string>https://chmd1.page.link/</string>
-    </array>
-    
 	<key>NSCalendarsUsageDescription</key>
 	<string>La aplicación necesita permiso para acceder al calendario y crear eventos del colegio</string>
 	<key>NSCameraUsageDescription</key>

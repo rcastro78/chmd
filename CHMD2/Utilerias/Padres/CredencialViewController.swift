@@ -55,6 +55,7 @@ class CredencialViewController: UIViewController {
             let imageURL = URL(string: nuevaFoto.replacingOccurrences(of: " ", with: "%20"))
             print("foto: \(nuevaFoto)")
             self.imgFotoPadre.cargar(url: imageURL!)
+            self.imgFotoPadre.transform = CGAffineTransform(rotationAngle: .pi / 2)
             self.qrImage.image = imagen
             let firmaURL = URL(string:self.urlFirma)
             self.imgFirma.cargar(url:firmaURL!)
@@ -138,6 +139,7 @@ class CredencialViewController: UIViewController {
     @IBAction func takePicture(_ sender: UIBarButtonItem) {
         ImagePickerManager().pickImage(self){ image in
             self.imgFotoPadre.image = image
+            self.imgFotoPadre.transform = CGAffineTransform(rotationAngle: .pi*2)
             }
     }
     

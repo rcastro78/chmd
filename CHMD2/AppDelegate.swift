@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        //UIApplication.shared.applicationIconBadgeNumber = 99
+       
         
          var statement:OpaquePointer?
         let sqlRecuento1 = "select count(*) from appNotificacion"
@@ -74,11 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
 
         
         
-       
-        
-        //Bitly.initialize("9bd1d4e87ce38e38044ff0c7c60c07c90483e2a4")
-        
-        
         if ConexionRed.isConnectedToNetwork() == true {
             GIDSignIn.sharedInstance().clientID = "465701420614-006480utbh9mvsubvmv398qrt0hbee1i.apps.googleusercontent.com"
                        GIDSignIn.sharedInstance().delegate = self
@@ -90,22 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
         UserDefaults.standard.setValue(0, forKey: "notificado")
         
         
-        
-        /*NotificationCenter.currentNotificationCenter().delegate = self
-        
-        let authOptions: AuthorizationOptions = [.alert, .badge, .sound]
-        NotificationCenter.current().requestAuthorization(
-            options: authOptions,
-            completionHandler: {_, _ in })
-    } else {
-    let settings: UIUserNotificationSettings =
-    UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-    application.registerUserNotificationSettings(settings)
-    }
     
-    application.registerForRemoteNotifications()*/
-        
-        //UIApplication.shared.registerForRemoteNotifications()
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         if #available(iOS 10.0, *) {
@@ -151,51 +131,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
         return true
     }
     
-   
-        
-    /*func getNotificationSettings() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            print("Notification settings: \(settings)")
-            
-            guard settings.authorizationStatus == .authorized else { return }
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
+  
+    
+func application(_ application: UIApplication,
+                 continue userActivity: NSUserActivity,
+                 restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+    guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+        let url = userActivity.webpageURL,
+        let host = url.host else {
+            return false
+    }
+
+    let isDynamicLinkHandled =
+        DynamicLinks.dynamicLinks().handleUniversalLink(url) { dynamicLink, error in
+
+            guard error == nil,
+                let dynamicLink = dynamicLink,
+                let urlString = dynamicLink.url?.absoluteString else {
+                    return
             }
+            let idCircularViaNotif = urlString.components(separatedBy:"=")[1]
+   
+            UserDefaults.standard.set(1, forKey: "viaNotif")
+            UserDefaults.standard.set(idCircularViaNotif, forKey: "idCircularViaNotif")
+            
+            let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                    let circulares = mainStoryboard.instantiateViewController(withIdentifier: "CircularDetalleViewController") as! CircularDetalleViewController
+                    self.window?.rootViewController = circulares
             
             
         }
-    }
-    
-    
-    func registerForPushNotifications() {
-        UNUserNotificationCenter.current()
-            .requestAuthorization(options: [.alert, .sound, .badge]) {
-                [weak self] granted, error in
-                
-                print("Permission granted: \(granted)")
-                guard granted else { return }
-                self?.getNotificationSettings()
-        }
-    }
-    
-    
-    
-    func application(
-        _ application: UIApplication,
-        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-        ) {
-        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-        let token = tokenParts.joined()
-        print("Device Token: \(token)")
-    }
-    
-    func application(
-        _ application: UIApplication,
-        didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register: \(error)")
-    }*/
-    
-    
+    return isDynamicLinkHandled
+}
     
    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -243,11 +210,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
         
                 let aps = userInfo[AnyHashable("aps")] as? NSDictionary
                 let body = userInfo[("body")] as? String
-                let idCircular = userInfo[("body")] as? String
+                let idCircular = userInfo[("idCircular")] as? String
                 let b = aps![AnyHashable("badge")] as? Int
              
         debugPrint("cuerpo: \(body!)")
         debugPrint("cuerpo: \(idCircular!)")
+        debugPrint("cuerpo: \(b!)")
         UIApplication.shared.applicationIconBadgeNumber = b!
         
             debugPrint("userInfo: \(userInfo)")
@@ -348,12 +316,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
       let token = tokenParts.joined()
         let deviceTokenString = deviceToken.hexString
         let token1 = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
-        print("Hex Token: \(deviceTokenString)")
-        print("Device Token: \(deviceToken)")
-       print("Reduced Token: \(token1)")
-        
-       
-        
+      
         
        //Este es el token para utilizar en las notificaciones push
         UserDefaults.standard.set(deviceTokenString, forKey: "deviceToken")

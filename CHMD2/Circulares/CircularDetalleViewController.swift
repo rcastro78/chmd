@@ -1079,10 +1079,16 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
             
         }else{
-           
+            self.showToast(message:"Espera un momento!", font: UIFont(name:"GothamRounded-Bold",size:12.0)!)
             id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? "0")!
-            obtenerCircular(uri: urlBase+"getCircularId6.php?id="+id)
+            //obtenerCircular(uri: urlBase+"getCircularId6.php?id="+id)
+            
+            webView.isHidden=false
+            webViewSinConexion.isHidden=true
+
+            webView.load(URLRequest(url: URL(string: urlBase+"getCircularId6.php?id="+id)!))
+            
             
             let btnVolver = UIBarButtonItem(title: "< Volver", style: .done, target: self, action: #selector(volver))
             self.navigationItem.rightBarButtonItem  = btnVolver
