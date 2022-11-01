@@ -28,6 +28,7 @@
 		53F6187D243D40C900A8B4A9 /* MenuCircularTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F6187C243D40C900A8B4A9 /* MenuCircularTableViewCell.swift */; };
 		53F799DD235E1BF600BB7E00 /* Responsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F799DC235E1BF500BB7E00 /* Responsable.swift */; };
 		53FFC05E2440FBFA00F87F30 /* TodasCircularesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FFC05D2440FBFA00F87F30 /* TodasCircularesViewController.swift */; };
+		C8419EAF27E58A7D00ACFC3A /* CircularDetalleNotificacionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8419EAE27E58A7C00ACFC3A /* CircularDetalleNotificacionViewController.swift */; };
 		C84ECE5E25CA5CD20089DFDD /* CircularCompleta.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84ECE5D25CA5CD10089DFDD /* CircularCompleta.swift */; };
 		C8C27C6B26FACEB400419DE7 /* Pods_CHMD2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11E7104BB344CB6EADC85E6A /* Pods_CHMD2.framework */; };
 		C8D71FFE27645BE3002F9785 /* ImagePickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D71FFD27645BE3002F9785 /* ImagePickerManager.swift */; };
@@ -84,6 +85,7 @@
 		922FA5420D1E5626B0647563 /* Pods-CHMD2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHMD2.debug.xcconfig"; path = "Target Support Files/Pods-CHMD2/Pods-CHMD2.debug.xcconfig"; sourceTree = "<group>"; };
 		C8156B0726F005B2002137B4 /* GothamRoundedBold_21016.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = GothamRoundedBold_21016.ttf; path = CHMD2/resources/GothamRoundedBold_21016.ttf; sourceTree = SOURCE_ROOT; };
 		C8156B0826F005B3002137B4 /* GothamRoundedBook_21018.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = GothamRoundedBook_21018.ttf; path = CHMD2/resources/GothamRoundedBook_21018.ttf; sourceTree = SOURCE_ROOT; };
+		C8419EAE27E58A7C00ACFC3A /* CircularDetalleNotificacionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularDetalleNotificacionViewController.swift; sourceTree = "<group>"; };
 		C84ECE5D25CA5CD10089DFDD /* CircularCompleta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularCompleta.swift; sourceTree = "<group>"; };
 		C8D71FFD27645BE3002F9785 /* ImagePickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerManager.swift; sourceTree = "<group>"; };
 		C8DEE7192687DF37005E3FDD /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 				5397ED822442939A009E3588 /* PapeleraViewController.swift */,
 				53BFA86724D8CB86003891B9 /* NotificacionTableViewController.swift */,
 				C8DEE7192687DF37005E3FDD /* PDFViewController.swift */,
+				C8419EAE27E58A7C00ACFC3A /* CircularDetalleNotificacionViewController.swift */,
 			);
 			path = Circulares;
 			sourceTree = "<group>";
@@ -475,6 +478,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53F6187D243D40C900A8B4A9 /* MenuCircularTableViewCell.swift in Sources */,
+				C8419EAF27E58A7D00ACFC3A /* CircularDetalleNotificacionViewController.swift in Sources */,
 				E0B1E47922E7F71D00CD8EE6 /* CircularNoLeidaTableViewCell.swift in Sources */,
 				E065778822D1126B0089A05A /* ViewController.swift in Sources */,
 				E0B1E48522E7FBF700CD8EE6 /* Circular.swift in Sources */,
@@ -667,7 +671,7 @@
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 73;
+				CURRENT_PROJECT_VERSION = 91;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
@@ -675,7 +679,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.2;
+				MARKETING_VERSION = 1.8.2;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -696,7 +700,7 @@
 				CODE_SIGN_ENTITLEMENTS = CHMD2/CHMD2.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 73;
+				CURRENT_PROJECT_VERSION = 91;
 				DEVELOPMENT_TEAM = 3UAVXU6LK5;
 				INFOPLIST_FILE = CHMD2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
@@ -704,7 +708,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.2;
+				MARKETING_VERSION = 1.8.2;
 				PRODUCT_BUNDLE_IDENTIFIER = mx.edu.CHMD1;
 				PRODUCT_NAME = CHMD;
 				PROVISIONING_PROFILE_SPECIFIER = "";

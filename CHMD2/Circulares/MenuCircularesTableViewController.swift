@@ -8,6 +8,7 @@ class MenuCircularesTableViewController: UITableViewController {
     @IBOutlet weak var lblNumFamilia: UILabel!
     var urlFotos:String = "http://chmd.chmd.edu.mx:65083/CREDENCIALES/padres/"
     var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
+    var urlNuevaFoto:String = "https://www.chmd.edu.mx/WebAdminCirculares/ws/credenciales/"
     var cifrarMetodo:String="cifrar.php"
     var idUsuario:String=""
     var db: OpaquePointer?
@@ -38,40 +39,58 @@ class MenuCircularesTableViewController: UITableViewController {
         lblUsuario.text=nombre
         lblNumFamilia.text=familia
         lblCorreo.text=email
-         
-        var fotoUrl = UserDefaults.standard.string(forKey: "fotoUrl") ?? ""
-        print("FOTO: \(fotoUrl)")
-        if(ConexionRed.isConnectedToNetwork()){
-            
-          
-            let address=self.urlBase+self.cifrarMetodo+"?idUsuario=\(self.idUsuario)"
-            guard let _url = URL(string: address) else { return };
-            let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))!
-          
-            Alamofire.request(imageURL).responseJSON {
-              response in
+        
+        
+        let nuevaFoto:String = urlNuevaFoto+idUsuario+".jpg"
+        let imageURL2 = URL(string: nuevaFoto.replacingOccurrences(of: " ", with: "%20"))!
+        
+        Alamofire.request(imageURL2).responseJSON {
+        response in
+            let status = response.response?.statusCode
+              print("status: \(status)")
+              if(status==200){
+                
+                let imageURL = URL(string: nuevaFoto.replacingOccurrences(of: " ", with: "%20"))!
+                print("fotocarnet: \(nuevaFoto)")
+                self.imgFotoPerfil.cargar(url: imageURL)
+                
+                
+              }else{
+                var fotoUrl = UserDefaults.standard.string(forKey: "fotoUrl") ?? ""
+                print("FOTO: \(fotoUrl)")
+                if(ConexionRed.isConnectedToNetwork()){
+                    
+                    let address=self.urlBase+self.cifrarMetodo+"?idUsuario=\(self.idUsuario)"
+                    guard let _url = URL(string: address) else { return };
+                    let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))!
+                  
+                    Alamofire.request(imageURL).responseJSON {
+                      response in
 
-              let status = response.response?.statusCode
-                print("FOTO: \(status)")
-                if(status!>200){
+                      let status = response.response?.statusCode
+                        print("FOTO: \(status)")
+                        if(status!>200){
+                            let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
+                            self.imgFotoPerfil.cargar(url: imageURL)
+                          }else{
+                            let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))
+                            self.imgFotoPerfil.cargar(url: imageURL!)
+                            //let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
+                        // self.imgFotoPerfil.cargar(url:placeholderImageURL)
+                        }
+
+                    }
+                 }else{
                     
-                    //let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                    //self.imgFotoPerfil.cargar(url:imageURL)
-                    let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                    self.imgFotoPerfil.cargar(url: imageURL)
-                    
-                    
-                }else{
-                    let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))
-                    self.imgFotoPerfil.cargar(url: imageURL!)
-                    //let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                // self.imgFotoPerfil.cargar(url:placeholderImageURL)
                 }
-
-            }
-         }else{
+              }
             
         }
+        
+        
+        
+         
+       
         
      
         
@@ -80,7 +99,7 @@ class MenuCircularesTableViewController: UITableViewController {
        
        
         
-}
+    }
     
     @objc func refresh() {
         
@@ -295,7 +314,7 @@ class MenuCircularesTableViewController: UITableViewController {
                     cell.lblConteo.textColor = .systemBlue
                     cell.lblConteo.backgroundColor = .clear
                 }else{
-                    cell.lblConteo.text=""
+                    cell.lblConteo.text="0"
                     cell.lblConteo.textColor = .clear
                     cell.lblConteo.backgroundColor = .clear
                 }
@@ -313,7 +332,8 @@ class MenuCircularesTableViewController: UITableViewController {
                     cell.lblConteo.backgroundColor = .clear
                     cell.lblConteo.textColor = .systemBlue
                 }else{
-                    cell.lblConteo.text=""
+                    cell.lblConteo.text="0"
+                    cell.lblConteo.backgroundColor = .clear
                     cell.lblConteo.textColor = .clear
                 }
             }
@@ -333,6 +353,7 @@ class MenuCircularesTableViewController: UITableViewController {
                     cell.lblConteo.textColor = .systemBlue
                 }else{
                     cell.lblConteo.text=""
+                    cell.lblConteo.backgroundColor = .clear
                     cell.lblConteo.textColor = .systemBlue
                 }
             }

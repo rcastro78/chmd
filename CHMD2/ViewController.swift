@@ -13,17 +13,106 @@ import SQLite3
 import AuthenticationServices
 import Alamofire
 import Firebase
+
+
+extension UIImage {
+
+    
+    func resized(withPercentage percentage: CGFloat, isOpaque: Bool = true) -> UIImage? {
+            let canvas = CGSize(width: size.width * percentage, height: size.height * percentage)
+            let format = imageRendererFormat
+            format.opaque = isOpaque
+            return UIGraphicsImageRenderer(size: canvas, format: format).image {
+                _ in draw(in: CGRect(origin: .zero, size: canvas))
+            }
+        }
+        func resized(toWidth width: CGFloat, isOpaque: Bool = true) -> UIImage? {
+            let canvas = CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))
+            let format = imageRendererFormat
+            format.opaque = isOpaque
+            return UIGraphicsImageRenderer(size: canvas, format: format).image {
+                _ in draw(in: CGRect(origin: .zero, size: canvas))
+            }
+        }
+    
+    
+    func fixImageOrientation() -> UIImage? {
+
+
+        if (self.imageOrientation == .up) {
+            return self
+        }
+
+        var transform: CGAffineTransform = CGAffineTransform.identity
+
+
+        if ( self.imageOrientation == .left || self.imageOrientation == .leftMirrored ) {
+            transform = transform.translatedBy(x: self.size.width, y: 0)
+            transform = transform.rotated(by: CGFloat(Double.pi / 2.0))
+        } else if ( self.imageOrientation == .right || self.imageOrientation == .rightMirrored ) {
+            transform = transform.translatedBy(x: 0, y: self.size.height);
+            transform = transform.rotated(by: CGFloat(-Double.pi / 2.0));
+        } else if ( self.imageOrientation == .down || self.imageOrientation == .downMirrored ) {
+            transform = transform.translatedBy(x: self.size.width, y: self.size.height)
+            transform = transform.rotated(by: CGFloat(Double.pi))
+        } else if ( self.imageOrientation == .upMirrored || self.imageOrientation == .downMirrored ) {
+            transform = transform.translatedBy(x: self.size.width, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1)
+        } else if ( self.imageOrientation == .leftMirrored || self.imageOrientation == .rightMirrored ) {
+            transform = transform.translatedBy(x: self.size.height, y: 0);
+            transform = transform.scaledBy(x: -1, y: 1);
+        }
+
+
+        if let context: CGContext = CGContext(data: nil, width: Int(self.size.width), height: Int(self.size.height),
+                                       bitsPerComponent: self.cgImage!.bitsPerComponent, bytesPerRow: 0,
+                                       space: self.cgImage!.colorSpace!,
+                                       bitmapInfo: self.cgImage!.bitmapInfo.rawValue) {
+
+            context.concatenate(transform)
+
+            if ( self.imageOrientation == UIImage.Orientation.left ||
+                    self.imageOrientation == UIImage.Orientation.leftMirrored ||
+                    self.imageOrientation == UIImage.Orientation.right ||
+                    self.imageOrientation == UIImage.Orientation.rightMirrored ) {
+                context.draw(self.cgImage!, in: CGRect(x: 0,y: 0,width: self.size.height,height: self.size.width))
+            } else {
+                context.draw(self.cgImage!, in: CGRect(x: 0,y: 0,width: self.size.width,height: self.size.height))
+            }
+
+            if let contextImage = context.makeImage() {
+                return UIImage(cgImage: contextImage)
+            }
+
+        }
+
+        return nil
+    }
+}
+
+
 extension UIImageView {
     func cargar(url: URL) {
+        var activityIndicator = UIActivityIndicatorView()
+        
+        activityIndicator = UIActivityIndicatorView(style: .white)
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
+        activityIndicator.startAnimating()
+        
         DispatchQueue.global().async { [weak self] in
             if let data = try? Data(contentsOf: url) {
                 if let image = UIImage(data: data) {
                     DispatchQueue.main.async {
+                        activityIndicator.startAnimating()
                         self?.image = image
                     }
                 }
             }
         }
+        
+        
+        activityIndicator.stopAnimating()
+        
     }
 }
 
@@ -52,9 +141,6 @@ extension ViewController: ASAuthorizationControllerDelegate {
         }
 
     
-    
-    
-
         // Authorization Succeeded
         @available(iOS 13.0, *)
         func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
@@ -365,14 +451,16 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
             let nombre:String = user.profile.givenName
             email = user.profile.email
             //obtenerDatosUsuario(uri:base_url+get_usuario+"?correo="+email)
-            print(nombre)
-            print(email)
+            print("valida \(nombre)")
+            print("valida \(email)")
             UserDefaults.standard.set(1,forKey: "autenticado")
             UserDefaults.standard.set(nombre, forKey: "nombre")
             UserDefaults.standard.set(email, forKey: "email")
             UserDefaults.standard.set(0,forKey: "manzana")
             UserDefaults.standard.synchronize()
            
+        }else{
+            print("valida \(String(describing: error))")
         }
     }
     

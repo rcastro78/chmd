@@ -8,8 +8,8 @@
 
 import UIKit
 import Alamofire
-//import CryptoSwift
 import RijndaelSwift
+import SDWebImage
 
 class CredencialViewController: UIViewController {
 
@@ -21,26 +21,42 @@ class CredencialViewController: UIViewController {
     @IBOutlet weak var lblVigencia: UILabel!
     @IBOutlet weak var qrImage: UIImageView!
     @IBOutlet weak var imgFirma: UIImageView!
+    @IBOutlet weak var lblFamilia: UILabel!
     
     var urlFotos:String = "http://chmd.chmd.edu.mx:65083/CREDENCIALES/padres/"
     var urlFirma:String = "https://www.chmd.edu.mx/imagenesapp/img/firma.jpg"
     var urlNuevaFoto:String = "https://www.chmd.edu.mx/WebAdminCirculares/ws/credenciales/"
+    var activityIndicator = UIActivityIndicatorView()
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         progress.visibility = UIView.Visibility.invisible
+        
+        
+        self.activityIndicator = UIActivityIndicatorView(style: .gray)
+            self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
+            self.activityIndicator.hidesWhenStopped = true
+
+            view.addSubview(self.activityIndicator)
+        
+        self.activityIndicator.startAnimating()
+      
         var nombre = UserDefaults.standard.string(forKey: "nombreUsuario") ?? ""
         var responsable = UserDefaults.standard.string(forKey: "responsable") ?? ""
         var familia = UserDefaults.standard.string(forKey: "familia") ?? ""
         var vigencia = UserDefaults.standard.string(forKey: "vigencia") ?? ""
         var fotoUrl = UserDefaults.standard.string(forKey: "fotoUrl") ?? ""
         var cifrado = UserDefaults.standard.string(forKey: "cifrado") ?? ""
+        var nfamilia = UserDefaults.standard.string(forKey: "numeroUsuario") ?? "0"
+        
         let idUsuario:String = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         lblNombre.text=nombre.lowercased().capitalized
+        lblFamilia.text = "Familia: \(nfamilia)"
         lblResponsable.text=responsable
         lblVigencia.text = "Vigente hasta: \(vigencia)"
         let nuevaFoto:String = urlNuevaFoto+idUsuario+".jpg"
-        
         let imageURL2 = URL(string: nuevaFoto.replacingOccurrences(of: " ", with: "%20"))!
         //Revisar si ha cambiado su foto
         Alamofire.request(imageURL2).responseJSON {
@@ -54,11 +70,28 @@ class CredencialViewController: UIViewController {
             let imagen = self.generarQR(from: cifrado)
             let imageURL = URL(string: nuevaFoto.replacingOccurrences(of: " ", with: "%20"))
             print("foto: \(nuevaFoto)")
-            self.imgFotoPadre.cargar(url: imageURL!)
-            self.imgFotoPadre.transform = CGAffineTransform(rotationAngle: .pi / 2)
+            //self.imgFotoPadre.cargar(url: imageURL!)
+            //self.imgFotoPadre.transform = CGAffineTransform(rotationAngle: .pi / 2)
+            
+            let escala = UIScreen.main.scale
+            
+            let tamMiniatura = SDImageResizingTransformer(size: CGSize(width: 160, height: 160), scaleMode: .fill)
             self.qrImage.image = imagen
             let firmaURL = URL(string:self.urlFirma)
-            self.imgFirma.cargar(url:firmaURL!)
+            //self.imgFirma.cargar(url:firmaURL!)
+            //self.imgFotoPadre.sd_imageIndicator = SDWebImageActivityIndicator.gray
+            //self.imgFotoPadre.sd_setImage(with: imageURL!, placeholderImage: nil,context: [.imageTransformer : tamMiniatura])
+            
+            self.imgFotoPadre.cargar(url: imageURL!)
+            
+            
+            SDWebImageManager.shared.loadImage(
+                    with:firmaURL,
+                    options: .highPriority,
+                    progress: nil) { (image, data, error, cacheType, isFinished, imageUrl) in
+                        self.imgFirma.image = image
+                  }
+            
             
           }else{
             //Ver si tiene foto en carnet
@@ -73,21 +106,54 @@ class CredencialViewController: UIViewController {
                     if(status!>200){
                         let imagen = self.generarQR(from: cifrado)
                         let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                        self.imgFotoPadre.cargar(url: imageURL)
+                        //self.imgFotoPadre.cargar(url: imageURL)
                         self.qrImage.image = imagen
+                        
+                        
+                        //self.qrImage.image = imagen
                         UserDefaults.standard.set(self.urlFotos+"sinfoto.png", forKey: "urlfotoQR")
                         let firmaURL = URL(string:self.urlFirma)
-                        self.imgFirma.cargar(url:firmaURL!)
+                        
+                        self.imgFotoPadre.cargar(url: imageURL)
+                        
+                        
+                        SDWebImageManager.shared.loadImage(
+                                with:firmaURL,
+                                options: .highPriority,
+                                progress: nil) { (image, data, error, cacheType, isFinished, imageUrl) in
+                                    self.imgFirma.image = image
+                              }
+                        
+                       
+                        
                     }else{
                         //Revisar si tiene una nueva foto, si la tiene debe sustituirla
                         let imagen = self.generarQR(from: cifrado)
                         let imageURL = URL(string: fotoUrl.replacingOccurrences(of: " ", with: "%20"))
                         print("foto: \(fotoUrl)")
                         let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                        self.imgFotoPadre.cargar(url: imageURL!)
+                        //self.imgFotoPadre.cargar(url: imageURL!)
+                        
+                        let escala = UIScreen.main.scale
+                        let tamMiniatura = SDImageResizingTransformer(size: CGSize(width: 160, height: 160), scaleMode: .fill)
+                        
+                        self.imgFotoPadre.sd_imageIndicator = SDWebImageActivityIndicator.gray
+                        
+                        
                         self.qrImage.image = imagen
                         let firmaURL = URL(string:self.urlFirma)
-                        self.imgFirma.cargar(url:firmaURL!)
+                        self.imgFotoPadre.cargar(url: imageURL!)
+                        
+                        
+                        SDWebImageManager.shared.loadImage(
+                                with:firmaURL,
+                                options: .highPriority,
+                                progress: nil) { (image, data, error, cacheType, isFinished, imageUrl) in
+                                    self.imgFirma.image = image
+                              }
+                        
+                        
+                        
                     }
 
                 }
@@ -96,42 +162,11 @@ class CredencialViewController: UIViewController {
                 self.qrImage.image = imagen
             }
             
-            //carnet
+         
+            
           }
         }
         
-        
-        
-        
-        
-         /*if(ConexionRed.isConnectedToNetwork()){
-            let imageURL = URL(string: fotoUrl)!
-              Alamofire.request(imageURL).responseJSON {
-              response in
-
-              let status = response.response?.statusCode
-                if(status!>200){
-                    let imagen = self.generarQR(from: self.urlFotos+"sinfoto.png")
-                    let imageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                    self.imgFotoPadre.sd_setImage(with: imageURL)
-                    self.qrImage.image = imagen
-                    UserDefaults.standard.set(self.urlFotos+"sinfoto.png", forKey: "urlfotoQR")
-                }else{
-                    let imagen = self.generarQR(from: fotoUrl)
-                    let imageURL = URL(string: fotoUrl)!
-                    let placeholderImageURL = URL(string: self.urlFotos+"sinfoto.png")!
-                    self.imgFotoPadre.sd_setImage(with: imageURL,placeholderImage:UIImage.init(named: "sinfoto.png"))
-                    self.qrImage.image = imagen
-                }
-
-            }
-         }else{
-            let imagen = self.generarQR(from: fotoUrl)
-            self.qrImage.image = imagen
-        }*/
-        
-        
-       
        
     }
     
@@ -143,12 +178,19 @@ class CredencialViewController: UIViewController {
             }
     }
     
+    
+    //Esta funcion redimensiona la imagen para que no se suba una foto gigante a
+    //limitar su ancho máximo a 240 px
     @IBAction func uploadPicture(_ sender: UIBarButtonItem) {
-        var image = self.imgFotoPadre.image
+        var width = self.imgFotoPadre.image!.size.width
+        if(width>240){
+            width = 240
+        }
+        var image = self.imgFotoPadre.image!.resized(withPercentage: 0.25)!.resized(toWidth: width)!
         progress.visibility = UIView.Visibility.visible
-        self.showToast(message:"Cambiando tu foto, espera por favor", font: UIFont(name:"GothamRounded-Bold",size:12.0)!)
+        //self.showToast(message:"Cambiando tu foto, espera por favor", font: UIFont(name:"GothamRounded-Bold",size:12.0)!)
         let idUsuario:String = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
-        subirImagenServer(userId: idUsuario, img: image!)
+        subirImagenServer(userId: idUsuario, img: image.fixImageOrientation()!)
     }
     
     func subirImagenServer(userId:String,img:UIImage){
@@ -186,8 +228,8 @@ class CredencialViewController: UIViewController {
             }
             
             if let responseString = String(data: responseData, encoding: .utf8) {
-                self.progress.visibility = UIView.Visibility.invisible
-                self.showToast(message:"Foto de credencial actualizada correctamente", font: UIFont(name:"GothamRounded-Bold",size:12.0)!)
+                //self.progress.visibility = UIView.Visibility.invisible
+                //self.showToast(message:"Foto de credencial actualizada correctamente", font: UIFont(name:"GothamRounded-Bold",size:12.0)!)
                 print("uploaded to: \(responseString)")
             }
         }).resume()

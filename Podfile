@@ -11,6 +11,7 @@ pod 'Firebase'
 #pod 'Firebase/Auth'
 #pod 'Firebase/Database'
 pod 'Firebase/Messaging'
+#
 pod 'MarqueeLabel'
 #pod 'Firebase/Firestore'
 pod 'Alamofire'
@@ -18,6 +19,6 @@ pod 'FMDB'
 pod 'SDWebImage'
 pod 'BitlySDK'
 pod 'Firebase/DynamicLinks'
-#pod 'CryptoSwift', '~> 1.0'
+
 pod 'RijndaelSwift'
 end

@@ -27,6 +27,8 @@ class ValidarCorreoViewController: UIViewController {
     let base_url_foto:String="http://chmd.chmd.edu.mx:65083/CREDENCIALES/padres/"
     let base_url:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/";
     let get_usuario:String="getUsuarioEmail.php";
+    let get_badge:String="recuentoBadge.php";
+    
     
     @IBOutlet weak var lblMensaje: UILabel!
     @IBOutlet weak var btnContinuar: UIButton!
@@ -39,7 +41,7 @@ class ValidarCorreoViewController: UIViewController {
         let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/validarEmail.php?correo=\(email)"
         let _url = URL(string: address)!
         
-        
+        let idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         
         validarEmail(url: _url)
         btnContinuar.isHidden=true
@@ -88,7 +90,7 @@ class ValidarCorreoViewController: UIViewController {
         
         var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
         var metodoCirculares:String="getCirculares_iOS.php"
-       
+        var metodoNotificaciones:String="getNotificaciones_iOS.php"
         let address=urlBase+metodoCirculares+"?usuario_id=\(idUsuario)"
         guard let _url = URL(string: address) else { return };
         //Se hace con un completion handler para que espere a que la función termine de ejecutarse
@@ -97,6 +99,7 @@ class ValidarCorreoViewController: UIViewController {
             //Todos los cambios en la UI se hacen dentro del DispatchQueue
             DispatchQueue.main.async{
                 strongSelf.lblMensaje.text="Circulares recuperadas."
+                print("Circulares recuperadas....válido!")
                 strongSelf.performSegue(withIdentifier: "validarSegue", sender: self)
             }
            
@@ -117,7 +120,7 @@ class ValidarCorreoViewController: UIViewController {
         let manzana:Int = UserDefaults.standard.integer(forKey: "manzana") ?? 0
         var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
         var metodoCirculares:String="getCirculares_iOS.php"
-       
+        var metodoNotificaciones:String="getNotificaciones_iOS.php"
         let valida = 1
         print("valida2: \(valida)")
         
@@ -129,30 +132,54 @@ class ValidarCorreoViewController: UIViewController {
         if(valida==1 || manzana==1){
             self.lblMensaje.text="La cuenta es válida"
             self.btnContinuar.setTitle("Continuar", for: .normal)
-            self.btnContinuar.isHidden=false
+            self.btnContinuar.isHidden=true
             //self.btnContinuar.visiblity(gone: true, dimension: 0)
             idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
             let address=urlBase+metodoCirculares+"?usuario_id=\(idUsuario)"
             guard let _url = URL(string: address) else { return };
             
-           /*getDataFromURL(url: _url){[weak self] success, int in
-                guard let strongSelf = self, success else { return }
-                //Todos los cambios en la UI se hacen dentro del DispatchQueue
-                DispatchQueue.main.async{
-                    strongSelf.lblMensaje.text="Circulares recuperadas correctamente."
-                    strongSelf.performSegue(withIdentifier: "validarSegue", sender: self)
-                }
-               
-            }*/
             obtenerCirculares(url: _url){[weak self] success, int in
                 guard let strongSelf = self, success else { return }
                 //Todos los cambios en la UI se hacen dentro del DispatchQueue
                 DispatchQueue.main.async{
-                    strongSelf.lblMensaje.text="Circulares recuperadas correctamente!"
-                    strongSelf.performSegue(withIdentifier: "validarSegue", sender: self)
+                    //strongSelf.lblMensaje.text="Circulares recuperadas correctamente!"
+                    //strongSelf.performSegue(withIdentifier: "validarSegue", sender: self)
                 }
                
             }
+            
+            
+            let addressN=urlBase+metodoNotificaciones+"?usuario_id=\(idUsuario)"
+            guard let _urlN = URL(string: addressN) else { return };
+            
+            obtenerNotificaciones(url: _urlN){[weak self] success, int in
+                guard let strongSelf = self, success else { return }
+                if success {
+                    DispatchQueue.main.async{
+                        var segundos = 7
+                        let t = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: .short, timeStyle: .medium)
+                        
+                        print("Circular almacenada correctamente en validar (completion) \(t)")
+                        strongSelf.lblMensaje.text="¡Espera un momento, recuperando las últimas circulares!"
+                        
+                        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (Timer) in
+                                if segundos > 0 {
+                                    segundos -= 1
+                                    
+                                } else {
+                                    Timer.invalidate()
+                                    strongSelf.performSegue(withIdentifier: "validarSegue", sender: self)
+                                }
+                            }
+                        
+                        
+                        
+                    }
+                }
+               
+               
+            }
+            
             
         }
          
@@ -163,7 +190,7 @@ class ValidarCorreoViewController: UIViewController {
         performSegue(withIdentifier: "validarSegue", sender: self)
      }
     
-    func delete() {
+    func delete(tipo:Int) {
         
         let fileUrl = try!
                    FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
@@ -173,7 +200,7 @@ class ValidarCorreoViewController: UIViewController {
                }else{
         
       var deleteStatement: OpaquePointer?
-        var deleteStatementString="DELETE FROM appCircularCHMD"
+        var deleteStatementString="DELETE FROM appCircularCHMD where tipo=\(tipo)"
       if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) ==
           SQLITE_OK {
         if sqlite3_step(deleteStatement) == SQLITE_DONE {
@@ -190,8 +217,9 @@ class ValidarCorreoViewController: UIViewController {
     
     }
     func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int,especiales:String){
+        var badge:Int=0
         
-        //Abrir la base
+            //Abrir la base
         let fileUrl = try!
             FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
         
@@ -263,18 +291,23 @@ class ValidarCorreoViewController: UIViewController {
             
             
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Circular almacenada correctamente")
+                
+                let t = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: .short, timeStyle: .medium)
+               
+             
+                
+                print("Circular almacenada correctamente en validar \(t)")
             }else{
                 print("Circular no se pudo guardar")
             }
-            
-        }
+            }
         
     
         
     }
     var notifNoLeidas=0
-    func guardarNotificaciones(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int){
+    func guardarNotificaciones(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int,especiales:String){
+        
         
         //Abrir la base
         let fileUrl = try!
@@ -283,18 +316,9 @@ class ValidarCorreoViewController: UIViewController {
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
         }else{
-            
-           
-            
-            
-            
-            //La base de datos abrió correctamente
+                //La base de datos abrió correctamente
             var statement:OpaquePointer?
-            
-             //Vaciar la tabla
-            
-            
-            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,2)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -349,20 +373,21 @@ class ValidarCorreoViewController: UIViewController {
             if sqlite3_bind_text(statement,13,nivel, -1, nil) != SQLITE_OK {
                            print("Error campo 13")
             }
-            
+            let espec = especiales as NSString
+            if sqlite3_bind_text(statement,14,espec.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 14")
+            }
            
             
             
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Circular almacenada correctamente")
-                self.notifNoLeidas += 1
-                
-                
+                print("Notificaciones almacenadas correctamente en validar")
             }else{
                 print("Circular no se pudo guardar")
             }
             
         }
+        
         
         UserDefaults.standard.set(self.notifNoLeidas, forKey: "totalNotif")
     
@@ -485,6 +510,9 @@ class ValidarCorreoViewController: UIViewController {
     
     }
     
+   
+    
+    
     func registrarDispositivo(direccion:String, correo:String, device_id:String, so:String,id:String){
         let parameters: Parameters = ["correo": correo, "device_token": device_id,"plataforma":so,"id_usuario":id]      //This will be your parameter
         Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
@@ -502,7 +530,87 @@ class ValidarCorreoViewController: UIViewController {
     
     func obtenerCirculares(url:URL,completion: @escaping (Bool, Int?) -> Void){
         
-        self.delete()
+        self.delete(tipo:1)
+     
+        var request = URLRequest(url: url)
+        var finalizado=false
+        request.httpMethod="GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let task = URLSession.shared.dataTask(with: request) { data, _,error in
+           
+            guard let data = data,error == nil else {
+                return
+            }
+            do{
+                //let resp = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                let resp = try JSONDecoder().decode([Circular2].self, from: data)
+                //print("SUCCESS: \(resp)")
+                
+                for c in resp{
+                    
+                    var noLeida:Int
+                    var leida:Int
+                    if(Int(c.leido!)==0){
+                        noLeida=1
+                        leida=0
+                    }else{
+                        noLeida=0
+                        leida=1
+                    }
+                    
+                    var str = c.contenido!.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                    .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                    .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                    .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                    .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                    .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                    .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                    
+                    var nombre = c.titulo!.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                    
+                    .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                    .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                    .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                    .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                    .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                    .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                    .replacingOccurrences(of: "&amp;", with: "&")
+                    
+                    var para:String = "\(c.grados!)/\(c.espec!)/\(c.adm!)/\(c.rts!)/"
+                    para = para.trimmingCharacters(in: .whitespacesAndNewlines)
+                    para = String(para.dropLast())
+                    print("Para: \(para)")
+                    if(c.envia_todos!.contains("1")){
+                        para="Todos"
+                    }
+                    
+                    if(c.envia_todos!.contains("0")){
+                        para="Personal"
+                    }
+                    
+                    self.guardarCirculares(idCircular: Int(c.id!)!, idUsuario: Int(c.id_usuario!)!, nombre: nombre, textoCircular: str.replacingOccurrences(of: "&nbsp;", with: ""), no_leida: noLeida, leida: leida, favorita: Int(c.favorito!)!, compartida: 0, eliminada: Int(c.eliminado!)!, fecha: c.created_at!, fechaIcs: c.fecha_ics!, horaInicioIcs: c.hora_inicial_ics!, horaFinIcs: c.hora_final_ics!, nivel: c.nivel!, adjunto: Int(c.adjunto!)!, especiales: para)
+                  
+                    
+                }
+             
+                finalizado=true
+                
+            }catch{
+                print(error)
+            }
+            
+        }
+        completion(finalizado, 1)
+    
+   
+        task.resume()
+        
+    }
+    
+    
+    func obtenerNotificaciones(url:URL,completion: @escaping (Bool, Int?) -> Void){
+        var finalizado=false
+        self.delete(tipo:2)
         var request = URLRequest(url: url)
         request.httpMethod="GET"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -558,20 +666,21 @@ class ValidarCorreoViewController: UIViewController {
                         para="Personal"
                     }
                     
-                    self.guardarCirculares(idCircular: Int(c.id!)!, idUsuario: Int(c.id_usuario!)!, nombre: nombre, textoCircular: str, no_leida: noLeida, leida: leida, favorita: Int(c.favorito!)!, compartida: 0, eliminada: Int(c.eliminado!)!, fecha: c.created_at!, fechaIcs: c.fecha_ics!, horaInicioIcs: c.hora_inicial_ics!, horaFinIcs: c.hora_final_ics!, nivel: c.nivel!, adjunto: Int(c.adjunto!)!, especiales: para)
+                    self.guardarNotificaciones(idCircular: Int(c.id!)!, idUsuario: Int(c.id_usuario!)!, nombre: nombre, textoCircular: str, no_leida: noLeida, leida: leida, favorita: Int(c.favorito!)!, compartida: 0, eliminada: Int(c.eliminado!)!, fecha: c.created_at!, fechaIcs: c.fecha_ics!, horaInicioIcs: c.hora_inicial_ics!, horaFinIcs: c.hora_final_ics!, nivel: c.nivel!, adjunto: Int(c.adjunto!)!, especiales: para)
                     
                     
                     
                 }
                 
-                
+                finalizado=true
             }catch{
                 print(error)
             }
             
         }
-        completion(true, 1)
         task.resume()
+        completion(true, 1)
+        
         
     }
     
@@ -579,7 +688,7 @@ class ValidarCorreoViewController: UIViewController {
         print("Leer desde el servidor....")
         print(url)
        
-        self.delete()
+        self.delete(tipo:1)
         DispatchQueue.global(qos: .background).async {
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
@@ -748,7 +857,7 @@ class ValidarCorreoViewController: UIViewController {
                         }
                         
                         print("leida server: \(leido), no leida server: \(noLeida)")
-                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: para)
+                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str.replacingOccurrences(of: "&nbsp;", with: ""), no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: para)
                          
                     }
                }

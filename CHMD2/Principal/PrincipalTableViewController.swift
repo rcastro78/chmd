@@ -42,13 +42,34 @@ class PrincipalTableViewController: UITableViewController {
         let backItem = UIBarButtonItem()
         backItem.title = ""
         navigationItem.backBarButtonItem = backItem
-        
        
-        
     }
     
   
-    
+    func contarCircularesNoLeidas()->Int{
+        print("Leer desde la base de datos local")
+        var total:Int32=0
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+        
+        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+            print("error opening database")
+        }
+        
+      
+        
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and eliminada=0 and favorita=0 and tipo=1"
+           var queryStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let id = sqlite3_column_int(queryStatement, 0)
+                total = id
+             }
+            
+        }
+        
+        return Int(total)
+    }
     
     
     override func viewDidLoad() {
@@ -56,7 +77,7 @@ class PrincipalTableViewController: UITableViewController {
         //
         email=UserDefaults.standard.string(forKey: "email") ?? ""
         idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? ""
-        print("correo:"+email)
+        UIApplication.shared.applicationIconBadgeNumber = contarCircularesNoLeidas()
         
         let INICIO=1
         let MAGUEN=2
@@ -381,7 +402,12 @@ class PrincipalTableViewController: UITableViewController {
           }
         if (valor.id==2){
             
-            performSegue(withIdentifier: "webSegue", sender: self)
+            //performSegue(withIdentifier: "webSegue", sender: self)
+            //abrir en el navegador
+            if let url=URL(string: "https://www.chmd.edu.mx/pruebascd/icloud/"){
+                UIApplication.shared.open(url)
+            }
+            
         }
         if(valor.id==3){
             

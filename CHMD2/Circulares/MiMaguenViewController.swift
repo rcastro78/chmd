@@ -16,9 +16,11 @@ class MiMaguenViewController: UIViewController,WKUIDelegate {
         
          
         if(ConexionRed.isConnectedToNetwork()){
-            let url=URL(string: "https://www.chmd.edu.mx/pruebascd/icloud/")
-            let req = URLRequest(url: url!)
-            webView.load(req)
+            if let url=URL(string: "https://www.chmd.edu.mx/pruebascd/icloud/"){
+                UIApplication.shared.open(url)
+            }
+            //let req = URLRequest(url: url!)
+            //webView.load(req)
         }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Para acceder al sitio debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
             alert.show()

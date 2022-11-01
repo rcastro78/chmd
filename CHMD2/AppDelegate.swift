@@ -28,6 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate,GIDSignI
 
     var window: UIWindow?
     var metodo_circular:String="getCircularId.php"
+    
+    var urlBase:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
+    var metodoCircularNotificada:String="getCircularId_iOS.php"
+    var idUsuario:String=""
     var db: OpaquePointer?
     
     func registerForPushNotifications() {
@@ -143,7 +147,7 @@ func application(_ application: UIApplication,
     }
 
     let isDynamicLinkHandled =
-        DynamicLinks.dynamicLinks().handleUniversalLink(url) { dynamicLink, error in
+        DynamicLinks.dynamicLinks().handleUniversalLink(url) { [self] dynamicLink, error in
 
             guard error == nil,
                 let dynamicLink = dynamicLink,
@@ -155,9 +159,23 @@ func application(_ application: UIApplication,
             UserDefaults.standard.set(1, forKey: "viaNotif")
             UserDefaults.standard.set(idCircularViaNotif, forKey: "idCircularViaNotif")
             
-            let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            //Hacer el insert a la base de esta circular
+            let address=self.urlBase+self.metodoCircularNotificada+"?circular_id=\(idCircularViaNotif)"
+            guard let _url = URL(string: address) else { return };
+            getDataFromURL(url: _url){[weak self] success, int in
+                guard let strongSelf = self, success else { return }
+                //Todos los cambios en la UI se hacen dentro del DispatchQueue
+                DispatchQueue.main.async{
+                    let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                            let circulares = mainStoryboard.instantiateViewController(withIdentifier: "CircularDetalleNotificacionViewController") as! CircularDetalleNotificacionViewController
+                    strongSelf.window?.rootViewController = circulares
+                }
+               
+            }
+            /*let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
                     let circulares = mainStoryboard.instantiateViewController(withIdentifier: "CircularDetalleViewController") as! CircularDetalleViewController
-                    self.window?.rootViewController = circulares
+                    self.window?.rootViewController = circulares*/
             
             
         }
@@ -211,6 +229,10 @@ func application(_ application: UIApplication,
                 let aps = userInfo[AnyHashable("aps")] as? NSDictionary
                 let body = userInfo[("body")] as? String
                 let idCircular = userInfo[("idCircular")] as? String
+                let tituloNotif = userInfo[("tituloNotif")] as? String
+                let contenidoNotif = userInfo[("contenidoNotif")] as? String
+                let nivelNotif = userInfo[("nivelNotif")] as? String
+                let fechaNotif = userInfo[("fechaNotif")] as? String
                 let b = aps![AnyHashable("badge")] as? Int
              
         debugPrint("cuerpo: \(body!)")
@@ -221,11 +243,18 @@ func application(_ application: UIApplication,
             debugPrint("userInfo: \(userInfo)")
             UserDefaults.standard.set(1, forKey: "viaNotif")
             UserDefaults.standard.set(idCircular, forKey: "idCircularViaNotif")
+            UserDefaults.standard.set(tituloNotif, forKey: "tituloNotif")
+            UserDefaults.standard.set(contenidoNotif, forKey: "contenidoNotif")
+            UserDefaults.standard.set(nivelNotif, forKey: "nivelNotif")
+            UserDefaults.standard.set(fechaNotif, forKey: "fechaNotif")
+        
+           //Insertar la circular que viene con este id
             
+        
       
           
         let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let circulares = mainStoryboard.instantiateViewController(withIdentifier: "CircularDetalleViewController") as! CircularDetalleViewController
+                let circulares = mainStoryboard.instantiateViewController(withIdentifier: "CircularDetalleNotificacionViewController") as! CircularDetalleNotificacionViewController
                 self.window?.rootViewController = circulares
 
         
@@ -252,7 +281,7 @@ func application(_ application: UIApplication,
             let givenName = user.profile.givenName
             let familyName = user.profile.familyName
             let email = user.profile.email
-           
+            print("TOKEN \(idToken)")
             let picURL = user.profile.imageURL(withDimension: 120) 
             
             UserDefaults.standard.set(userId,forKey:"userId")
@@ -320,6 +349,7 @@ func application(_ application: UIApplication,
         
        //Este es el token para utilizar en las notificaciones push
         UserDefaults.standard.set(deviceTokenString, forKey: "deviceToken")
+        print("token: \(deviceTokenString)")
         
     }
     
@@ -329,6 +359,328 @@ func application(_ application: UIApplication,
 
     
     
+    /*
+     
+     
+     key=AAAAbG33vkY:APA91bH5Ts7zah-Ho9TxVKcLztA2ZWKpGO-bcn0_2h4yDdLvuanTBLd-hylbLkJ6uX_7qFUSwenkp4OqW133vZc8cVcdqfY8ZgwbgbCfXKg8_VxJFYz-g_BDPDv7JyPaot4v1gI83DpA
+     
+     {
+     "to" : "cpPQrxT9sEm5oWH-clujs6:APA91bHM2vl2IhdHoHksJnkOFN2aDQwewWFAdaHUJbzdiTdtJDMcmeFBeprfWc3rVkCVsfp64gF0drlkp309o4dJBcqt5Qrd6A9Xu4kr67c9_FFOOzX7g0Hse4v7iIko-vRClmamOODW",
+
+     "notification" : {
+
+         "body" : "Tienes una nueva circular sin leer!",
+         "idCircular":"810",
+         "content_available" : true,
+         "priority" : "high",
+         "viaNotificacion":"1",
+         "badge":"5",
+         "click_action": "ValidarPadreActivity"
+
+     },
+
+     "data" : {
+     "body" : "Nueva circular: Tienes una nueva circular sin leer!",
+
+     "idCircular":"810",
+     "content_available" : true,
+     "priority" : "high",
+     "click_action": "CircularNotificacionActivity",
+     "viaNotificacion":"1"
+     }
+
+
+     }
+     
+     */
+    
+    
+    func guardarNotificaciones(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int,especiales:String){
+        
+        
+        //Abrir la base
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+                //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+            if sqlite3_bind_int(statement,1,Int32(idCircular)) != SQLITE_OK {
+                print("Error campo 1")
+            }
+            
+            
+            self.idUsuario = "\(idUsuario)"
+            
+            if sqlite3_bind_int(statement,2,Int32(idUsuario)) != SQLITE_OK {
+              
+            }
+            let n = nombre as NSString
+            if sqlite3_bind_text(statement,3,n.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 3")
+            }
+            let texto = textoCircular as NSString
+            if sqlite3_bind_text(statement,4,texto.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 4")
+            }
+            
+            if sqlite3_bind_int(statement,5,Int32(no_leida)) != SQLITE_OK {
+                print("Error campo 5")
+            }
+            
+            if sqlite3_bind_int(statement,6,Int32(leida)) != SQLITE_OK {
+                print("Error campo 6")
+            }
+            
+            if sqlite3_bind_int(statement,7,Int32(favorita)) != SQLITE_OK {
+                print("Error campo 7")
+            }
+            
+            if sqlite3_bind_int(statement,8,Int32(eliminada)) != SQLITE_OK {
+                           print("Error campo 8")
+              }
+            
+           if sqlite3_bind_text(statement,9,fecha, -1, nil) != SQLITE_OK {
+               print("Error campo 9")
+           }
+             let fiIcs = fechaIcs as NSString
+            if sqlite3_bind_text(statement,10,fiIcs.utf8String, -1, nil) != SQLITE_OK {
+                print("Error campo 10")
+            }
+            let hiIcs = horaInicioIcs as NSString
+            if sqlite3_bind_text(statement,11,hiIcs.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 11")
+            }
+            let hfIcs = horaFinIcs as NSString
+            if sqlite3_bind_text(statement,12,hfIcs.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 12")
+            }
+            if sqlite3_bind_text(statement,13,nivel, -1, nil) != SQLITE_OK {
+                           print("Error campo 13")
+            }
+            let espec = especiales as NSString
+            if sqlite3_bind_text(statement,14,espec.utf8String, -1, nil) != SQLITE_OK {
+                           print("Error campo 14")
+            }
+           
+            
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                print("Notificaciones almacenadas correctamente en validar")
+            }else{
+                print("Circular no se pudo guardar")
+            }
+            
+        }
+        
+        
+        //UserDefaults.standard.set(self.notifNoLeidas, forKey: "totalNotif")
+    
+        
+    }
+    
+    
+    func getDataFromURL(url: URL,completion: @escaping (Bool, Int?) -> Void) {
+        print("Leer desde el servidor....")
+        print(url)
+       
+        DispatchQueue.global(qos: .background).async {
+        URLSession.shared.dataTask(with: url) {
+            (data, response, error) in
+            
+           
+            if let datos = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String:Any]] {
+                print("datos \(datos.count)")
+                if(datos.count>0){
+                    for index in 0...((datos).count) - 1
+                    {
+                        let obj = datos[index] as! [String : AnyObject]
+                        guard let id = obj["id"] as? String else {
+                            print("No se pudo obtener el id")
+                            return
+                        }
+                        guard let titulo = obj["titulo"] as? String else {
+                            print("No se pudo obtener el titulo")
+                            return
+                        }
+                        
+                        var imagen:UIImage
+                           imagen = UIImage.init(named: "appmenu05")!
+                           guard let fecha = obj["created_at"] as? String else {
+                            print("No se pudo obtener la fecha")
+                                                      return
+                                                  }
+                           
+                           guard let favorito = obj["favorito"] as? String else {
+                            print("No se pudo obtener el fav")
+                               return
+                           }
+                           
+                           guard let adjunto = obj["adjunto"] as? String else {
+                            print("No se pudo obtener el adj")
+                                                      return
+                                                  }
+                           
+                           guard let eliminada = obj["eliminado"] as? String else {
+                            print("No se pudo obtener el eliminado")
+                               return
+                           }
+                           
+                           guard let texto = obj["contenido"] as? String else {
+                            print("No se pudo obtener el contenido")
+                               return
+                           }
+                        
+                        guard let leido = obj["leido"] as? String else {
+                            print("No se pudo obtener el leido")
+                            return
+                        }
+                           
+                           guard let fechaIcs = obj["fecha_ics"] as? String else {
+                            print("No se pudo obtener la fecha ics")
+                             return
+                           }
+                           guard let horaInicioIcs = obj["hora_inicial_ics"] as? String else {
+                            print("No se pudo obtener la hora ini ics")
+                                                    return
+                                                  }
+                           
+                          
+                           guard let horaFinIcs = obj["hora_final_ics"] as? String else {
+                            print("No se pudo obtener la hora fin ics")
+                                                                           return
+                                                                         }
+                           var nv:String?
+                           if (obj["nivel"] == nil){
+                            print("No se pudo obtener el nivel")
+                               nv=""
+                           }else{
+                               nv=obj["nivel"] as? String
+                           }
+                        
+                        
+                        var esp:String?=""
+                        if (obj["espec"] == nil){
+                            esp=""
+                        }else{
+                            esp=obj["espec"] as? String
+                        }
+                        
+                        
+                        var grados:String?=""
+                        if (obj["grados"] == nil){
+                            grados=""
+                        }else{
+                            grados=obj["grados"] as? String
+                        }
+                        
+                        
+                        var adm:String?=""
+                        adm=obj["adm"] as? String
+                        var rts:String?=""
+                        rts=obj["rts"] as? String
+                        var enviaTodos:String?=""
+                        if (obj["envia_todos"] == nil){
+                            enviaTodos=""
+                        }else{
+                            enviaTodos=obj["envia_todos"] as? String
+                        }
+
+                           
+                        var noLeida:Int = 0
+                       
+                           //leídas
+                           if(Int(leido)!>0){
+                               imagen = UIImage.init(named: "circle_white")!
+                           }
+                           //No leídas
+                           if(Int(leido)==0 && Int(favorito)==0){
+                               imagen = UIImage.init(named: "circle")!
+                            noLeida=1
+                           }
+                           if(Int(leido)! == 0){
+                               noLeida = 1
+                           }
+                           
+                           var adj=0;
+                           if(Int(adjunto)!==1){
+                               adj=1
+                           }
+                          
+                           if(Int(favorito)!>0){
+                               imagen = UIImage.init(named: "circle_white")!
+                           }
+                           
+                           var str = texto.replacingOccurrences(of: "&lt;", with: "<").replacingOccurrences(of: "&gt;", with: ">")
+                           .replacingOccurrences(of: "&amp;aacute;", with: "á")
+                           .replacingOccurrences(of: "&amp;eacute;", with: "é")
+                           .replacingOccurrences(of: "&amp;iacute;", with: "í")
+                           .replacingOccurrences(of: "&amp;oacute;", with: "ó")
+                           .replacingOccurrences(of: "&amp;uacute;", with: "ú")
+                           .replacingOccurrences(of: "&amp;ordm;", with: "o.")
+                              
+                        if(nv!.count>0){
+                            nv = "\(nv!)/"
+                        }
+                       
+                        if(grados!.count>0){
+                            grados = "\(grados!)/"
+                        }
+                        
+                        if(esp!.count>0){
+                            esp = "\(esp!)/"
+                        }
+                        
+                        if(adm!.count>0){
+                            adm = "\(adm!)/"
+                        }
+                        
+                        if(rts!.count>0){
+                            rts = "\(rts!)/"
+                        }
+                        nv = nv?.replacingOccurrences(of: "/", with: "")
+                        var para:String = "\(grados!) \(esp!) \(adm!) \(rts!)"
+                        para = para.trimmingCharacters(in: .whitespacesAndNewlines)
+                        para = String(para.dropLast())
+                        print("Para: \(para)")
+                        if(enviaTodos=="1"){
+                            para="Todos"
+                        }
+                        
+                        if(enviaTodos=="0" && esp=="" && adm=="" && rts=="" && nv!=="" && grados==""){
+                            para="Personal"
+                        }
+                        
+                        print("leida server: \(leido), no leida server: \(noLeida)")
+                        self.guardarNotificaciones(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: para)
+                         
+                    }
+               }
+                
+            }else{
+                print(error.debugDescription)
+                print(error?.localizedDescription)
+            }
+            //Esto hace que la función devuelva el control al main thread después de haber terminado (IMPORTANTE: no olvidarlo)
+            completion(true, 1)
+            
+            }.resume()
+            
+           
+        }
+            
+           
+        
+        
+             
+    }
     
 }
 

@@ -57,9 +57,9 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>La aplicación necesita permiso para acceder al calendario y crear eventos del colegio</string>
 	<key>NSCameraUsageDescription</key>
-	<string>La app necesita acceder a la cámara</string>
+	<string>Necesitamos acceder a la cámara para que puedas cambiar tu foto de perfil</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>La app necesita abrir la galería</string>
+	<string>Necesitamos acceder a la galería para que puedas cambiar tu foto de perfil</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>GothamRoundedMedium_21022.ttf</string>

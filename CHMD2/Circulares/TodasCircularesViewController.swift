@@ -20,8 +20,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     }
     
     
-    @IBOutlet weak var btnDeshacer: UIBarButtonItem!
-    
+   @IBOutlet weak var btnDeshacer: UIBarButtonItem!
+   
    @IBOutlet var tableViewCirculares: UITableView!
    @IBOutlet weak var barBusqueda: UISearchBar!
     @IBOutlet weak var menuButton: UIBarButtonItem!
@@ -55,6 +55,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     var selecMultiple=false
     var circularesSeleccionadas = [Int]()
     var seleccion=[Int]()
+    
+    let base_url:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/";
+    let get_usuario:String="getUsuarioEmail.php";
+    let get_badge:String="recuentoBadge.php";
+    
     var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
     }
@@ -62,23 +67,44 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(_:true)
-        circulares.removeAll()
-        
-       
+        /*circulares.removeAll()
         descarga = UserDefaults.standard.integer(forKey: "descarga")
-        self.leerCirculares()
+       
+        let primeraCarga = UserDefaults.standard.integer(forKey: "primeraCarga")
+        print("will appear primeraCarga \(primeraCarga)")
         
+        
+        if(primeraCarga==0){
+            let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+                       guard let _url = URL(string: address) else { return };
+                       self.getDataFromURL(url: _url)
+            
+        }else{
+            self.leerCirculares()
+        }*/
+       
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(_:true)
-        circulares.removeAll()
+        //circulares.removeAll()
         descarga = UserDefaults.standard.integer(forKey: "descarga")
-        self.leerCirculares()
         
+        let primeraCarga = UserDefaults.standard.integer(forKey: "primeraCarga")
+        
+        if(primeraCarga==0){
+            let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+                       guard let _url = URL(string: address) else { return };
+                       self.getDataFromURL(url: _url)
+            
+        }else{
+            self.leerCirculares()
+        }
+        
+        UIApplication.shared.applicationIconBadgeNumber = contarCircularesNoLeidas()
     }
     
-    func contarCircularesNoLeidas()->Int32{
+    func contarCircularesNoLeidas()->Int{
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
@@ -88,9 +114,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             print("error opening database")
         }
         
-        /*
-         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
-         */
+      
         
            let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and eliminada=0 and favorita=0 and tipo=1"
            var queryStatement: OpaquePointer? = nil
@@ -102,7 +126,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
         }
         
-       return total
+        return Int(total)
     }
     
     
@@ -111,8 +135,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        //circulares.removeAll()
-       
+      
+        
         self.hideKeyboardWhenTappedAround()
         self.tableViewCirculares.delegate=self
         self.tableViewCirculares.dataSource=self
@@ -159,6 +183,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
      
         if ConexionRed.isConnectedToNetwork() == true {
+            /*let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+             guard let _url = URL(string: address) else { return };
+             getDataFromURL(url: _url)*/
+            self.leerCirculares()
             
         } else {
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Se muestran las últimas circulares registradas", delegate: nil, cancelButtonTitle: "Aceptar")
@@ -174,51 +202,23 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
       refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
       self.tableViewCirculares.addSubview(refreshControl)
        
+        let idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
         
-      let totalNoLeidas = contarCircularesNoLeidas()
-        if(totalNoLeidas<=0){
-            //Al no tener ninguna no leída, poner el badge a 0
-            UIApplication.shared.applicationIconBadgeNumber = 0
-        }else{
-            UIApplication.shared.applicationIconBadgeNumber = Int(totalNoLeidas)
-        }
-        /*let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-         guard let _url = URL(string: address) else { return };
         
-        obtenerCirculares(url: _url)*/
     }
   
     @objc func refresh(_ sender: AnyObject) {
       circulares.removeAll()
         print("se ha refrescado...")
-        self.leerCirculares()
-      /*if ConexionRed.isConnectedToNetwork() == true {
-         let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-          guard let _url = URL(string: address) else { return };
-          self.getDataFromURL(url: _url)
-      
-        let addressN=self.urlBase+self.metodoNotificaciones+"?usuario_id=\(self.idUsuario)"
-                   guard let _urlN = URL(string: addressN) else { return };
-        self.getDataFromURLNotificaciones(url:_urlN)
-        self.leerCirculares()
-       }*/
+        //self.leerCirculares()
+        let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
+        guard let _url = URL(string: address) else { return };
+         self.getDataFromURL(url: _url)
+        
     }
 
    
-    
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        var valorInicial:Int=1
-        var valorFinal:Int=5
-        let ultimo = circulares.count - 1
-        if indexPath.row == ultimo {
-            valorFinal = valorFinal+5
-            let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-           guard let _url = URL(string: address) else { return };
-           self.getDataFromURL(url: _url)
-            print("se pasó el último registro")
-            }
-    }
-    
+   
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -516,33 +516,10 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                                                   self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
                                                         
                                                         self.actualizaNoLeidosCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
-                                                                                                     
-                                                      
-                                                      
-                                                           //let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
-                                                                      //Modificar la imagen de la celda
+                                                         
                                                                        cell.imgCircular.image = UIImage(named:"circle")
-                                                           
-                                                          /* self.tableViewCirculares.reloadRows(at: [indexPath], with: .fade)
-                                                           
-                                                           let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)*/
-                                                           //Modificar la imagen de la celda
-                                                        
-                                                                    //self.tableViewCirculares.reloadData()
-                                                        
-                                                       
-                                                            
-                                                       // }
-                                                        
-                                                        
-                                                        
-                                                               /*self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                        let timer = Timer.scheduledTimer(timeInterval: 0.4, target: self, selector: #selector(self.reaccionar), userInfo: nil, repeats: false)
-                                                                   //Modificar la imagen de la celda
-                                                                    cell.imgCircular.image = UIImage(named:"circle")*/
-                                                        
-                                                        
-                                                                    }else{
+                                                         
+                                                                 }else{
                                                                     var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                                                                 alert.show()
                                                            }
@@ -603,54 +580,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     
-    /*func contextualFavAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
-   
-        let circular = circulares[indexPath.row]
-        let action = UIContextualAction(style: .normal,
-                                        title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
-                                            let idCircular:String = "\(circular.id)"
-                                            if ConexionRed.isConnectedToNetwork() == true {
-                                            self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
-                                                
-                                                self.viewDidLoad()
-                                                self.viewWillAppear(true)
-                                                
-                                                
-                                            }else{
-                                            var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
-                                            alert.show()
-                                        }
-                                            
-                                            
-            
-        }
-        // 7
-        action.image = UIImage(named: "fav32")
-        action.backgroundColor = UIColor.orange
-        
-        return action
-    }*/
-    
     
     
     func contextualUnreadAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
-           // 1
-           let circular = circulares[indexPath.row]
-           // 2
-           let action = UIContextualAction(style: .normal,
+          let circular = circulares[indexPath.row]
+          let action = UIContextualAction(style: .normal,
                                            title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                                 let idCircular:String = "\(circular.id)"
                                             if ConexionRed.isConnectedToNetwork() == true {
                                             self.noleerCircular(direccion: self.urlBase+self.noleerMetodo, usuario_id: self.idUsuario, circular_id: idCircular)
-                                                //self.viewDidLoad()
-                                                //self.viewWillAppear(true)
                                                 self.actualizaNoLeidosCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
-                                                
-                                                
-                                                
-                                                
-                                                
-                                               }else{
+                                                }else{
                                                   var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                   alert.show()
                                      }
@@ -665,10 +605,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func contextualDelAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
         
-      
-        
         let circular = circulares[indexPath.row]
-        // 2
+
         let action = UIContextualAction(style: .normal,
                                         title: "") { (contextAction: UIContextualAction, sourceView: UIView, completionHandler: (Bool) -> Void) in
                                             let idCircular:String = "\(circular.id)"
@@ -684,19 +622,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                                             self.delCircular(direccion: self.urlBase+"eliminarCircular.php", usuario_id: self.idUsuario, circular_id: idCircular)
                                             self.borraCirculares(idCircular: Int(idCircular)!, idUsuario: Int(self.idUsuario)!)
                                             
-                                               
-                                              
-                                                
-                                               /* let address=self.urlBase+self.metodoCirculares+"?usuario_id=\(self.idUsuario)"
-                                                                       guard let _url = URL(string: address) else { return };
-                                                                       self.getDataFromURL(url: _url)
-                                                
-                                                
-                                                self.indexEliminar=indexPath.row*/
-                                                
-                                                
-                                                
-                                        
                                             }else{
                                                 var alert = UIAlertView(title: "No está conectado a Internet", message: "Para ejecutar esta acción debes tener una conexión activa a la red", delegate: nil, cancelButtonTitle: "Aceptar")
                                                  alert.show()
@@ -724,11 +649,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             guard let c = circulares[safe: indexPath.row] else{
                 return
             }
+            
             let cell = tableView.cellForRow(at: indexPath)
             cell?.selectionStyle = .none
             UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
-            print("CIRCULAR_ID \(c.id)")
+            print("circular_id \(c.id)")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
             UserDefaults.standard.set(c.contenido,forKey:"contenido")
@@ -768,6 +694,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     //Leer las circulares cuando no haya internet
     func leerCirculares(){
+        circulares.removeAll()
         print("Leer desde la base de datos local")
         let fileUrl = try!
                    FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
@@ -886,15 +813,6 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                           imagen = UIImage.init(named: "circle_white")!
                         }
                 
-                        /*if(Int(favorita)==1 && Int(leida) == 0){
-                            imagen = UIImage.init(named: "circle")!
-                         }
-                        if(Int(favorita)==1 && Int(leida) == 1){
-                            imagen = UIImage.init(named: "circle_white")!
-                        }*/
-                
-                        
-                       
                 var fechaCircular="";
                 if let fecha = sqlite3_column_text(queryStatement, 6) {
                     fechaCircular = String(cString: fecha)
@@ -913,7 +831,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                
               }
             
-            //self.tableViewCirculares.reloadData()
+            self.tableViewCirculares.reloadData()
 
              }
             else {
@@ -928,8 +846,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
            sqlite3_finalize(queryStatement)
         
-        self.tableViewCirculares.reloadData()
-        
+        DispatchQueue.main.async {
+            self.tableViewCirculares.reloadData()
+        }
         
        }
    
@@ -1190,7 +1109,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     func guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int,especiales:String){
-        
+        var badge:Int=0
         //Abrir la base
         let fileUrl = try!
             FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
@@ -1207,8 +1126,8 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             var statement:OpaquePointer?
             
              //Vaciar la tabla
-            
-            
+       
+
             let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
@@ -1240,6 +1159,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             if sqlite3_bind_int(statement,7,Int32(favorita)) != SQLITE_OK {
                 print("Error campo 7")
+              
             }
             
             if sqlite3_bind_int(statement,8,Int32(eliminada)) != SQLITE_OK {
@@ -1272,11 +1192,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Circular almacenada correctamente")
+              
+                print("Circular almacenada correctamente!")
             }else{
                 print("Circular no se pudo guardar")
             }
-            
+          
         }
         
     
@@ -1363,12 +1284,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Circular almacenada correctamente")
+                print("Notificacion_ almacenada correctamente")
                 self.notifNoLeidas += 1
                 
                 
             }else{
-                print("Circular no se pudo guardar")
+                print("Notificacion_ no se pudo guardar")
             }
             
         }
@@ -1391,7 +1312,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         print("Leer desde el servidor....")
         print(url)
         circulares.removeAll()
-       
+        UserDefaults.standard.setValue(1, forKey: "primeraCarga")
         self.delete()
         
         URLSession.shared.dataTask(with: url) {
@@ -1594,7 +1515,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                          guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
                          */
                         print("leida server: \(leido), no leida server: \(noLeida)")
-                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: para)
+                        self.guardarCirculares(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str.replacingOccurrences(of: "&nbsp;", with: ""), no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj,especiales: para)
                         
                         
                     }
@@ -1744,9 +1665,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                     
                     print("notif- guardar nl: \(noLeida)")
                   
-                    /*
-                     guardarCirculares(idCircular:Int,idUsuario:Int,nombre:String, textoCircular:String,no_leida:Int, leida:Int,favorita:Int,compartida:Int,eliminada:Int,fecha:String,fechaIcs:String,horaInicioIcs:String,horaFinIcs:String,nivel:String,adjunto:Int)
-                     */
+                  
                      self.guardarNotificaciones(idCircular: Int(id)!, idUsuario: Int(self.idUsuario)!, nombre: titulo, textoCircular: str, no_leida: noLeida, leida: Int(leido)!, favorita: Int(favorito)!, compartida: 0, eliminada: Int(eliminada)!,fecha: fecha,fechaIcs: fechaIcs,horaInicioIcs: horaInicioIcs,horaFinIcs: horaFinIcs,nivel: nv ?? "",adjunto:adj)
                     
                 }
@@ -2266,17 +2185,57 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     
     
+    func obtenerRecuentoBadge(uri:String){
+        Alamofire.request(uri)
+               .responseJSON { response in
+                   // check for errors
+                   guard response.result.error == nil else {
+                       // got an error in getting the data, need to handle it
+                       print("error en la consulta")
+                       print(response.result.error!)
+                       return
+                   }
+                
+                if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+                for diccionario in diccionarios{
+                    //print(diccionario)
+                  
+                    guard let notificaciones = diccionario["notificaciones"] as? String else {
+                        print("No se pudo obtener el codigo")
+                        return
+                    }
+                    
+                   
+                   //Settear el badge
+                    UIApplication.shared.applicationIconBadgeNumber = Int(notificaciones)!
+                    
+                      
+                }
+            }
+                
+        }
+        
+        
+     
+        
+    }
+    
+    
+    
+    
     
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if(!(searchBar.text?.isEmpty)!){
             buscando=true
             print("Buscar")
-            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased())})
+            //Buscar en el titulo o en el contenido
+            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased()) || $0.contenido.lowercased().contains(searchBar.text!.lowercased())})
             self.tableViewCirculares?.reloadData()
         }else{
             buscando=false
             view.endEditing(true)
+            leerCirculares()
             self.tableViewCirculares?.reloadData()
         }
     }
@@ -2292,13 +2251,15 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
            guard let _url = URL(string: address) else { return };
             self.getDataFromURL(url: _url)
             
-            
+            let addressN=self.urlBase+self.metodoNotificaciones+"?usuario_id=\(self.idUsuario)"
+                       guard let _urlN = URL(string: addressN) else { return };
+            self.getDataFromURLNotificaciones(url:_urlN)
             
             
         }else{
             buscando=true
              print("Buscar")
-            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased())})
+            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased()) || $0.contenido.lowercased().contains(searchBar.text!.lowercased())})
             self.tableViewCirculares?.reloadData()
             
         }

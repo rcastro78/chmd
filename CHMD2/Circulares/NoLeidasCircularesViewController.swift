@@ -1596,12 +1596,13 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         if(!(searchBar.text?.isEmpty)!){
             buscando=true
             print("Buscar")
-            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased())})
+            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased()) || $0.contenido.lowercased().contains(searchBar.text!.lowercased())})
             self.tableViewCirculares?.reloadData()
         }else{
             buscando=false
             view.endEditing(true)
-            self.tableViewCirculares?.reloadData()
+            leerCirculares()
+            //self.tableViewCirculares?.reloadData()
         }
     }
     
@@ -1619,8 +1620,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }else{
             buscando=true
              print("Buscar")
-            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased())})
-            self.tableViewCirculares?.reloadData()
+            circulares = circulares.filter({$0.nombre.lowercased().contains(searchBar.text!.lowercased()) || $0.contenido.lowercased().contains(searchBar.text!.lowercased())})
+            leerCirculares()
+            //self.tableViewCirculares?.reloadData()
             
         }
     }

@@ -12,7 +12,7 @@ import Alamofire
 import EventKit
 import Firebase
 import BitlySDK
-import MarqueeLabel
+
 import SQLite3
 
 private let characterEntities : [ Substring : Character ] = [
@@ -44,6 +44,31 @@ private let characterEntities : [ Substring : Character ] = [
 
 extension String {
 
+    var htmlDecoded2: String {
+
+
+        let attributedOptions: [NSAttributedString.DocumentReadingOptionKey : Any] = [
+
+            NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html,
+            NSAttributedString.DocumentReadingOptionKey.characterEncoding : String.Encoding.utf8.rawValue
+        ]
+
+
+        let decoded = try? NSAttributedString(data: Data(utf8), options: attributedOptions
+            , documentAttributes: nil).string
+
+        return decoded ?? self
+    }
+    
+    var htmlDecoded: String {
+            let decoded = try? NSAttributedString(data: Data(utf8), options: [
+                .documentType: NSAttributedString.DocumentType.html,
+                .characterEncoding: String.Encoding.utf8.rawValue
+            ], documentAttributes: nil).string
+
+            return decoded ?? self
+        }
+    
     /// Returns a new string made by replacing in the `String`
     /// all HTML character entity references with the corresponding
     /// character.
@@ -223,7 +248,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     @IBOutlet weak var lblTituloNivel: UILabel!
     @IBOutlet weak var imbCalendario: UIButton!
       
-    @IBOutlet weak var webViewSinConexion: UITextView!
+    //@IBOutlet weak var webViewSinConexion: UITextView!
     @IBOutlet weak var btnCalendario: UIButton!
     @IBOutlet weak var lblNivel: UILabel!
     var pinchGesture = UIPinchGestureRecognizer()
@@ -309,10 +334,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     }
     
     
-    func mostrarCircular(tituloP1:String,tituloP2:String,decoded:String,nivel:String,d:String){
+    func mostrarCircular(id:Int, tituloP1:String,tituloP2:String,decoded:String,nivel:String,d:String){
        
+        
+        print("id_circular \(id)")
+        
         if(tituloP1.count>0 && tituloP2.count<=0){
-            htmlBottom = "<h4><div style='color:#0E497B;font-weight:normal'>\(decoded)</div></h4>"
+            htmlBottom = "<h5><div>\(decoded.replacingOccurrences(of: "&nbsp;", with: " "))</div></h5>"
             if(nivel.count>0){
                 html1 = """
                            <html>
@@ -329,7 +357,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
                            <meta name="HandheldFriendly" content="true">
                             <meta name="viewport" content="width=device-width, initial-scale=1">
-                            
+                            <meta http-equiv="Content-Type"  content="text/html charset=UTF-8" />
                            <style>
                                @-webkit-viewport { width: device-width; }
                                @-moz-viewport { width: device-width; }
@@ -343,12 +371,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
                                 @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
                                h3 {
-                                    font-family: GothamRoundedBold;
-                                    color:#ffffff;
+                                    font-family: GothamRoundedMedium;
+                                    color:#0E497B;
                                  }
                                  
                                   h4 {
-                                    font-family: GothamRoundedMedium;
+                                    font-family: GothamRoundedBold;
                                    color:#0E497B;
                                  }
                                  
@@ -459,7 +487,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 
                            <center>
                             <div id="titulo" style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                              <h3><center><span id='text' style='display:inline-block;'><b>\(tituloP1)</b></span></center></div>
+                              <h4><center><span id='text' style='display:inline-block;'><b>\(tituloP1)</b></span></center></div></h4>
                             
                            
                            """
@@ -474,7 +502,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 
                            <!-- Latest compiled JavaScript -->
                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+                                <meta http-equiv="Content-Type"  content="text/html charset=UTF-8" />
                                  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
                            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
                            <meta name="HandheldFriendly" content="true">
@@ -492,13 +520,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                <style>
                                @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
                                 @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
-                               h3 {
-                                    font-family: GothamRoundedBold;
-                                    color:#ffffff;
-                                 }
+                                h3 {
+                                   font-family: GothamRoundedMedium;
+                                   color:#0E497B;
+                                   }
                                  
                                   h4 {
-                                    font-family: GothamRoundedMedium;
+                                    font-family: GothamRoundedBold;
                                    color:#0E497B;
                                  }
                                  
@@ -604,7 +632,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 
                            <center>
                               <div id="titulo"  style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                               <h3><center><span id='text' style='display:inline-block;'><b>\(tituloP1)</b></span></center></div>
+                               <h4><center><span id='text' style='display:inline-block;'><b>\(tituloP1)</b></span></center></div></h4>
                             
                            
                            """
@@ -612,9 +640,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
            
         }
         
-        
+        print("decoded: \(decoded)")
         if(tituloP1.count>0 && tituloP2.count>0){
-            htmlBottom = "<h4><div style='color:#0E497B;font-weight:normal'>\(decoded)</div></h4>"
+            htmlBottom = "<h5><div style='font-family: 'GothamRoundedMedium'; color:#0E497B;font-weight:normal'>\(decoded.replacingOccurrences(of: "&nbsp;", with: " "))</div></h5>"
             if(nivel.count>0){
                 html1 = """
                                                       <html>
@@ -631,8 +659,24 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                                       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
                                                       <meta name="HandheldFriendly" content="true">
                                                        <meta name="viewport" content="width=device-width, initial-scale=1">
-                                                       
+                                                       <meta http-equiv="Content-Type"  content="text/html charset=UTF-8" />
                                                       <style>
+
+
+                                                            @font-face
+                                                            {
+                                                                font-family: 'Gotham Bold';
+                                                                font-weight: bold;
+                                                                src: url(GothamRoundedBold_21016.ttf);
+                                                            }
+
+                                                            @font-face
+                                                            {
+                                                                font-family: 'Gotham Book';
+                                                                font-weight: normal;
+                                                                src: url(GothamRoundedBook_21018.ttf);
+                                                            }
+
                                                           @-webkit-viewport { width: device-width; }
                                                           @-moz-viewport { width: device-width; }
                                                           @-ms-viewport { width: device-width; }
@@ -645,12 +689,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                                           @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
                                                            @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
                                                           h3 {
-                                                               font-family: GothamRoundedBold;
-                                                               color:#ffffff;
+                                                               font-family: GothamRoundedMedium;
+                                                               color:#0E497B;
                                                             }
                                                             
                                                              h4 {
-                                                               font-family: GothamRoundedMedium;
+                                                               font-family: GothamRoundedBold;
                                                               color:#0E497B;
                                                             }
                                                             
@@ -749,23 +793,23 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                                            
                                                                 
                                                        
-                                                      <div id="nivel"  style="text-align:right; width:100%;text-color:#0E497B">
+                                                      <div id="nivel"  style="font-family: 'Gotham Book' text-align:right; width:100%;text-color:#0E497B">
                                                               <h5>\(nivel)</h5>
                                                        </div>
                                                       </p>
-                                                      <div id="fecha"  style="text-align:right; width:100%;text-color:#0E497B">
+                                                      <div id="fecha"  style="font-family: 'Gotham Book';  text-align:right; width:100%;text-color:#0E497B">
                                                               <h5>
                                                             \(d.lowercased())</h5>
                                                       </div>
 
                                                       <div id="titulo"  style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                                                          <h3>
                                                           
-                                                      <center><span id='text' style='display: inline-block;'><b>\(tituloP1)</b></span></center></div><div id='titulo' style='width:100%;padding-top:6px;padding-bottom:6px;padding-left:12px;padding-right:12px;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-10px'><center><span id='text'  style='display: inline-block; width:100%;'><b>\(tituloP2)</b></span></center></div>
-                                                      <h3>
+                                                          
+                                                     <span id='text' style='display: inline-block;'><b><h4>\(tituloP1)</h4></b></span></center></div><div id='titulo' style='width:100%;padding-top:6px;padding-bottom:6px;padding-left:12px;padding-right:12px;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-10px'><center><span id='text'  style='display: inline-block; width:100%;'><b><h4>\(tituloP2)</h4></b></span></center></div>
+                                                      
                                                       <p>
                                                          
-                                                              </center>
+                                                           
                                                           
                                                              </div>
                                                           
@@ -801,12 +845,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                                           @font-face {font-family: GothamRoundedMedium; src: url('GothamRoundedBook_21018.ttf'); }
                                                            @font-face {font-family: GothamRoundedBold; src: url('GothamRoundedBold_21016.ttf'); }
                                                           h3 {
-                                                               font-family: GothamRoundedBold;
-                                                               color:#ffffff;
+                                                               font-family: GothamRoundedMedium;
+                                                               color:#0E497B;
                                                             }
                                                             
                                                              h4 {
-                                                               font-family: GothamRoundedMedium;
+                                                               font-family: GothamRoundedBold;
                                                               color:#0E497B;
                                                             }
                                                             
@@ -909,10 +953,10 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                                       </div>
 
                                                       <div id="titulo"  style="width:100%;height:48px;padding-top:2px;padding-bottom:2px;padding-left:12px;padding-right:12px;background-color:#91CAEE;text-align:center; vertical-align: middle;">
-                                                          <h3>
                                                           
-                                                      <center><span id='text' style='display: inline-block;'><b>\(tituloP1)</b></span></center></div><div id='titulo' style='width:100%;padding-top:6px;padding-bottom:6px;padding-left:12px;padding-right:12px;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-10px'><center><span id='text'  style='display: inline-block; width:100%;'><b>\(tituloP2)</b></span></center></div>
-                                                      <h3>
+                                                          
+                                                      <center><span id='text' style='display: inline-block;'><b><h4>\(tituloP1)</h4></b></span></center></div><div id='titulo' style='width:100%;padding-top:6px;padding-bottom:6px;padding-left:12px;padding-right:12px;background-color:#098FCF;text-align:center; vertical-align: middle;margin-top:-10px'><center><span id='text'  style='display: inline-block; width:100%;'><b><h4>\(tituloP2)</h4></b></span></center></div>
+                                                      
                                                       <p>
                                                          
                                                               </center>
@@ -952,38 +996,39 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             let finalAttributedString = NSMutableAttributedString()
             finalAttributedString.append(attrStr)
             finalAttributedString.append(attrStr2)
-            webViewSinConexion.attributedText = finalAttributedString
+            
+        //AQUI a webView
+        //webViewSinConexion.attributedText = finalAttributedString
+        webView.loadHTMLString(modifiedFont+modifiedFont2, baseURL: Bundle.main.bundleURL)
+        
         
     }
     @objc func pinchText(sender:UIPinchGestureRecognizer){
         print("Se ha llamado al gesto del webview")
-        /*var pSize = CGFloat(UserDefaults.standard.float(forKey: "fontSize"))
-        pSize = ((sender.velocity>0) ? 1:-1)*1+pSize
-        UserDefaults.standard.setValue(pSize, forKey: "fontSize")
-        UserDefaults.standard.synchronize()
-        let formattedText = NSMutableAttributedString.init(attributedString: webViewSinConexion!.attributedText)
-        formattedText.addAttribute(NSAttributedString.Key.font,value:UIFont.systemFont(ofSize: pSize),range: NSRange(location: 0, length: formattedText.length))
-        webViewSinConexion.attributedText = formattedText*/
+    
         
         var pinchScale = sender.scale
                pinchScale = round(pinchScale * 1000) / 1000.0
 
                if (pinchScale > 1) {
-                webViewSinConexion.font = UIFont( name: "arial", size: webViewSinConexion.font!.pointSize + pinchScale)
+                //webViewSinConexion.font = UIFont( name: "arial", size: webViewSinConexion.font!.pointSize + pinchScale)
                }
-                webViewSinConexion.frame.height * pinchScale
+              /*  webViewSinConexion.frame.height * pinchScale
                 webViewSinConexion.frame.size.height *= pinchScale
-                webViewSinConexion.frame.size.width *= pinchScale
+            webViewSinConexion.frame.size.width *= pinchScale
                self.webViewSinConexion.layoutIfNeeded()
                print(webViewSinConexion.frame.size.height)
-               print(webViewSinConexion.frame.size.width)
+               print(webViewSinConexion.frame.size.width)*/
         
         
         }
     
-    
+    var indiceActual:Int = 0
     override func viewDidLoad() {
         super.viewDidLoad()
+        let circularActual = circulares.filter({$0.id == Int(id)})
+        indiceActual = circularActual.startIndex
+        
         circFav = UserDefaults.standard.integer(forKey: "circFav")
         clickeado = UserDefaults.standard.integer(forKey: "clickeado")
         pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchText(sender:)))
@@ -1005,11 +1050,6 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         let noLeido = Int(UserDefaults.standard.string(forKey: "noLeido") ?? "0")!
         print("no leido: \(noLeido)")
         //Si no se ha leido
-        if(noLeido==1){
-            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-            print("Reducir badge (-1)...")
-        }
-        
         
         
         if(tipoCircular==5){
@@ -1038,16 +1078,19 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
          }
         
         
-        webView.isHidden=true
-        webViewSinConexion.isHidden=false
+        webView.isHidden=false
+        //webViewSinConexion.isHidden=false
         
-        
-        if (viaNotif == 0){
+        if (viaNotif == 0 ){
             let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
             circularTitulo = titulo
             let fecha = UserDefaults.standard.string(forKey: "fecha") ?? ""
             contenido = UserDefaults.standard.string(forKey:"contenido") ?? ""
             id = UserDefaults.standard.string(forKey: "id") ?? ""
+           
+            print("circular_id \(id)")
+            
+            
             globalId=id
             idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
             leido = Int(UserDefaults.standard.string(forKey: "leido") ?? "0")!
@@ -1063,31 +1106,39 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             navigationItem.titleView = imageView
             
             
-            
-           
                 //webView.isHidden=true
                 //webViewSinConexion.isHidden=false
                 idInicial = Int(UserDefaults.standard.string(forKey: "id") ?? "0")!
                 print("id de la circular: \(idInicial)")
                leerCircular(idCircular: idInicial)
-                //let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
-                //     let _url = URL(string: address);
-                // self.obtenerCirculares(uri:address)
-               
-            
-            
-            //partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:titulo)
+
             
         }else{
             self.showToast(message:"Espera un momento!", font: UIFont(name:"GothamRounded-Bold",size:12.0)!)
             id = UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? ""
             idInicial = Int(UserDefaults.standard.string(forKey: "idCircularViaNotif") ?? "0")!
-            //obtenerCircular(uri: urlBase+"getCircularId6.php?id="+id)
+            
             
             webView.isHidden=false
-            webViewSinConexion.isHidden=true
+            //webViewSinConexion.isHidden=true
 
-            webView.load(URLRequest(url: URL(string: urlBase+"getCircularId6.php?id="+id)!))
+            globalId="\(idInicial)"
+           
+           self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: globalId)
+           
+            self.leeCirc(idCircular:Int(globalId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+            self.contarCircularesNoLeidas()
+            
+            
+            let f = self.getFavorita(idCircular:Int(globalId) ?? 0)
+            if(f==1){
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
+            }else{
+             self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
+            }
+           
+            
+            
             
             
             let btnVolver = UIBarButtonItem(title: "< Volver", style: .done, target: self, action: #selector(volver))
@@ -1104,10 +1155,10 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
        self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
         
         
-        if(!ConexionRed.isConnectedToNetwork()){
+       
          
           webView.isHidden=false
-          webViewSinConexion.isHidden=true
+          //webViewSinConexion.isHidden=true
             let link = URL(string:urlBase+"getCircularId6.php?id=\(id)")!
                   let request = URLRequest(url: link)
                   webView.contentMode = .scaleAspectFit
@@ -1120,14 +1171,14 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
                   let address=urlBase+"getCircularesUsuarios.php?usuario_id=\(idUsuario)"
                   circularUrl = address
-                  if ConexionRed.isConnectedToNetwork() == true {
+                  if ConexionRed.isConnectedToNetwork() == true || ConexionRed.isConnectedToNetwork() == false {
                     
                     //Todas
                     if(tipoCircular==1){
                         
                         
                         self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
-                       //Actualizarla en la base de datos
+              
                        self.leeCirc(idCircular:Int(self.id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
                         
                         
@@ -1160,35 +1211,31 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     }
                     //Notificaciones
                     if(tipoCircular==5){
-                      let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getNotificaciones_iOS.php?usuario_id=\(idUsuario)"
+                      let address="https://www.chmd.edu.mx/WebAdminCirculares/ws/getCirculares_iOS.php?usuario_id=\(idUsuario)"
                        let _url = URL(string: address);
-                        self.obtenerNotificaciones(uri:address)
+                        self.leerNotificaciones()
                         self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: self.id)
                         self.leeNotificacion(idCircular: Int(self.id)!, idUsuario: Int(idUsuario)!)
                     }
                     
                 }
-                                
-                  posicion = find(value: id,in: ids) ?? 0
-                 }else{
+                        
+                
             
             if (viaNotif == 1){
-                let link = URL(string:urlBase+"getCircularId6.php?id=\(id)")!
-                circularUrl = urlBase+"getCircularId6.php?id=\(id)"
-                print(urlBase+"getCircularId6.php?id=\(id)")
-                let request = URLRequest(url: link)
-                self.webViewSinConexion.isHidden=true;
-                self.webView.isHidden=false;
-                webView.load(request)
+                
+                
+                self.leerCirculares(id:Int(id)!)
+                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: id)
+                self.leeCirc(idCircular:Int(id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                
+                  
+                
                 
             }
-            
-            
-            
-            
-            if (viaNotif == 0){
+            if (viaNotif == 0 || viaNotif==1){
             if(tipoCircular==1){
-              self.leerCirculares()
+                self.leerCirculares()
             }
             if(tipoCircular==2){
               self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
@@ -1202,17 +1249,28 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              self.leerCircularesEliminadas()
             }
             if(tipoCircular==5){
+             print("Leyendo notificaciones")
              self.leerNotificaciones()
              self.leeNotificacion(idCircular: Int(self.id)!, idUsuario: Int(idUsuario)!)
             
             }
-            
+           
+            if(tipoCircular==5){
+                    var idNotifica = UserDefaults.standard.string(forKey: "idNotifica") ?? ""
+                    posicion = find(value: idNotifica,in: ids) ?? 0
+                }else{
+                    posicion = find(value: id,in: ids) ?? 0
+             }
+                if(posicion<circulares.count){
+                    posicion = posicion+1
+                    
+                }
+                    
             let titulo = circulares[posicion].nombre
             let tituloP1 = self.partirTituloP1(titulo: titulo)
             let tituloP2 = self.partirTituloP2(titulo: titulo)
             
             let anio = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[0]
-            //aqui dio error sin internet
             let mes = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[1]
             let dia = circulares[posicion].fecha.components(separatedBy: " ")[0].components(separatedBy: "-")[2]
             let nivel = circulares[posicion].nivel
@@ -1225,23 +1283,19 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                            var d = dateFormatter.string(from: date1!)
                            d = d.lowercased()
 
-            webView.isHidden=true
-            webViewSinConexion.isHidden=false
+            webView.isHidden=false
+            //webViewSinConexion.isHidden=false
             
-            let decoded = circulares[posicion].contenido.stringByDecodingHTMLEntities
-            mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+                let decoded = circulares[posicion].contenido.stringByDecodingHTMLEntities
+              
+                mostrarCircular(id:posicion, tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded.replacingOccurrences(of: "&quot;", with: "\""),nivel:nivel!,d:d)
            
-                /*
-                 aqui estaba*/
-                
-                       
-                   //webViewSinConexion.attributedText = attrStr
             
             
             }
             
           
-        }
+        
         
        
     }
@@ -1377,10 +1431,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 dialogMessage.addAction(cancel)
                 self.present(dialogMessage, animated: true, completion: nil)
              
-        /*}else{
-            var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
-                       alert.show()
-        }*/
+  
     }
     @IBAction func insertaEventoClick(_ sender: UIButton) {
        //if(ConexionRed.isConnectedToNetwork()){
@@ -1424,10 +1475,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                dialogMessage.addAction(ok)
                dialogMessage.addAction(cancel)
             
-      /* }else{
-           var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
-                      alert.show()
-       }*/
+  
     }
     
     
@@ -1437,79 +1485,6 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
    var p = UserDefaults.standard.integer(forKey:"posicion")
     @IBAction func btnSiguienteClick(_ sender: UIButton) {
         
-        
-        
-        
-        //self.activity.startAnimating()
-        //if(!ConexionRed.isConnectedToNetwork()){
-             /*print("posicion \(p)")
-             p = p+1
-            if(p >= ids.count){
-              btnSiguiente.isUserInteractionEnabled=false
-            }
-            
-            if(p<ids.count){
-               
-                var nextId = ids[p]
-                globalId=nextId
-                //leer al server
-               self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
-                //leer local
-                self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
-                
-                let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
-                if(f==1){
-                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
-                }else{
-                 self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
-                }
-                if(self.tipoCircular==5){
-                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                    if(leida==0){
-                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                    }
-                }else{
-                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                    if(leida==0){
-                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                    }
-                }
-                
-                
-                
-                var nextTitulo = titulos[p]
-                var nextFecha = fechas[p]
-                //self.lblTituloParte1.text=nextTitulo
-                var nextHoraIniIcs = horasInicioIcs[p]
-                nextHoraIcs = horasInicioIcs[p]
-                var nextHoraFinIcs = horasFinIcs[p]
-                var nextFechaIcs = fechasIcs[p]
-                var nextNivel = niveles[p]
-                
-                if(nextHoraIniIcs != "00:00:00"){
-                    imbCalendario.isHidden=false
-                    btnCalendario.isHidden=false
-                }else{
-                    imbCalendario.isHidden=true
-                    btnCalendario.isHidden=true
-                }
-        
-               // self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:nextTitulo)
-                
-                circularTitulo = nextTitulo
-                let link = URL(string:urlBase+"getCircularId6.php?id=\(nextId)")!
-                let request = URLRequest(url: link)
-                circularUrl = urlBase+"getCircularId6.php?id=\(nextId)"
-                webView.load(request)
-                self.title = "Circular"
-               
-                id = nextId;
-            }else{
-       
-            }
-                
-                
-            */
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1), execute: {
             
         })
@@ -1519,7 +1494,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         clickeado=1
         
         
-       print("posicion \(p)")
+        
+        
+        
         p = p+1
             
             if(p<circulares.count){
@@ -1534,7 +1511,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                    
                                     let nextId = ids[p]
                                     globalId=nextId
-                                    //leer al server
+                                    print("circactual \(nextId)")
+                        //leer al server
                                    self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                                     //leer local
                                     self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
@@ -1545,20 +1523,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                     }else{
                                      self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                                     }
-                                    if(self.tipoCircular==5){
-                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                        if(leida==0){
-                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                        }
-                                    }else{
-                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                        if(leida==0){
-                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                        }
-                                    }
-                    
-                    
-                    
+                                    
                 }
                 
                 
@@ -1572,6 +1537,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 var nextHoraIniIcs = circulares[p].horaInicialIcs
                 var nextHoraFinIcs = circulares[p].horaFinalIcs
                 var nextFechaIcs = circulares[p].fechaIcs
+                
+                self.leeCirc(idCircular:Int(circulares[p].id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: String(circulares[p].id))
+                
+                
+                
                 print("NEXT HORA \(nextHoraIcs)")
                 if(nextHoraIniIcs != "00:00:00"){
                     imbCalendario.isHidden=false
@@ -1589,8 +1560,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 let d = dateFormatter.string(from: date1!)
                 //self.lblTituloParte1.text=circulares[p].nombre
                 //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
-                         webView.isHidden=true
-                         webViewSinConexion.isHidden=false
+                         webView.isHidden=false
+                         //webViewSinConexion.isHidden=false
                          
                           let titulo = circulares[p].nombre
                            let tituloP1 = self.partirTituloP1(titulo: titulo)
@@ -1599,7 +1570,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                           
                            let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
                           //aqui estaba
-                            mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+                mostrarCircular(id:p,tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
                
                 
             
@@ -1612,7 +1583,16 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     
     
-  
+    
+    func circularSiguiente()->CircularTodas{
+        indiceActual = indiceActual + 1
+        indiceActual = indiceActual > circulares.endIndex ? circulares.startIndex : indiceActual
+           return circulares[indiceActual]
+        
+    }
+    
+    var primeraVez:Int=0
+    var nextIndex:Int=0
     @IBAction func btnNextClick(_ sender: UIButton) {
 
       
@@ -1620,7 +1600,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
         })
         
-       print("posicion \(p)")
+       
+        
         if(clickeado==0){
             p=p+1
         }
@@ -1637,28 +1618,23 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                            
                             let nextId = ids[p]
                             globalId=nextId
+                
+                print("circactual \(nextId)")
+                
                             //leer al server
                            self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: nextId)
                             //leer local
                             self.leeCirc(idCircular:Int(nextId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
                             
+                
+                
                             let f = self.getFavorita(idCircular:Int(nextId) ?? 0)
                             if(f==1){
                              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
                             }else{
                              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                             }
-                            if(self.tipoCircular==5){
-                                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                if(leida==0){
-                                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                }
-                            }else{
-                                let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                if(leida==0){
-                                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                }
-                            }
+                            
             
             
             
@@ -1673,17 +1649,12 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             }
             
             
-            if(self.tipoCircular==5){
-                let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
-                if(leida==0){
-                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                }
-            }else{
-                let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
-                if(leida==0){
-                    UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                }
-            }
+            
+            
+            self.leeCirc(idCircular:Int(circulares[p].id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+            self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: String(circulares[p].id))
+            
+            
             
             
             var nextHoraIniIcs = circulares[p].horaInicialIcs
@@ -1701,8 +1672,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
          
             
-           webView.isHidden=true
-           webViewSinConexion.isHidden=false
+           webView.isHidden=false
+           //webViewSinConexion.isHidden=false
            
             let titulo = circulares[p].nombre
              let tituloP1 = self.partirTituloP1(titulo: titulo)
@@ -1720,25 +1691,18 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                             let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                             dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                             let d = dateFormatter.string(from: date1!)
-             webView.isHidden=true
-             webViewSinConexion.isHidden=false
+             webView.isHidden=false
+             //webViewSinConexion.isHidden=false
              
              let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
              //aqui estaba
-            mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
-           
-            
-            
-            
-                        //webViewSinConexion.attributedText = attrStr
-             
-            
-        
+            mostrarCircular(id:p,tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+   
         }
       
         
-    //}
-        
+
+    
     }
         
     
@@ -1771,20 +1735,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                     }else{
                                      self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                                     }
-                                    if(self.tipoCircular==5){
-                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                        if(leida==0){
-                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                        }
-                                    }else{
-                                        let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                        if(leida==0){
-                                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                        }
-                                    }
-                    
-                    
-                    
+                                    
                 }
                     
                     
@@ -1795,25 +1746,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                     }else{
                      self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                     }
-                    
-                    
-                    if(self.tipoCircular==5){
-                        let leida = self.getLeida(idCircular: Int(circulares[p].id), tabla: "appCircularCHMD")
-                        if(leida==0){
-                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                        }
-                    }else{
-                        let leida = self.getLeida(idCircular: Int(circulares[p].id), tabla: "appCircularCHMD")
-                        if(leida==0){
-                            UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                        }
-                    }
-                    
-                    
-                    
-                                      
-                                   webView.isHidden=true
-                                             webViewSinConexion.isHidden=false
+                                
+                                   webView.isHidden=false
+                                             //webViewSinConexion.isHidden=false
                                              
                                               let titulo = circulares[p].nombre
                                                let tituloP1 = self.partirTituloP1(titulo: titulo)
@@ -1833,20 +1768,16 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                                               var d = dateFormatter.string(from: date1!)
                                                               d = d.lowercased()
                                                print("fecha: \(d)")
-                                               webView.isHidden=true
-                                               webViewSinConexion.isHidden=false
+                                               webView.isHidden=false
+                                               //webViewSinConexion.isHidden=false
                                                
                                                let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-                                               mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+                    mostrarCircular(id:p,tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
                    
-                       
-                       
-                       
-                       
-                                                          //webViewSinConexion.attributedText = attrStr
-                                   
-                              }
-                   //}
+                    self.leeCirc(idCircular:Int(circulares[p].id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                    self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: String(circulares[p].id))
+                }
+              
     }
     
     @IBAction func btnAntClick(_ sender: UIButton) {
@@ -1862,9 +1793,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         
             p = p-1
             if(p>0){
-                //self.partirTitulo(label1:self.lblTituloParte1,label2:self.lblTituloParte2,titulo:circulares[p].nombre)
-                               //lblNivel.text = circulares[p].nivel
-                
+
                 if(p<ids.count){
                                
                                 let nextId = ids[p]
@@ -1880,17 +1809,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                                 }else{
                                  self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
                                 }
-                                if(self.tipoCircular==5){
-                                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                    if(leida==0){
-                                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                    }
-                                }else{
-                                    let leida = self.getLeida(idCircular: Int(nextId) ?? 0, tabla: "appCircularCHMD")
-                                    if(leida==0){
-                                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                                    }
-                                }
+                                
                 
                 
                 
@@ -1898,8 +1817,8 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                 
                 
                 
-            webView.isHidden=true
-            webViewSinConexion.isHidden=false
+            webView.isHidden=false
+            //webViewSinConexion.isHidden=false
                 let f = self.getFavorita(idCircular:Int(circulares[p].id) ?? 0)
             if(f==1){
              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono_completo"), for: .normal)
@@ -1907,20 +1826,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              self.btnFavorita.setImage(UIImage(named:"estrella_fav_icono"), for: .normal)
             }
                 
-                if(self.tipoCircular==5){
-                    let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
-                    if(leida==0){
-                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                    }
-                }else{
-                    let leida = self.getLeida(idCircular: Int(circulares[p].id) ?? 0, tabla: "appCircularCHMD")
-                    if(leida==0){
-                        UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
-                    }
-                }
-                
-                
-                
+                  
              let titulo = circulares[p].nombre
               let tituloP1 = self.partirTituloP1(titulo: titulo)
               let tituloP2 = self.partirTituloP2(titulo: titulo)
@@ -1937,14 +1843,15 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                              let date1 = dateFormatter.date(from: "\(dia)/\(mes)/\(anio)")
                              dateFormatter.dateFormat = "d 'de' MMMM 'de' YYYY"
                              let d = dateFormatter.string(from: date1!)
-              webView.isHidden=true
-              webViewSinConexion.isHidden=false
+              webView.isHidden=false
+              //webViewSinConexion.isHidden=false
               
               let decoded = circulares[p].contenido.stringByDecodingHTMLEntities
-                mostrarCircular(tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
+                mostrarCircular(id:p,tituloP1:tituloP1,tituloP2:tituloP2,decoded:decoded,nivel:nivel!,d:d)
                
-                         //webViewSinConexion.attributedText = attrStr
-                            
+                self.leeCirc(idCircular:Int(circulares[p].id) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
+                self.leerCircular(direccion: self.urlBase+self.leerMetodo, usuario_id: self.idUsuario, circular_id: String(circulares[p].id))
+
                }
         
            // }
@@ -1966,7 +1873,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             //Vaciar la tabla
            
           
-           let query = "UPDATE appCircularCHMD SET favorita=0 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario) and tipo=1"
+           let query = "UPDATE appCircularCHMD SET favorita=0 WHERE idCircular=\(idCircular) and tipo=1"
            
            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                print("Error")
@@ -1982,6 +1889,38 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
            }
            
    }
+    
+    
+    func noLeerCirc(idCircular:Int){
+        let fileUrl = try!
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+        
+        if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
+            print("Error en la base de datos")
+        }else{
+            
+            //La base de datos abrió correctamente
+            var statement:OpaquePointer?
+            
+             //Vaciar la tabla
+            
+           
+            let query = "UPDATE appCircularCHMD SET leida=0 WHERE idCircular=\(idCircular) and tipo=1"
+            
+            if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
+                print("Error")
+            }
+            
+           
+            if sqlite3_step(statement) == SQLITE_DONE {
+                    print("Circular actualizada correctamente")
+                }else{
+                    print("Circular no se pudo eliminar")
+                }
+                
+            }
+            
+    }
     
     func eliminaCircular(idCircular:Int,idUsuario:Int){
            let fileUrl = try!
@@ -2058,12 +1997,6 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
     }
     
-    
-    
-    
-    
-    
-    
     func leeCirc(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
             FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
@@ -2079,13 +2012,18 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
            
             let query = "UPDATE appCircularCHMD SET leida=1 WHERE idCircular=\(idCircular) AND idUsuario=\(idUsuario) AND tipo=1"
-            
+            print("query \(query)")
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
             
            
             if sqlite3_step(statement) == SQLITE_DONE {
+                
+               
+                
+                
+                
                     print("Circular actualizada correctamente")
                 }else{
                     print("Circular no se pudo eliminar")
@@ -2098,7 +2036,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     @IBAction func btnFavoritoClick(_ sender: UIButton) {
         
         if(tipoCircular != 5){
-            if(ConexionRed.isConnectedToNetwork()){
+            if(ConexionRed.isConnectedToNetwork()  || !ConexionRed.isConnectedToNetwork()){
                
               
                 let f = self.getFavorita(idCircular:Int(globalId) ?? 0)
@@ -2128,7 +2066,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                            alert.show()
             }
         }else{
-            var alert = UIAlertView(title: "No Permitido", message: "Esta opción solo funciona con una circular y no una notificación", delegate: nil, cancelButtonTitle: "Aceptar")
+            var alert = UIAlertView(title: "No Permitido", message: "Esta opción solo funciona con una circular y no con una notificación", delegate: nil, cancelButtonTitle: "Aceptar")
              alert.show()
         }
         
@@ -2137,29 +2075,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     
     
     @IBAction func btnFavClick(_ sender: UIButton) {
-        //Hacer favorita la circular
+
         
         if(ConexionRed.isConnectedToNetwork()){
-           // let dialogMessage = UIAlertController(title: "CHMD", message: "¿Deseas agregar esta circular a tus favoritas?", preferredStyle: .alert)
-            
-            // Create OK button with action handler
-            //let ok = UIAlertAction(title: "Sí", style: .default, handler: { (action) -> Void in
+
                 self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: globalId)
             self.actualizaFavoritosCirculares(idCircular:Int(globalId) ?? 0,idUsuario:Int(self.idUsuario) ?? 0)
-            
-            //})
-            
-            // Create Cancel button with action handlder
-            //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                
-            //}
-            
-            //Add OK and Cancel button to dialog message
-            //dialogMessage.addAction(ok)
-            //dialogMessage.addAction(cancel)
-            
-            // Present dialog message to user
-            //self.present(dialogMessage, animated: true, completion: nil)
+          
         }else{
             var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                        alert.show()
@@ -2204,7 +2126,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     @IBAction func btnCompartirClick(_ sender: UIButton) {
         //var link:String=""
         //Crear el link mediante bit.ly, para pruebas
-        circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId6?id=\(id)"
+        circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId6.php?id=\(id)&idUsuario=\(self.idUsuario)"
         compartir(message:"Compartir",link:circularUrl)
         /*Bitly.shorten(circularUrl) { response, error in
             var link = response?.bitlink ?? ""
@@ -2483,17 +2405,53 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     }
     
     func leerCircular(direccion:String, usuario_id:String, circular_id:String){
+        
+        let base_url:String="https://www.chmd.edu.mx/WebAdminCirculares/ws/"
+        let get_badge:String="recuentoBadge.php"
+        
         let parameters: Parameters = ["usuario_id": usuario_id, "circular_id": circular_id]      //This will be your parameter
         Alamofire.request(direccion, method: .post, parameters: parameters).responseJSON { response in
             switch (response.result) {
             case .success:
                 print(response)
                 //UIApplication.shared.applicationIconBadgeNumber = UIApplication.shared.applicationIconBadgeNumber - 1
+                
+                let idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
+                //obtenerRecuentoBadge(uri: base_url+get_badge+"?usuario_id=\(idUsuario)")
+                
                 break
             case .failure:
                 print(Error.self)
             }
         }
+    }
+    
+    
+    func contarCircularesNoLeidas(){
+        print("Leer desde la base de datos local")
+        var total:Int32=0
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+        
+        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+            print("error opening database")
+        }
+        
+        /*
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+         */
+        
+           let consulta = "SELECT count(*) FROM appCircularCHMD where leida=0 and eliminada=0 and tipo=1"
+           var queryStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+              while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let id = sqlite3_column_int(queryStatement, 0)
+                total = id
+             }
+            
+        }
+        
+        UIApplication.shared.applicationIconBadgeNumber = Int(total)
     }
     
     
@@ -2504,6 +2462,9 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             case .success:
                 print(response)
                  self.showToast(message:"Marcada como no leída", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
+                self.noLeerCirc(idCircular: Int(circular_id)!)
+                self.contarCircularesNoLeidas()
+            
                 break
             case .failure:
                 print(Error.self)
@@ -2583,118 +2544,6 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
     }
     */
     
-    
-   /* func leerCirculares(){
-     
-     let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
-     
-     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
-         print("error opening database")
-     }
-     
-        let consulta = "SELECT * FROM appCirculares"
-        var queryStatement: OpaquePointer? = nil
-     var imagen:UIImage
-     imagen = UIImage.init(named: "appmenu05")!
-     
-     if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
-    
-        
-         
-          while(sqlite3_step(queryStatement) == SQLITE_ROW) {
-                  let id = sqlite3_column_int(queryStatement, 0)
-                     var titulo:String="";
-             
-                    if let name = sqlite3_column_text(queryStatement, 2) {
-                        titulo = String(cString: name)
-                       } else {
-                        print("name not found")
-                    }
-             
-             
-                     var cont:String="";
-             
-                    if let contenido = sqlite3_column_text(queryStatement,3) {
-                        cont = String(cString: contenido)
-                       } else {
-                        print("name not found")
-                    }
-           
-                     let leida = sqlite3_column_int(queryStatement, 5)
-                     let favorita = sqlite3_column_int(queryStatement, 6)
-                     let eliminada = sqlite3_column_int(queryStatement, 8)
-                     
-             
-                                     var fechaIcs:String="";
-                                     if let fIcs = sqlite3_column_text(queryStatement, 10) {
-                                       fechaIcs = String(cString: fIcs)
-                                      } else {
-                                       print("name not found")
-                                   }
-                    
-               var hIniIcs:String="";
-               if  let horaInicioIcs = sqlite3_column_text(queryStatement, 11) {
-                 hIniIcs = String(cString: horaInicioIcs)
-                } else {
-                 print("name not found")
-             }
-             
-              var hFinIcs:String="";
-              if  let horaFinIcs = sqlite3_column_text(queryStatement, 12) {
-                  hFinIcs = String(cString: horaFinIcs)
-                  } else {
-                    print("name not found")
-                  }
-             var nivel:String="";
-             if  let nv = sqlite3_column_text(queryStatement, 12) {
-                 nivel = String(cString: nv)
-                 } else {
-                   print("name not found")
-                 }
-             
-                     let adj = sqlite3_column_int(queryStatement, 13)
-                     if(Int(leida)>0){
-                        imagen = UIImage.init(named: "circle_white")!
-                      }
-                     
-                     if(Int(leida) == 1){
-                 
-                     }
-             
-                     if(Int(favorita)==1){
-                        imagen = UIImage.init(named: "star")!
-                       }
-                     var noLeida:Int = 0
-                     if(Int(leida) == 0){
-                         noLeida = 1
-                         imagen = UIImage.init(named: "circle")!
-                        }
-             var fechaCircular="";
-             if let fecha = sqlite3_column_text(queryStatement, 8) {
-                 fechaCircular = String(cString: fecha)
-                 //print("fecha c: \(fechaCircular)")
-                print("texto c: \(cont)")
-                } else {
-                 print("name not found")
-             }
-             
-             
-            self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont,adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:0,favorita:Int(favorita)))
-           }
-         
-       
-
-          }
-         else {
-          print("SELECT statement could not be prepared")
-        }
-
-        sqlite3_finalize(queryStatement)
-    }
-    */
-    
-    
     func leerCirculares(){
            print("Leer desde la base de datos local")
            let fileUrl = try!
@@ -2703,12 +2552,13 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
            if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                print("error opening database")
            }
+                    
            
-           /*
-            idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
-            */
-           
-              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE tipo=1"
+              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE tipo=1 and eliminada=0 ORDER BY CAST(idCircular as integer) DESC"
+        
+        
+            
+        
            var queryStatement: OpaquePointer? = nil
            var imagen:UIImage
            imagen = UIImage.init(named: "appmenu05")!
@@ -2723,6 +2573,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                    
                           if let name = sqlite3_column_text(queryStatement, 1) {
                               titulo = String(cString: name)
+                            print("titulo: \(titulo)")
                              } else {
                               print("name not found")
                           }
@@ -2785,12 +2636,127 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                               imagen = UIImage.init(named: "circle_white")!
                            }
                    
-                           /*if(Int(favorita)==1 && Int(leida) == 0){
-                               imagen = UIImage.init(named: "circle")!
+                           var noLeida:Int = 0
+                          
+                   var fechaCircular="";
+                   if let fecha = sqlite3_column_text(queryStatement, 6) {
+                       fechaCircular = String(cString: fecha)
+                      
+                   } else {
+                       print("name not found")
+                   }
+                   
+                   
+                   //if(eliminada==0 ){
+                      self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                    
+                    self.ids.append("\(id)")
+                    
+                  // }
+                  
+                 }
+               
+              
+                }
+               else {
+                print("SELECT statement could not be prepared for notifications")
+              }
+
+              sqlite3_finalize(queryStatement)
+          }
+    
+    
+    func leerCirculares(id:Int){
+           print("Leer desde la base de datos local")
+           let fileUrl = try!
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+           
+           if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+               print("error opening database")
+           }
+                    
+           
+              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE idCircular=\(id)"
+        
+        
+            
+        
+           var queryStatement: OpaquePointer? = nil
+           var imagen:UIImage
+           imagen = UIImage.init(named: "appmenu05")!
+           
+           if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+          
+              
+               
+                while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                        let id = sqlite3_column_int(queryStatement, 0)
+                           var titulo:String="";
+                   
+                          if let name = sqlite3_column_text(queryStatement, 1) {
+                              titulo = String(cString: name)
+                            print("titulo: \(titulo)")
+                             } else {
+                              print("name not found")
+                          }
+                   
+                   
+                           var cont:String="";
+                   
+                          if let contenido = sqlite3_column_text(queryStatement,2) {
+                              cont = String(cString: contenido)
+                             } else {
+                              print("name not found")
+                          }
+                 
+                           let leida = sqlite3_column_int(queryStatement, 3)
+                           let favorita = sqlite3_column_int(queryStatement, 4)
+                           let eliminada = sqlite3_column_int(queryStatement, 5)
+                           
+                           
+                   
+                            var fechaIcs:String="";
+                            if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                            fechaIcs = String(cString: fIcs)
+                            } else {
+                                 print("name not found")
                             }
-                           if(Int(favorita)==1 && Int(leida) == 1){
-                               imagen = UIImage.init(named: "circle_white")!
-                           }*/
+                        
+                    
+                     var hIniIcs:String="";
+                     if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                       hIniIcs = String(cString: horaInicioIcs)
+                      } else {
+                       print("hIniIcs not found")
+                   }
+                    
+                    
+                    var hFinIcs:String="";
+                    if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                        hFinIcs = String(cString: horaFinIcs)
+                        } else {
+                          print("name not found")
+                        }
+                    
+                   var nivel:String="";
+                   if  let nv = sqlite3_column_text(queryStatement, 10) {
+                       nivel = String(cString: nv)
+                       } else {
+                         print("name not found")
+                       }
+                           print("nivel \(nivel)")
+                           let adj = sqlite3_column_int(queryStatement, 11)
+                          
+                           
+                           if(Int(leida) == 1){
+                              imagen = UIImage.init(named: "circle_white")!
+                           }else{
+                               imagen = UIImage.init(named: "circle")!
+                           }
+                   
+                           if(Int(favorita)==1){
+                              imagen = UIImage.init(named: "circle_white")!
+                           }
                    
                            var noLeida:Int = 0
                           
@@ -2806,7 +2772,6 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                    //if(eliminada==0 ){
                       self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
                     
-                    
                     self.ids.append("\(id)")
                     
                   // }
@@ -2816,11 +2781,136 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
               
                 }
                else {
-                print("SELECT statement could not be prepared")
+                print("SELECT statement could not be prepared for notifications")
               }
 
               sqlite3_finalize(queryStatement)
           }
+    
+    
+    func leerNotifica(){
+        print("Leer desde la base de datos local")
+        let fileUrl = try!
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+        
+        if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+            print("error opening database")
+        }
+                 
+        
+           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE tipo=2"
+     
+     
+         
+     
+        var queryStatement: OpaquePointer? = nil
+        var imagen:UIImage
+        imagen = UIImage.init(named: "appmenu05")!
+        
+        if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+       
+           
+            
+             while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                     let id = sqlite3_column_int(queryStatement, 0)
+                        var titulo:String="";
+                
+                       if let name = sqlite3_column_text(queryStatement, 1) {
+                           titulo = String(cString: name)
+                         print("titulo: \(titulo)")
+                          } else {
+                           print("name not found")
+                       }
+                
+                
+                        var cont:String="";
+                
+                       if let contenido = sqlite3_column_text(queryStatement,2) {
+                           cont = String(cString: contenido)
+                          } else {
+                           print("name not found")
+                       }
+              
+                        let leida = sqlite3_column_int(queryStatement, 3)
+                        let favorita = sqlite3_column_int(queryStatement, 4)
+                        let eliminada = sqlite3_column_int(queryStatement, 5)
+                        
+                        
+                
+                         var fechaIcs:String="";
+                         if let fIcs = sqlite3_column_text(queryStatement, 7) {
+                         fechaIcs = String(cString: fIcs)
+                         } else {
+                              print("name not found")
+                         }
+                     
+                 
+                  var hIniIcs:String="";
+                  if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                    hIniIcs = String(cString: horaInicioIcs)
+                   } else {
+                    print("hIniIcs not found")
+                }
+                 
+                 
+                 var hFinIcs:String="";
+                 if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                     hFinIcs = String(cString: horaFinIcs)
+                     } else {
+                       print("name not found")
+                     }
+                 
+                var nivel:String="";
+                if  let nv = sqlite3_column_text(queryStatement, 10) {
+                    nivel = String(cString: nv)
+                    } else {
+                      print("name not found")
+                    }
+                        print("nivel \(nivel)")
+                        let adj = sqlite3_column_int(queryStatement, 11)
+                       
+                        
+                        if(Int(leida) == 1){
+                           imagen = UIImage.init(named: "circle_white")!
+                        }else{
+                            imagen = UIImage.init(named: "circle")!
+                        }
+                
+                        if(Int(favorita)==1){
+                           imagen = UIImage.init(named: "circle_white")!
+                        }
+                
+                        var noLeida:Int = 0
+                       
+                var fechaCircular="";
+                if let fecha = sqlite3_column_text(queryStatement, 6) {
+                    fechaCircular = String(cString: fecha)
+                   
+                } else {
+                    print("name not found")
+                }
+                
+                
+                //if(eliminada==0 ){
+                   self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+                 
+                 
+                 self.ids.append("\(id)")
+                 
+               // }
+               
+              }
+            
+           
+             }
+            else {
+             print("SELECT statement could not be prepared for notifications")
+           }
+
+           sqlite3_finalize(queryStatement)
+          }
+    
+    
     
     func leerCirculares(idCircular:Int){
            print("Leer desde la base de datos local")
@@ -3137,6 +3227,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
              //if(eliminada==0 ){
                 self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
              //}
+            self.ids.append("\(id)")
             
            }
          
@@ -3285,7 +3376,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
       idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
       */
      
-        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE eliminada=1 AND tipo=1"
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE eliminada=1 AND tipo=1  ORDER BY idCircular DESC"
      var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!
@@ -3383,7 +3474,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                  
                     self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
                  
-                
+                self.ids.append("\(id)")
                }
              
             
@@ -3533,6 +3624,139 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
       */
      
         let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE idCircular=\(idCircular) AND tipo=1"
+        var queryStatement: OpaquePointer? = nil
+     var imagen:UIImage
+     imagen = UIImage.init(named: "appmenu05")!
+     
+     if sqlite3_prepare_v2(db, consulta, -1, &queryStatement, nil) == SQLITE_OK {
+    
+        
+         
+          while(sqlite3_step(queryStatement) == SQLITE_ROW) {
+                  let id = sqlite3_column_int(queryStatement, 0)
+                     var titulo:String="";
+             
+                    if let name = sqlite3_column_text(queryStatement, 1) {
+                        titulo = String(cString: name)
+                       } else {
+                        print("name not found")
+                    }
+             
+             
+                     var cont:String="";
+             
+                    if let contenido = sqlite3_column_text(queryStatement,2) {
+                        cont = String(cString: contenido)
+                       } else {
+                        print("name not found")
+                    }
+           
+                     let leida = sqlite3_column_int(queryStatement, 3)
+                     let favorita = sqlite3_column_int(queryStatement, 4)
+                     let eliminada = sqlite3_column_int(queryStatement, 5)
+                     print("leida: \(leida)")
+                     print("favorita: \(favorita)")
+             
+                      var fechaIcs:String="";
+                      if let fIcs = sqlite3_column_text(queryStatement, 6) {
+                      fechaIcs = String(cString: fIcs)
+                      } else {
+                           print("name not found")
+                      }
+             
+                            
+                                 
+             
+                    
+               var hIniIcs:String="";
+               if  let horaInicioIcs = sqlite3_column_text(queryStatement, 8) {
+                 hIniIcs = String(cString: horaInicioIcs)
+                } else {
+                 print("name not found")
+             }
+                     
+             
+              var hFinIcs:String="";
+              if  let horaFinIcs = sqlite3_column_text(queryStatement, 9) {
+                  hFinIcs = String(cString: horaFinIcs)
+                  } else {
+                    print("name not found")
+                  }
+             
+             
+             
+                     
+                     
+             
+             var nivel:String="";
+             if  let nv = sqlite3_column_text(queryStatement, 10) {
+                 nivel = String(cString: nv)
+                 } else {
+                   print("name not found")
+                 }
+             
+                     let adj = sqlite3_column_int(queryStatement, 14)
+                    
+                     
+                     if(Int(leida) == 1){
+                        imagen = UIImage.init(named: "circle_white")!
+                     }else{
+                         imagen = UIImage.init(named: "circle")!
+                     }
+             
+                     if(Int(favorita)==1){
+                        imagen = UIImage.init(named: "circle_white")!
+                     }
+             
+                     /*if(Int(favorita)==1 && Int(leida) == 0){
+                         imagen = UIImage.init(named: "circle")!
+                      }
+                     if(Int(favorita)==1 && Int(leida) == 1){
+                         imagen = UIImage.init(named: "circle_white")!
+                     }*/
+             
+                     var noLeida:Int = 0
+                    
+             var fechaCircular="";
+             if let fecha = sqlite3_column_text(queryStatement, 6) {
+                 fechaCircular = String(cString: fecha)
+                
+             } else {
+                 print("name not found")
+             }
+             
+            print("FECHA \(fechaCircular)")
+             
+             //if(eliminada==0 ){
+                self.circulares.append(CircularTodas(id:Int(id),imagen: imagen,encabezado: "",nombre: titulo,fecha: fechaCircular,estado: 0,contenido:cont.replacingOccurrences(of: "&#92", with: ""),adjunto:Int(adj),fechaIcs:fechaIcs,horaInicialIcs: hIniIcs,horaFinalIcs: hFinIcs, nivel:nivel,noLeido:noLeida,favorita: Int(favorita)))
+            // }
+            
+           }
+         
+        
+          }
+         else {
+          print("SELECT statement could not be prepared")
+        }
+
+        sqlite3_finalize(queryStatement)
+    }
+    
+    
+    func leerNotificacion(idCircular:Int){
+     print("Leer desde la base de datos local")
+     let fileUrl = try!
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+     
+     if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
+         print("error opening database")
+     }
+     
+     /*
+      idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+      */
+     
+        let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE idCircular=\(idCircular) AND tipo=2"
         var queryStatement: OpaquePointer? = nil
      var imagen:UIImage
      imagen = UIImage.init(named: "appmenu05")!
@@ -4042,9 +4266,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                            print(response.result.error!)
                            return
                        }
-                       /*
-                        [{"id":"1008","titulo":"\u00a1Felices vacaciones!","estatus":"Enviada","ciclo_escolar_id":"4","created_at":"2019-04-12 13:02:19","updated_at":"2019-04-12 13:02:19","leido":"1","favorito":"1","compartida":"1","eliminado":"1","status_envio":null,"envio_todos":"0"},
-                        */
+                      
                        
                        if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
                            for diccionario in diccionarios{
@@ -4444,17 +4666,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                    self.favCircular(direccion: self.urlBase+"favCircular.php", usuario_id: self.idUsuario, circular_id: self.id)
                //})
                self.showToast(message:"Marcada como favorita", font: UIFont(name:"GothamRounded-Bold",size:11.0)!)
-               // Create Cancel button with action handlder
-               //let cancel = UIAlertAction(title: "Cancelar", style: .cancel) { (action) -> Void in
-                   
-               //}
-               
-               //Add OK and Cancel button to dialog message
-               //dialogMessage.addAction(ok)
-               //dialogMessage.addAction(cancel)
-               
-               // Present dialog message to user
-               //self.present(dialogMessage, animated: true, completion: nil)
+          
            }else{
                var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
                           alert.show()
@@ -4522,16 +4734,14 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                         //self.lblNivel.text = nextNivel
                        
                        self.circularTitulo = nextTitulo
-                       let link = URL(string:self.urlBase+"getCircularId6.php?id=\(nextId)")!
+                       let link = URL(string:self.urlBase+"getCircularId6.php?id=\(nextId)&idUsuario=\(self.idUsuario)")!
                        let request = URLRequest(url: link)
-                       self.circularUrl = self.urlBase+"getCircularId6.php?id=\(nextId)"
+                       self.circularUrl = self.urlBase+"getCircularId6.php?id=\(nextId)&idUsuario=\(self.idUsuario)"
                        self.webView.load(request)
                        self.title = "Circular"
 
                        
-                       if(ConexionRed.isConnectedToNetwork()){
-
-                       }
+                      
                        
 
                        self.id = nextId;
@@ -4557,7 +4767,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                self.present(dialogMessage, animated: true, completion: nil)
            }else{
                var alert = UIAlertView(title: "No está conectado a Internet", message: "Esta opción solo funciona con una conexión a Internet", delegate: nil, cancelButtonTitle: "Aceptar")
-                                                alert.show()
+                   alert.show()
            }
         }
         
@@ -4571,7 +4781,7 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
         
         let actionCompartir = UIAlertAction(title: tituloCompartir, style: .default) { (action:UIAlertAction) in
             
-            let circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId6.php?id=\(self.id)"
+            let circularUrl = "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId6.php?id=\(self.id)&idUsuario=\(self.idUsuario)"
             guard let link = URL(string: circularUrl) else { return }
             let dynamicLinksDomainURIPrefix = "https://chmd1.page.link"
             let linkBuilder = DynamicLinkComponents(link: link, domainURIPrefix: dynamicLinksDomainURIPrefix)
@@ -4590,13 +4800,14 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
                        return
                    }
 
-                   let shortLink = shortURL
+                   //let shortLink = shortURL
+                let shortLink =  "https://www.chmd.edu.mx/WebAdminCirculares/ws/getCircularId6.php?id=\(self.id)&idUsuario=\(self.idUsuario)"
                 if(self.tipoCircular != 5){
                     let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
-                    self.compartir(message:  "Comparto: "+titulo, link: "\(shortLink!)")
+                    self.compartir(message:  "Comparto: "+titulo, link: "\(shortLink)")
                 }else{
                      let titulo = UserDefaults.standard.string(forKey: "nombre") ?? ""
-                     self.compartir(message: "Comparto: "+titulo, link: "\(shortLink!)")
+                     self.compartir(message: "Comparto: "+titulo, link: "\(shortLink)")
                 }
                }
             
@@ -4701,8 +4912,11 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
             
             
         print("link")
-               self.btnRecargar.isEnabled=true
-               self.btnRecargar.tintColor = UIColor.white
+               //self.btnRecargar.isEnabled=true
+               //self.btnRecargar.tintColor = UIColor.white
+            //Si se quiere abrir en un navegador externo
+            //solicitado por Edwin Careaga 19/05/2022
+            UIApplication.shared.open(docUrl)
             decisionHandler(WKNavigationActionPolicy.allow)
                return
         }else{
@@ -4741,6 +4955,39 @@ class CircularDetalleViewController: UIViewController,WKNavigationDelegate {
 }
 
     
-
+func obtenerRecuentoBadge(uri:String){
+    Alamofire.request(uri)
+           .responseJSON { response in
+               // check for errors
+               guard response.result.error == nil else {
+                   // got an error in getting the data, need to handle it
+                   print("error en la consulta")
+                   print(response.result.error!)
+                   return
+               }
+            
+            if let diccionarios = response.result.value as? [Dictionary<String,AnyObject>]{
+            for diccionario in diccionarios{
+                //print(diccionario)
+              
+                guard let notificaciones = diccionario["notificaciones"] as? String else {
+                    print("No se pudo obtener el codigo")
+                    return
+                }
+                
+               
+               //Settear el badge
+                UIApplication.shared.applicationIconBadgeNumber = Int(notificaciones)!
+                
+                  
+            }
+        }
+            
+    }
+    
+    
+ 
+    
+}
 
 
