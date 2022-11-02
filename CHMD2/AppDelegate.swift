@@ -400,14 +400,14 @@ func application(_ application: UIApplication,
         
         //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
         }else{
                 //La base de datos abrió correctamente
             var statement:OpaquePointer?
-            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -513,7 +513,7 @@ func application(_ application: UIApplication,
                         
                         var imagen:UIImage
                            imagen = UIImage.init(named: "appmenu05")!
-                           guard let fecha = obj["created_at"] as? String else {
+                           guard let fecha = obj["fecha"] as? String else {
                             print("No se pudo obtener la fecha")
                                                       return
                                                   }

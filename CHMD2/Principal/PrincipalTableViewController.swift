@@ -50,7 +50,7 @@ class PrincipalTableViewController: UITableViewController {
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -206,7 +206,7 @@ class PrincipalTableViewController: UITableViewController {
     func deleteUsuario() {
            
            let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                   
                   if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                       print("Error en la base de datos")
@@ -237,7 +237,7 @@ class PrincipalTableViewController: UITableViewController {
         
         //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")

@@ -398,24 +398,24 @@ class ViewController: UIViewController,GIDSignInUIDelegate,GIDSignInDelegate {
         
         //Sección para la base de datos
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
         }
         
         /*
-         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,compartida,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel
          */
         
-        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircularCHMD(idCircular INTEGER NOT NULL PRIMARY KEY, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT, especiales TEXT, tipo INTEGER)"
+        let crearTablaCirculares = "CREATE TABLE IF NOT EXISTS appCircularCHMD(idCircular INTEGER NOT NULL PRIMARY KEY, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, fecha TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT, especiales TEXT, tipo INTEGER)"
         if sqlite3_exec(db, crearTablaCirculares, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las circulares")
         }else{
            print("creada la tabla de las circulares")
         }
         
-        let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacionCHMD(idCircular INTEGER NOT NULL PRIMARY KEY, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, created_at TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
+        let crearTablaNotificaciones="CREATE TABLE IF NOT EXISTS appNotificacionCHMD(idCircular INTEGER NOT NULL PRIMARY KEY, idUsuario INTEGER, nombre TEXT, textoCircular TEXT, no_leida INTEGER, leida INTEGER, favorita INTEGER, compartida INTEGER, eliminada INTEGER, fecha TEXT,fechaIcs TEXT, horaInicioIcs TEXT, horaFinIcs TEXT, nivel TEXT, adjunto INT,updated_at TEXT)"
         if sqlite3_exec(db, crearTablaNotificaciones, nil, nil, nil) != SQLITE_OK {
             print("Error creando la tabla de las notificaciones")
         }else{

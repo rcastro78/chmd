@@ -193,7 +193,7 @@ class ValidarCorreoViewController: UIViewController {
     func delete(tipo:Int) {
         
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                
                if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                    print("Error en la base de datos")
@@ -221,14 +221,14 @@ class ValidarCorreoViewController: UIViewController {
         
             //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
         }else{
                 //La base de datos abrió correctamente
             var statement:OpaquePointer?
-            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -264,8 +264,8 @@ class ValidarCorreoViewController: UIViewController {
             if sqlite3_bind_int(statement,8,Int32(eliminada)) != SQLITE_OK {
                            print("Error campo 8")
               }
-            
-           if sqlite3_bind_text(statement,9,fecha, -1, nil) != SQLITE_OK {
+            let f = fecha as NSString
+           if sqlite3_bind_text(statement,9,f.utf8String, -1, nil) != SQLITE_OK {
                print("Error campo 9")
            }
              let fiIcs = fechaIcs as NSString
@@ -294,8 +294,6 @@ class ValidarCorreoViewController: UIViewController {
                 
                 let t = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: .short, timeStyle: .medium)
                
-             
-                
                 print("Circular almacenada correctamente en validar \(t)")
             }else{
                 print("Circular no se pudo guardar")
@@ -311,14 +309,14 @@ class ValidarCorreoViewController: UIViewController {
         
         //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
         }else{
                 //La base de datos abrió correctamente
             var statement:OpaquePointer?
-            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,2)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -588,7 +586,8 @@ class ValidarCorreoViewController: UIViewController {
                         para="Personal"
                     }
                     
-                    self.guardarCirculares(idCircular: Int(c.id!)!, idUsuario: Int(c.id_usuario!)!, nombre: nombre, textoCircular: str.replacingOccurrences(of: "&nbsp;", with: ""), no_leida: noLeida, leida: leida, favorita: Int(c.favorito!)!, compartida: 0, eliminada: Int(c.eliminado!)!, fecha: c.created_at!, fechaIcs: c.fecha_ics!, horaInicioIcs: c.hora_inicial_ics!, horaFinIcs: c.hora_final_ics!, nivel: c.nivel!, adjunto: Int(c.adjunto!)!, especiales: para)
+                    
+                    self.guardarCirculares(idCircular: Int(c.id!)!, idUsuario: Int(c.id_usuario!)!, nombre: nombre, textoCircular: str.replacingOccurrences(of: "&nbsp;", with: ""), no_leida: noLeida, leida: leida, favorita: Int(c.favorito!)!, compartida: 0, eliminada: Int(c.eliminado!)!, fecha: c.fecha!, fechaIcs: c.fecha_ics!, horaInicioIcs: c.hora_inicial_ics!, horaFinIcs: c.hora_final_ics!, nivel: c.nivel!, adjunto: Int(c.adjunto!)!, especiales: para)
                   
                     
                 }
@@ -711,7 +710,7 @@ class ValidarCorreoViewController: UIViewController {
                         
                         var imagen:UIImage
                            imagen = UIImage.init(named: "appmenu05")!
-                           guard let fecha = obj["created_at"] as? String else {
+                           guard let fecha = obj["fecha"] as? String else {
                             print("No se pudo obtener la fecha")
                                                       return
                                                   }
@@ -918,7 +917,7 @@ class ValidarCorreoViewController: UIViewController {
                            
                           
                            
-                           guard let fecha = obj["created_at"] as? String else {
+                           guard let fecha = obj["fecha"] as? String else {
                             print("No se pudo obtener la fecha")
                                                       return
                                                   }

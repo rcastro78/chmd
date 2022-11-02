@@ -315,14 +315,14 @@ class CircularDetalleNotificacionViewController: UIViewController {
     func leerCirculares(id:Int){
            print("Leer desde la base de datos local")
            let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
            
            if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                print("error opening database")
            }
                     
            
-              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE idCircular=\(id)"
+              let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto FROM appCircularCHMD WHERE idCircular=\(id)"
         
         
             
@@ -413,6 +413,7 @@ class CircularDetalleNotificacionViewController: UIViewController {
                    } else {
                        print("name not found")
                    }
+                    print("fecha: \(fechaCircular)")
                    
                    
                    //if(eliminada==0 ){

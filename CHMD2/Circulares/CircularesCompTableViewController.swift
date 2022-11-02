@@ -118,7 +118,7 @@ class CircularesCompTableViewController: UITableViewController {
                             return
                         }
                         
-                        guard let fecha = diccionario["created_at"] as? String else {
+                        guard let fecha = diccionario["fecha"] as? String else {
                             print("No se pudo obtener la fecha")
                             return
                         }

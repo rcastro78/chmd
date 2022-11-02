@@ -108,7 +108,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         print("Leer desde la base de datos local")
         var total:Int32=0
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
@@ -198,12 +198,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
         
         
-      refreshControl.attributedTitle = NSAttributedString(string: "Suelta para refrescar")
+    refreshControl.attributedTitle = NSAttributedString(string: "Suelta para refrescar")
       refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
       self.tableViewCirculares.addSubview(refreshControl)
        
         let idUsuario = UserDefaults.standard.string(forKey: "idUsuario") ?? "0"
-        
+       
         
     }
   
@@ -216,12 +216,12 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
          self.getDataFromURL(url: _url)
         
     }
-
    
    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    
     }
     
    
@@ -236,140 +236,129 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celda", for: indexPath)
             as! CircularTableViewCell
-        
-        if (indexPath.item >= 0 || indexPath.item < circulares.count) {
-        guard let c = circulares[safe: indexPath.row] else{
-            return cell
-        }
-              cell.lblTitulo.text? = c.nombre
-            
-            
-            var nivel:String=""
-            if(c.nivel!.count>0){
-                nivel = "\(c.nivel!) /"
-            }
-            
-            var grados:String=""
-            if(c.grados.count>0){
-                grados = "\(c.grados) /"
-            }
-            
-            var espec:String=""
-            if(c.espec.count>0){
-                espec = "\(c.espec) /"
-            }
-            
-            var adm:String=""
-            if(c.adm.count>0){
-                adm = "\(c.adm) /"
-            }
-            
-            var rts:String=""
-            if(c.rts.count>0){
-                rts = "\(c.rts) /"
-            }
-            
-            var gps:String=""
-            if(c.grupos.count>0){
-                gps = "\(c.grupos) /"
-            }
-            
-            //nivel+grados+espec+adm+rts
-            var para:String = "\(nivel) \(grados) \(espec) \(adm) \(rts)"
-            para = para.trimmingCharacters(in: .whitespacesAndNewlines)
-            para = String(para.dropLast())
-            print("Para: \(para)")
-            if(c.enviaTodos=="1"){
-                para="Todos"
-            }
-            
-            if(c.enviaTodos=="0" && c.espec=="" && c.adm=="" && c.rts=="" && c.nivel!=="" && c.grados==""){
-                para="Personal"
-            }
-            
-            
-              cell.lblPara.text?="Para: \(para)"
-            
-            
-            if c.favorita == 1
-             {
-                 let favImage = UIImage(named: "favIconCompleto")! as UIImage
-                 cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+        if(circulares.count>0){
+            if (indexPath.item >= 0 || indexPath.item < circulares.count) {
+                guard let c = circulares[safe: indexPath.row] else{
+                    return cell
+                }
+                cell.lblTitulo.text? = c.nombre
                 
-            }else{
-                let favImage = UIImage(named: "favIcon")! as UIImage
-                cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
-            }
-            
-            
-             //Para hacer favoritas con un boton
-             cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
-             //cell.btnHacerFav.addTarget(self, action: #selector(makeNoLeida), for: .touchUpInside)
-             cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd HH:mm:ss"
-             
-            if(c.fecha.contains(":"))
-              {
-                               let dateFormatter = DateFormatter()
-                               dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                               dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
-                               let date1 = dateFormatter.date(from: c.fecha)
                 
-                               
-                                let intervalo = Date() - date1!
-                                let diferenciaDias:Int = intervalo.day!
-                                print("Intervalo en dias: \(diferenciaDias)")
-                                
-                                if(diferenciaDias<=7){
-                                    dateFormatter.dateFormat = "EEEE"
-                                }
-                             if(diferenciaDias>7 && diferenciaDias<=365){
-                                  dateFormatter.dateFormat = "dd/MM/yyyy"
-                              }
-                              if(diferenciaDias>365){
-                                  dateFormatter.dateFormat = "MMMM/yyyy"
-                              }
-                  
-                                let dia = dateFormatter.string(from: date1!)
-                                   
-            
-          
-            
-            
-            
+                var nivel:String=""
+                if(c.nivel!.count>0){
+                    nivel = "\(c.nivel!) /"
+                }
+                
+                var grados:String=""
+                if(c.grados.count>0){
+                    grados = "\(c.grados) /"
+                }
+                
+                var espec:String=""
+                if(c.espec.count>0){
+                    espec = "\(c.espec) /"
+                }
+                
+                var adm:String=""
+                if(c.adm.count>0){
+                    adm = "\(c.adm) /"
+                }
+                
+                var rts:String=""
+                if(c.rts.count>0){
+                    rts = "\(c.rts) /"
+                }
+                
+                var gps:String=""
+                if(c.grupos.count>0){
+                    gps = "\(c.grupos) /"
+                }
+                
+                //nivel+grados+espec+adm+rts
+                var para:String = "\(nivel) \(grados) \(espec) \(adm) \(rts)"
+                para = para.trimmingCharacters(in: .whitespacesAndNewlines)
+                para = String(para.dropLast())
+                print("Para: \(para)")
+                if(c.enviaTodos=="1"){
+                    para="Todos"
+                }
+                
+                if(c.enviaTodos=="0" && c.espec=="" && c.adm=="" && c.rts=="" && c.nivel!=="" && c.grados==""){
+                    para="Personal"
+                }
+                
+                
+                cell.lblPara.text?="Para: \(para)"
+                
+                
+                if c.favorita == 1
+                {
+                    let favImage = UIImage(named: "favIconCompleto")! as UIImage
+                    cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+                    
+                }else{
+                    let favImage = UIImage(named: "favIcon")! as UIImage
+                    cell.btnHacerFav.setImage(favImage, for: UIControl.State.normal)
+                }
+                
+                
+                //Para hacer favoritas con un boton
+                cell.btnHacerFav.addTarget(self, action: #selector(toggleFavorita), for: .touchUpInside)
+                //cell.btnHacerFav.addTarget(self, action: #selector(makeNoLeida), for: .touchUpInside)
+                cell.chkSeleccionar.addTarget(self, action: #selector(seleccionMultiple), for: .touchUpInside)
+                
+                let df = DateFormatter()
+                df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                dateFormatter.locale = Locale(identifier: "es_ES_POSIX")
+                let date1 = dateFormatter.date(from: c.fecha)
+                
+                
+                let intervalo = Date() - date1!
+                let diferenciaDias:Int = intervalo.day!
+                print("Intervalo en dias: \(diferenciaDias)")
+                
+                if(diferenciaDias<=7){
+                    dateFormatter.dateFormat = "EEEE"
+                }
+                if(diferenciaDias>7 && diferenciaDias<=365){
+                    dateFormatter.dateFormat = "dd/MM/yyyy"
+                }
+                if(diferenciaDias>365){
+                    dateFormatter.dateFormat = "MMMM/yyyy"
+                }
+                
+                let dia = dateFormatter.string(from: date1!)
                 cell.lblFecha.text?=dia
-                               
-                               
-            }else{
-                cell.lblFecha.text? = ""
+                cell.imgCircular.image = c.imagen
             }
-                   
-             cell.imgCircular.image = c.imagen
-             
-             if(!seleccion.contains(indexPath.row)){
-                   print("No seleccionada")
-                 cell.chkSeleccionar.isChecked=false
-             }else{
-                 print("Seleccionada")
-                 cell.chkSeleccionar.isChecked=true
-             }
-             
             
-             if(editando){
-                 let isEditing: Bool = self.isEditing
-                 cell.chkSeleccionar.isHidden = !isEditing
-                  cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "visible")!)
-             }else{
-                 let isEditing: Bool = false
-                 cell.chkSeleccionar.isChecked=false
+            if(!seleccion.contains(indexPath.row)){
+                print("No seleccionada")
+                cell.chkSeleccionar.isChecked=false
+            }else{
+                print("Seleccionada")
+                cell.chkSeleccionar.isChecked=true
+            }
+            
+            
+            if(editando){
+                let isEditing: Bool = self.isEditing
+                cell.chkSeleccionar.isHidden = !isEditing
+                cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "visible")!)
+            }else{
+                let isEditing: Bool = false
+                cell.chkSeleccionar.isChecked=false
                 
-                 cell.chkSeleccionar.isHidden = !isEditing
-                 cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "gone")!)
-             }
+                cell.chkSeleccionar.isHidden = !isEditing
+                cell.chkSeleccionar.setVisibility(UIView.Visibility(rawValue: "gone")!)
+            }
             
-             }
-             
+            
+        }
         
         return cell
         
@@ -697,17 +686,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         circulares.removeAll()
         print("Leer desde la base de datos local")
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
             print("error opening database")
         }
         
         /*
-         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+         idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
          */
         
-           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE tipo=1 ORDER BY idCircular DESC"
+           let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE tipo=1 ORDER BY idCircular DESC"
            var queryStatement: OpaquePointer? = nil
         var imagen:UIImage
         imagen = UIImage.init(named: "appmenu05")!
@@ -822,6 +811,11 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                 }
                 
                 print("FECHACIRC \(fechaCircular)")
+                 
+                 
+                 var fechaCircular2="";
+                 var fechaCircular3="";
+                 
                 
                 
                 //grados:String,adm:String,grupos:String,rts:String,enviaTodos:String
@@ -860,7 +854,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func delete() {
         
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                
                if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                    print("Error en la base de datos")
@@ -888,7 +882,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func deleteNotificaciones() {
            
            let fileUrl = try!
-                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                      FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                   
                   if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                       print("Error en la base de datos")
@@ -914,7 +908,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func borraCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -952,7 +946,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -990,7 +984,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1029,7 +1023,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaLeidosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1069,7 +1063,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaNoLeidosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1112,7 +1106,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         var badge:Int=0
         //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1128,7 +1122,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              //Vaciar la tabla
        
 
-            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -1208,7 +1202,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
         //Abrir la base
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1224,7 +1218,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
              //Vaciar la tabla
             
             
-            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,2)"
+            let query = "INSERT INTO appCircularCHMD(idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,tipo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,2)"
             if sqlite3_prepare(db,query,-1,&statement,nil) != SQLITE_OK {
                 print("Error")
             }
@@ -1340,7 +1334,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                            
                           
                            
-                           guard let fecha = obj["created_at"] as? String else {
+                           guard let fecha = obj["fecha"] as? String else {
                             print("No se pudo obtener la fecha")
                                                       return
                                                   }
@@ -1577,7 +1571,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                            return
                        }
                        
-                       guard let fecha = obj["created_at"] as? String else {
+                       guard let fecha = obj["fecha"] as? String else {
                                                   return
                                               }
                        

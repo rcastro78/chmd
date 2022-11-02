@@ -170,9 +170,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
         */
         
-      refreshControl.attributedTitle = NSAttributedString(string: "Suelta para refrescar")
-      refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
-      self.tableViewCirculares.addSubview(refreshControl)
+      //refreshControl.attributedTitle = NSAttributedString(string: "Suelta para refrescar")
+      //refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
+      //self.tableViewCirculares.addSubview(refreshControl)
         
         
        
@@ -705,7 +705,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         
     func borraCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -754,7 +754,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
         }
         let cell = tableView.cellForRow(at: indexPath)
             cell?.selectionStyle = .none
-        UserDefaults.standard.set(indexPath.row,forKey:"posicion")
+            UserDefaults.standard.set(indexPath.row,forKey:"posicion")
             UserDefaults.standard.set(c.id,forKey:"id")
             UserDefaults.standard.set(c.nombre,forKey:"nombre")
             UserDefaults.standard.set(c.fecha,forKey:"fecha")
@@ -788,17 +788,17 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func leerCirculares(){
             print("Leer desde la base de datos local")
             let fileUrl = try!
-                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
             
             if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                 print("error opening database")
             }
             
             /*
-             idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
+             idCircular,idUsuario,nombre,textoCircular,no_leida,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto
              */
             
-               let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE leida=0 AND eliminada=0 AND tipo=1  ORDER BY idCircular DESC"
+               let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,especiales  FROM appCircularCHMD WHERE leida=0 AND eliminada=0 AND tipo=1  ORDER BY idCircular DESC"
                var queryStatement: OpaquePointer? = nil
             var imagen:UIImage
             imagen = UIImage.init(named: "appmenu05")!
@@ -934,7 +934,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     //la base de datos cuando se abra al tener conexión a internet
     func limpiarCirculares(){
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                
                if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                    print("Error en la base de datos")
@@ -954,7 +954,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func borrarCirculares(){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -979,7 +979,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     func delete() {
         
         let fileUrl = try!
-                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                   FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                
                if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                    print("Error en la base de datos")
@@ -1037,7 +1037,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
                            return
                        }
                        
-                       guard let fecha = obj["created_at"] as? String else {
+                       guard let fecha = obj["fecha"] as? String else {
                                                   return
                                               }
                        
@@ -1179,9 +1179,9 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
             
             }.resume()
         
-        if self.refreshControl.isRefreshing {
+        /*if self.refreshControl.isRefreshing {
           self.refreshControl.endRefreshing()
-        }
+        }*/
     }
     
     
@@ -1371,7 +1371,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1409,7 +1409,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")
@@ -1449,7 +1449,7 @@ func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath])
     
     func actualizaLeidosCirculares(idCircular:Int,idUsuario:Int){
         let fileUrl = try!
-            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+            FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
         
         if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
             print("Error en la base de datos")

@@ -33,7 +33,7 @@
 
 static NSString *const kLogTag = @"FIRMessagingAnalytics";
 
-static NSString *const kLocalTimeFormatString = @"yyyy-MM-dd HH:mm:ss";
+static NSString *const kLocalTimeFormatString = @"yyyy-MM-dd HH:mm:ss HH:mm:ss";
 
 static NSString *const kContextManagerPrefixKey = kFIRMessagingContextManagerPrefixKey;
 

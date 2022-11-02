@@ -638,7 +638,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
             
         func borraCirculares(idCircular:Int,idUsuario:Int){
             let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
             
             if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                 print("Error en la base de datos")
@@ -724,14 +724,14 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         func leerCirculares(){
                 print("Leer desde la base de datos local")
                 let fileUrl = try!
-                           FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                           FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                 
                 if sqlite3_open(fileUrl.path, &db) != SQLITE_OK {
                     print("error opening database")
                 }
                 
               
-            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,created_at,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE tipo=2 and eliminada=0  ORDER BY idCircular DESC"
+            let consulta = "SELECT idCircular,nombre,textoCircular,leida,favorita,eliminada,fecha,fechaIcs,horaInicioIcs,horaFinIcs,nivel,adjunto  FROM appCircularCHMD WHERE tipo=2 and eliminada=0  ORDER BY idCircular DESC"
             var queryStatement: OpaquePointer? = nil
          var imagen:UIImage
          imagen = UIImage.init(named: "appmenu05")!
@@ -874,7 +874,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         //la base de datos cuando se abra al tener conexión a internet
         func limpiarCirculares(){
             let fileUrl = try!
-                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                    
                    if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                        print("Error en la base de datos")
@@ -894,7 +894,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         
         func borrarCirculares(){
             let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
             
             if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                 print("Error en la base de datos")
@@ -919,7 +919,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         func delete() {
             
             let fileUrl = try!
-                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                       FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
                    
                    if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                        print("Error en la base de datos")
@@ -979,7 +979,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                                    return
                                }
                                
-                               guard let fecha = obj["created_at"] as? String else {
+                               guard let fecha = obj["fecha"] as? String else {
                                                           return
                                                       }
                                
@@ -1114,7 +1114,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
                                return
                            }
                            
-                           guard let fecha = obj["created_at"] as? String else {
+                           guard let fecha = obj["fecha"] as? String else {
                                                       return
                                                   }
                            
@@ -1457,7 +1457,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         
         func actualizaFavoritosCirculares(idCircular:Int,idUsuario:Int){
             let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
             
             if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                 print("Error en la base de datos")
@@ -1495,7 +1495,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         
         func eliminaFavoritosCirculares(idCircular:Int,idUsuario:Int){
             let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
             
             if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                 print("Error en la base de datos")
@@ -1535,7 +1535,7 @@ class NotificacionTableViewController: UIViewController,UITableViewDelegate, UIT
         
         func actualizaLeidosCirculares(idCircular:Int,idUsuario:Int){
             let fileUrl = try!
-                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1b.sqlite")
+                FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("chmd_db1c.sqlite")
             
             if(sqlite3_open(fileUrl.path, &db) != SQLITE_OK){
                 print("Error en la base de datos")

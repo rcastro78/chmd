@@ -1297,7 +1297,7 @@ typedef NS_ENUM(int, SqliteValueType) {
  
  Example:
 
-    myDB.dateFormat = [FMDatabase storeableDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    myDB.dateFormat = [FMDatabase storeableDateFormat:@"yyyy-MM-dd HH:mm:ss HH:mm:ss"];
 
  @param format A valid NSDateFormatter format string.
  
